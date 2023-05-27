@@ -8,6 +8,8 @@ class Position extends Model
 {
     protected $fillable = [
         'title',
+        'department_id',
+        'company_id'
     ];
 
     public function employees()
@@ -23,5 +25,10 @@ class Position extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\EmployeeAuthController;
+use App\Http\Controllers\PositionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -41,11 +42,18 @@ Route::middleware('auth:sanctum')->get('/test2', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('company')->group(function () {
+Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
     // Departments
     Route::get('/companies/{company}/departments', [DepartmentsController::class, 'index']);
     Route::post('/companies/{company}/departments', [DepartmentsController::class, 'store']);
     Route::get('/companies/{company}/departments/{department}', [DepartmentsController::class, 'show']);
     Route::put('/companies/{company}/departments/{department}', [DepartmentsController::class, 'update']);
     Route::delete('/companies/{company}/departments/{department}', [DepartmentsController::class, 'destroy']);
+
+    // Positions
+    Route::get('/companies/{company}/positions', [PositionController::class, 'index']);
+    Route::post('/companies/{company}/positions', [PositionController::class, 'store']);
+    Route::get('/companies/{company}/positions/{position}', [PositionController::class, 'show']);
+    Route::put('/companies/{company}/positions/{position}', [PositionController::class, 'update']);
+    Route::delete('/companies/{company}/positions/{position}', [PositionController::class, 'destroy']);
 });

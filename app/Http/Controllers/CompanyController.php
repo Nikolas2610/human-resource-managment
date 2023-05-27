@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Company\StoreCompanyRequest;
+use App\Http\Requests\Company\UpdateCompanyRequest;
 use App\Http\Resources\Company\CompanyResource;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -24,39 +26,28 @@ class CompanyController extends Controller
         return new CompanyResource($company);
     }
 
-    public function store(Request $request)
+    public function store(StoreCompanyRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'default_leave_amount' => 'required|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
+        $validatedData = $request->validated();
 
         $company = Company::create([
-            'name' => $request->name,
-            'default_leave_amount' => $request->default_leave_amount,
+            'name' => $validatedData['name'],
+            'default_leave_amount' => $validatedData['default_leave_amount'],
         ]);
 
         return new CompanyResource($company);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateCompanyRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'string|max:255',
-            'default_leave_amount' => 'integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
+        $validatedData = $request->validated();
 
         $company = Company::findOrFail($id);
 
-        $company->update($request->only(['name', 'default_leave_amount']));
+        $company->update([
+            'name' => $validatedData['name'],
+            'default_leave_amount' => $validatedData['default_leave_amount'],
+        ]);
 
         return new CompanyResource($company);
     }

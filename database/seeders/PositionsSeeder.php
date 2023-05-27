@@ -19,12 +19,13 @@ class PositionsSeeder extends Seeder
         $faker = Faker::create();
 
         $departments = DB::table('departments')->pluck('id');
-    
+
         foreach ($departments as $departmentId) {
             for ($i = 0; $i < 5; $i++) {
                 DB::table('positions')->insert([
                     'title' => $faker->jobTitle,
                     'department_id' => $departmentId,
+                    'company_id' => DB::table('departments')->where('id', $departmentId)->value('company_id'),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

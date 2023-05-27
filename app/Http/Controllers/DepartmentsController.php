@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Department\StoreDepartmentRequest;
 use App\Http\Resources\Department\DepartmentCollection;
 use App\Http\Resources\Department\DepartmentResource;
 use App\Models\Company;
@@ -31,14 +32,12 @@ class DepartmentsController extends Controller
      * @param  \App\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Company $company)
+    public function store(StoreDepartmentRequest $request, Company $company)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        $validateData = $request->validated();
 
         $department = $company->departments()->create([
-            'name' => $request->name,
+            'name' => $validateData['name'],
         ]);
 
         return new DepartmentResource($department);
@@ -53,12 +52,14 @@ class DepartmentsController extends Controller
      */
     public function show(Company $company, Department $department)
     {
-        // Make sure the department belongs to the company
-        if ($company->id !== $department->company_id) {
-            abort(404);
-        }
+        try {
+            // Make sure the department belongs to the company
+            $this->ensureDepartmentBelongsToCompany($company, $department);
 
-        return new DepartmentResource($department);
+            return new DepartmentResource($department);
+        } catch (\Throwable $exception) {
+            return response()->json(['error' => 'Unauthorized', 'message' => $exception->getMessage()], 401);
+        }
     }
 
     /**
@@ -71,20 +72,19 @@ class DepartmentsController extends Controller
      */
     public function update(Request $request, Company $company, Department $department)
     {
-        // Make sure the department belongs to the company
-        if ($company->id !== $department->company_id) {
-            abort(404);
+        try {
+            $this->ensureDepartmentBelongsToCompany($company, $department);
+
+            $validatedData = $request->validated();
+
+            $department->update([
+                'name' => $validatedData['name'],
+            ]);
+
+            return new DepartmentResource($department);
+        } catch (\Throwable $exception) {
+            return response()->json(['error' => 'Unauthorized', 'message' => $exception->getMessage()], 401);
         }
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $department->update([
-            'name' => $request->name,
-        ]);
-
-        return new DepartmentResource($department);
     }
 
     /**
@@ -96,13 +96,22 @@ class DepartmentsController extends Controller
      */
     public function destroy(Company $company, Department $department)
     {
-        // Make sure the department belongs to the company
-        if ($company->id !== $department->company_id) {
-            abort(404);
+        try {
+            // Make sure the department belongs to the company
+            $this->ensureDepartmentBelongsToCompany($company, $department);
+    
+            $department->delete();
+    
+            return response()->json(['message' => 'Department deleted successfully.'], 200);
+        } catch (\Throwable $exception) {
+            return response()->json(['error' => 'Unauthorized', 'message' => 'Unable to delete department.'], 401);
         }
+    }
 
-        $department->delete();
-
-        return response()->noContent();
+    private function ensureDepartmentBelongsToCompany(Company $company, Department $department)
+    {
+        if ($company->id !== $department->company_id) {
+            abort(401, 'Department does not belong to the company.');
+        }
     }
 }
