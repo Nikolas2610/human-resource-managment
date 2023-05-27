@@ -6,9 +6,11 @@ use App\Http\Requests\Company\StoreCompanyRequest;
 use App\Http\Requests\Company\UpdateCompanyRequest;
 use App\Http\Resources\Company\CompanyResource;
 use App\Models\Company;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Department;
+use App\Models\Position;
 use App\Http\Resources\Company\CompanyCollection;
+use App\Models\Employee;
+use Illuminate\Support\Facades\Hash;
 
 class CompanyController extends Controller
 {
@@ -33,6 +35,32 @@ class CompanyController extends Controller
         $company = Company::create([
             'name' => $validatedData['name'],
             'default_leave_amount' => $validatedData['default_leave_amount'],
+        ]);
+
+        // Create the management department
+        $department = Department::create([
+            'name' => 'Management',
+            'company_id' => $company->id,
+        ]);
+
+        // Create the CEO position
+        $position = Position::create([
+            'title' =>  $validatedData['position_title'],
+            'department_id' => $department->id,
+            'company_id' => $company->id,
+        ]);
+
+        $employee = Employee::create([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'phone' => $validatedData['phone'],
+            'address' => $validatedData['address'],
+            'work_start_date' => $validatedData['work_start_date'],
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         return new CompanyResource($company);

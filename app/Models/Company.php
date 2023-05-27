@@ -30,4 +30,9 @@ class Company extends Model
     {
         return $this->hasMany(Position::class);
     }
+
+    public function leaveTypes()
+    {
+        return $this->hasMany(LeaveType::class);
+    }
 }

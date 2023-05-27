@@ -114,19 +114,15 @@ class PositionController extends Controller
     protected function unauthorizedResponse($message): JsonResponse
     {
         abort(403, $message);
-        // return response()->json(['error' => 'Unauthorized', 'message' => $message], 403);
     }
 
     protected function forbiddenResponse($message): JsonResponse
     {
         abort(403, $message);
-        // return response()->json(['error' => 'Forbidden', 'message' => $message], 403);
     }
 
     protected function handleException(\Throwable $exception): JsonResponse
     {
         return response()->json(['error' => 'Internal Server Error', 'message' => $exception->getMessage()], 500);
     }
-
-    // protected function handleThrowable():
 }
