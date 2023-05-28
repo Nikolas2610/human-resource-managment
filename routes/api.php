@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\EmployeeAuthController;
+use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\PositionController;
 use Illuminate\Http\Request;
@@ -40,25 +41,40 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
     Route::prefix('companies/{company}')->group(function () {
         // Departments
-        Route::get('/departments', [DepartmentsController::class, 'index']);
-        Route::post('/departments', [DepartmentsController::class, 'store']);
-        Route::get('/departments/{department}', [DepartmentsController::class, 'show']);
-        Route::put('/departments/{department}', [DepartmentsController::class, 'update']);
-        Route::delete('/departments/{department}', [DepartmentsController::class, 'destroy']);
+        Route::prefix('departments')->group(function () {
+            Route::get('/', [DepartmentsController::class, 'index']);
+            Route::post('/', [DepartmentsController::class, 'store']);
+            Route::get('/{department}', [DepartmentsController::class, 'show']);
+            Route::put('/{department}', [DepartmentsController::class, 'update']);
+            Route::delete('/{department}', [DepartmentsController::class, 'destroy']);
+        });
 
         // Positions
-        Route::get('/positions', [PositionController::class, 'index']);
-        Route::post('/positions', [PositionController::class, 'store']);
-        Route::get('/positions/{position}', [PositionController::class, 'show']);
-        Route::put('/positions/{position}', [PositionController::class, 'update']);
-        Route::delete('/positions/{position}', [PositionController::class, 'destroy']);
+        Route::prefix('positions')->group(function () {
+            Route::get('/', [PositionController::class, 'index']);
+            Route::post('/', [PositionController::class, 'store']);
+            Route::get('/{position}', [PositionController::class, 'show']);
+            Route::put('/{position}', [PositionController::class, 'update']);
+            Route::delete('/{position}', [PositionController::class, 'destroy']);
+        });
 
         // Leave Types
-        Route::get('/leave-types', [LeaveTypeController::class, 'index']);
-        Route::post('/leave-types', [LeaveTypeController::class, 'store']);
-        Route::get('/leave-types/{leaveType}', [LeaveTypeController::class, 'show']);
-        Route::put('/leave-types/{leaveType}', [LeaveTypeController::class, 'update']);
-        Route::delete('/leave-types/{leaveType}', [LeaveTypeController::class, 'destroy']);
+        Route::prefix('leave-types')->group(function () {
+            Route::get('/', [LeaveTypeController::class, 'index']);
+            Route::post('/', [LeaveTypeController::class, 'store']);
+            Route::get('/{leaveType}', [LeaveTypeController::class, 'show']);
+            Route::put('/{leaveType}', [LeaveTypeController::class, 'update']);
+            Route::delete('/{leaveType}', [LeaveTypeController::class, 'destroy']);
+        });
+
+        // Leave Requests
+        Route::prefix('leave-requests')->group(function () {
+            Route::get('/', [LeaveRequestController::class, 'index']);
+            Route::post('/', [LeaveRequestController::class, 'store']);
+            Route::get('/{leaveRequest}', [LeaveRequestController::class, 'show']);
+            Route::put('/{leaveRequest}', [LeaveRequestController::class, 'update']);
+            Route::delete('/{leaveRequest}', [LeaveRequestController::class, 'destroy']);
+        });
     });
 });
 

@@ -35,4 +35,13 @@ class Company extends Model
     {
         return $this->hasMany(LeaveType::class);
     }
+
+    public function leaveRequests()
+    {
+        return LeaveRequest::whereIn('employee_id', function ($query) {
+            $query->select('id')
+                ->from('employees')
+                ->where('company_id', $this->id);
+        });
+    }
 }

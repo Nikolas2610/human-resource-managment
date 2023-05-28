@@ -1,0 +1,4 @@
+// Add Routes
+Leave requests can deleted AND by the HR
+Leave requests can updated AND by the HR
+Leave requests can STORE AND by the HR
