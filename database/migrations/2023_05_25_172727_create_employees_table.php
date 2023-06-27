@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained();
             $table->foreignId('department_id')->constrained();
             $table->foreignId('position_id')->constrained();
+            $table->foreignId('leave_amount_id')->nullable()->constrained();
+            $table->foreignId('reports_to')->nullable()->constrained('employees');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
@@ -29,6 +31,7 @@ return new class extends Migration
             $table->date('work_start_date')->nullable();
             $table->date('work_end_date')->nullable();
             $table->decimal('salary', 8, 2)->nullable();
+            $table->enum('role', ['employee', 'manager', 'hr', 'accounting', 'admin', 'owner'])->default('employee');
             $table->rememberToken();
             $table->timestamps();
         });

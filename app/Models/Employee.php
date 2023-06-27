@@ -11,6 +11,14 @@ class Employee extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    // Roles
+    const ROLE_EMPLOYEE = 'employee';
+    const ROLE_HR = 'hr';
+    const ROLE_ACCOUNTING = 'accounting';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_OWNER = 'owner';
+    const ROLE_MANAGER = 'manager';
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -59,5 +67,10 @@ class Employee extends Authenticatable
     public function managedDepartments()
     {
         return $this->hasMany(Department::class, 'manager_id');
+    }
+
+    public function leaveAmounts()
+    {
+        return $this->belongsToMany(LeaveAmount::class, 'employee_leave_amount');
     }
 }
