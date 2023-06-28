@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\EmployeeAuthController;
+use App\Http\Controllers\LeaveAmountController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\PositionController;
@@ -56,6 +57,15 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
             Route::get('/{position}', [PositionController::class, 'show']);
             Route::put('/{position}', [PositionController::class, 'update']);
             Route::delete('/{position}', [PositionController::class, 'destroy']);
+        });
+
+        // Leave Amounts
+        Route::prefix('leave-amounts')->group(function () {
+            Route::get('/', [LeaveAmountController::class, 'index']);
+            Route::post('/', [LeaveAmountController::class, 'store']);
+            Route::get('/{leaveAmount}', [LeaveAmountController::class, 'show']);
+            Route::put('/{leaveAmount}', [LeaveAmountController::class, 'update']);
+            Route::delete('/{leaveAmount}', [LeaveAmountController::class, 'destroy']);
         });
 
         // Leave Types

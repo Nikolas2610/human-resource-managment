@@ -44,4 +44,9 @@ class Company extends Model
                 ->where('company_id', $this->id);
         });
     }
+
+    public function leaveAmounts()
+    {
+        return $this->hasMany(LeaveAmount::class);
+    }
 }

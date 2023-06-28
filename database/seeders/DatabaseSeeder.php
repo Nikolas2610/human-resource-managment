@@ -20,11 +20,14 @@ class DatabaseSeeder extends Seeder
             CompaniesSeeder::class,
             DepartmentsSeeder::class,
             PositionsSeeder::class,
+            LeaveAmountSeeder::class,
             EmployeesSeeder::class,
             LeaveTypesSeeder::class,
             LeaveRequestsSeeder::class,
             JobPostingsSeeder::class,
             AssignManagersToDepartmentsSeeder::class,
+            EmployeeLeaveAmountSeeder::class,
+            DepartmentManagerSeeder::class,
         ]);
     }
 }
