@@ -1,0 +1,35 @@
+Roles: guest - Employee - HR - MasterAdmin
+
+Pages: 
+
+Employee 
+===================
+Dashboard
+Profile
+Leave Request (Post, and leave requests history)
+Company details
+Employees details (some details)
+Documents
+Approve Leave Request if is a manager
+
+HR
+===================
+-Dashboard
+Profile
+Leave Request (Post, and leave requests history)
+Company details
+Employees details (some details)
+Documents
+-Integrations
+-Approve Leave Request
+-Edit Company info
+-Employees
+-Departments
+-Positions
+
+Guest
+===================
+Login 
+Register
+Forgot password
+Reset password
