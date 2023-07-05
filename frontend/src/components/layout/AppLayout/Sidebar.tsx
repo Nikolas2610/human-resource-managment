@@ -24,6 +24,7 @@ const Drawer = styled(MuiDrawer, {
 })(({ theme, open }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",
+    // backgroundColor: theme.palette.primary.light,
     whiteSpace: "nowrap",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,

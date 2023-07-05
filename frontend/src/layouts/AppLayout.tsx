@@ -37,7 +37,7 @@ export default function AppLayout() {
 
   return (
     <>
-      <ThemeProvider theme={defaultTheme}>
+      {/* <ThemeProvider theme={defaultTheme}> */}
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
           <Navbar
@@ -74,7 +74,7 @@ export default function AppLayout() {
             </Container>
           </Box>
         </Box>
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </>
   );
 }

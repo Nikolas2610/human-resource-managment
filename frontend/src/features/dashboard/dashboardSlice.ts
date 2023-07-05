@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const themeStorage: string | null = localStorage.getItem("theme");
 
-interface DashboardState {
+export interface DashboardState {
   themeMode: 'light' | 'dark';
   drawerOpen: boolean;
 }
