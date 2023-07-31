@@ -9,6 +9,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 import FlexBetween from "../../ui/wrappers/FlexBetween";
 import ProfileMenuItem from "./ProfileMenuItem";
+import { ThemeMode } from "../../../features/dashboard/enums/ThemeMode.enum";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -18,7 +19,7 @@ interface NavbarProps extends MuiAppBarProps {
   open?: boolean;
   handleToggleDrawer: () => void;
   handleToggleTheme: () => void;
-  themeMode: 'dark' | 'light';
+  themeMode: ThemeMode;
   drawerWidth: number;
 }
 

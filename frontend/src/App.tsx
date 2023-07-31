@@ -1,49 +1,52 @@
-import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./app/store";
-import { loginFailure, loginSuccess } from "./features/auth/authSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setToken, setUser } from "./features/auth/authSlice";
 import Routers from "./routes/Routers";
-import { UserRole } from "./features/auth/enums/UserRole";
 import { ThemeProvider } from "@mui/material";
 import { themeSettings } from "./themes/theme";
 import { useAppSelector } from "./app/hook";
-import { PaletteMode } from '@mui/material';
 import { createTheme } from "@mui/material/styles";
-
-interface ThemeSettings {
-  palette: {
-    mode: PaletteMode,
-  },
-}
+import { useGetUserQuery } from "./features/api/apiService";
+import { useNavigate } from "react-router-dom";
+import LoadingBackdrop from "./components/LoadingBackdrop";
+import { setLoading } from "./features/dashboard/dashboardSlice";
+import { useTheme } from "@emotion/react";
 
 function App() {
-    const { isLoading } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch();
     const { themeMode } = useAppSelector((state) => state.dashboard);
+    const { data, isLoading } = useGetUserQuery();
+    const navigate = useNavigate();
+
     // const theme = useMemo(
     //     () => createTheme(themeSettings(themeMode: PaletteMode): ThemeSettings),
     //     [themeMode]
     // );
 
-   const theme = createTheme(themeSettings(themeMode))
+    const theme = createTheme(themeSettings(themeMode));
+    // const theme = useTheme();
 
     useEffect(() => {
-        const token: string | null = localStorage.getItem("token");
+        dispatch(setLoading(true));
 
+        const token: string | null = localStorage.getItem("token");
         if (token) {
-            dispatch(loginSuccess({ role: UserRole.HR }));
-        } else {
-            dispatch(loginFailure());
+            dispatch(setToken(token));
         }
     }, [dispatch]);
 
-    if (isLoading) {
-        return <div>Loading...</div>; // Or any loading spinner
-    }
+    useEffect(() => {
+        dispatch(setLoading(isLoading));
+        if (data) {
+            dispatch(setUser(data));
+            navigate("/dashboard");
+        }
+    }, [isLoading]);
 
     return (
         <ThemeProvider theme={theme}>
             <Routers />
+            <LoadingBackdrop />
         </ThemeProvider>
     );
 }

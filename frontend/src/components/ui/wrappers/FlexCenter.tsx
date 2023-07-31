@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/system";
 
-const FleCenter = styled(Box)({
+const FlexCenter = styled(Box)({
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
 })
 
-export default FleCenter;
+export default FlexCenter;

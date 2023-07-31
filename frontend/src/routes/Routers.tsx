@@ -3,6 +3,8 @@ import AppLayout from "../layouts/AppLayout";
 import AuthLayout from "../features/auth/AuthLayout";
 import PrivateRoute from "./PrivateRoute";
 import LoginPage from "../features/auth/pages/LoginPage";
+import Departments from "../features/departments/pages/Departments";
+import DashboardLayout from "../layouts/dashboard/DashboardLayout";
 
 export default function Routers() {
   return (
@@ -15,7 +17,7 @@ export default function Routers() {
       </Route>
 
       <Route element={<PrivateRoute roles={["employee", "hr"]} />}>
-        <Route path="/" element={<AppLayout />}>
+        <Route path="/" element={<DashboardLayout />}>
           <Route path="dashboard" element={<div>Employee - Dashboard</div>} />
           <Route path="profile" element={<div>Employee - Profile</div>} />
           <Route
@@ -47,7 +49,7 @@ export default function Routers() {
               element={<div>HR - Edit company info</div>}
             />
             <Route path="employees" element={<div>HR - Edit employees</div>} />
-            <Route path="departments" element={<div>HR - Departments</div>} />
+            <Route path="departments" element={<Departments />} />
             <Route path="positions" element={<div>HR - Positions</div>} />
           </Route>
         </Route>

@@ -55,6 +55,7 @@ export default function Sidebar({
 
   const adjustedStyles = {
     width: open ? drawerWidth : drawerCloseWidth,
+    transition: '.5s'
   };
 
   return (

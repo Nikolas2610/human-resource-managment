@@ -1,14 +1,18 @@
-import { Box, useTheme } from "@mui/material"
-import { Outlet } from "react-router-dom"
-
+import { Box, useTheme } from "@mui/material";
+import { Outlet } from "react-router-dom";
 
 function AuthLayout() {
-  const theme = useTheme()
-  return (
-    <Box bgcolor={theme.palette.primary.light} height={'100vh'}>
-        <Outlet />
-    </Box>
-  )
+    const theme = useTheme();
+
+    return (
+        <Box
+            bgcolor={theme.palette.background.paper}
+            height={"100vh"}
+            overflow={"hidden"}
+        >
+            <Outlet />
+        </Box>
+    );
 }
 
-export default AuthLayout
+export default AuthLayout;

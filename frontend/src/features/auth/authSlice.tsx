@@ -1,47 +1,66 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserRole } from "./enums/UserRole";
 import { RootState } from "../../app/store";
+import { Employee } from "../../types/employee/Employee.type";
+import { LoginArgs } from "../../types/api/auth/login/Login.type";
 
 interface AuthState {
-  user: { role: string } | null;
-  token: string | null;
-  isLoading: boolean;
+    user: Employee | null;
+    token: string | null;
+    form: LoginArgs;
 }
 
 const initialState: AuthState = {
-  user: null,
-  isLoading: true,
-  token: null,
+    user: null,
+    token: null,
+    form: {
+        email: "john.doe@example.com",
+        password: "Password-0",
+    },
 };
 
 export const authSlice = createSlice({
-  name: "auth",
-  initialState,
-  reducers: {
-    loginStart: (state) => {
-      state.isLoading = true;
+    name: "auth",
+    initialState,
+    reducers: {
+        onChangeLoginField: (
+            state,
+            action: PayloadAction<{ key: "email" | "password"; value: string }>
+        ) => {
+            state.form[action.payload.key] = action.payload.value;
+        },
+        loginUser: (
+            state,
+            action: PayloadAction<{ employee: Employee; token: string }>
+        ) => {
+            const { employee, token } = action.payload;
+            state.user = employee;
+            state.token = token;
+            localStorage.setItem("token", token);
+        },
+        logout: (state) => {
+            localStorage.removeItem("token");
+            state.user = null;
+        },
+        setToken: (state, action: PayloadAction<string>) => {
+            state.token = action.payload;
+        },
+        setUser: (state, action: PayloadAction<Employee>) => {
+            state.user = action.payload;
+        },
     },
-    loginSuccess: (state, action: PayloadAction<{ role: UserRole }>) => {
-      localStorage.setItem("token", "token");
-      state.user = action.payload;
-      state.isLoading = false;
-    },
-    loginFailure: (state) => {
-      state.user = null;
-      state.isLoading = false;
-    },
-    logout: (state) => {
-      localStorage.removeItem("token");
-      state.user = null;
-    },
-  },
 });
 
 // Selectors
 export const selectUserRole = (state: RootState) => state.auth.user?.role;
+export const selectCompany = (state: RootState) => state.auth.user?.company_id;
 
 // Export actions
-export const { loginStart, loginSuccess, loginFailure, logout } =
-  authSlice.actions;
+export const {
+    logout,
+    loginUser,
+    onChangeLoginField,
+    setToken,
+    setUser,
+} = authSlice.actions;
 
 export default authSlice.reducer;
