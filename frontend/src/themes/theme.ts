@@ -3,7 +3,12 @@ import { ThemeMode } from "../features/dashboard/enums/ThemeMode.enum";
 interface ThemeSettings {
     palette: {
         mode: "light" | "dark";
-        primary?: { main: string; light?: string; dark?: string };
+        primary?: {
+            main: string;
+            light?: string;
+            dark?: string;
+            contrastText?: string;
+        };
         secondary?: { main: string; light?: string; dark?: string };
         neutral?: { main: string; light?: string; dark?: string };
         background?: { paper: string; default: string };
@@ -29,14 +34,15 @@ export const themeSettings = (mode: ThemeMode): ThemeSettings => {
                 ? {
                       // palette values for dark mode
                       primary: {
-                          main: "#5F4BB6",
+                          main: "#248ad5",
+                        //   contrastText: "#859ab0",
                       },
                       secondary: {
-                          main: "#F6AE2D",
+                          main: "#7c80e3",
                       },
                       background: {
-                          default: "#212221",
-                          paper: "#202A25",
+                          default: "#171c24",
+                          paper: "#222b36",
                       },
                   }
                 : {

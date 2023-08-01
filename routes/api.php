@@ -90,7 +90,7 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
 
 
 // Testing
-Route::get('/test', function (Request $request) {
+Route::get('/user', function (Request $request) {
     $user = Auth::guard('employee')->user();
     return response()->json([
         'employee' => $user

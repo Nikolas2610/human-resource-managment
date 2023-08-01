@@ -6,7 +6,7 @@ function AuthLayout() {
 
     return (
         <Box
-            bgcolor={theme.palette.background.paper}
+            bgcolor={theme.palette.background.default}
             height={"100vh"}
             overflow={"hidden"}
         >

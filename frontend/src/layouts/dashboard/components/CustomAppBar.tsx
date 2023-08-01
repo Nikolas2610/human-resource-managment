@@ -9,6 +9,7 @@ import {
     selectDrawerWidth,
     toggleThemeMode,
 } from "../../../features/dashboard/dashboardSlice";
+import { useTheme } from "@mui/material";
 import { RootState } from "../../../app/store";
 import FlexBetween from "../../../components/ui/wrappers/FlexBetween";
 import ProfileMenuItem from "../../../components/layout/AppLayout/ProfileMenuItem";
@@ -25,11 +26,12 @@ const AppBar = styled(MuiAppBar, {
 })<AppBarProps>(({ theme, open }) => {
     const drawerWidth = useSelector(selectDrawerWidth);
     return {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.background.paper,
         transition: theme.transitions.create(["margin", "width"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        backgroundImage: "none",
         ...(open && {
             width: `calc(100% - ${drawerWidth}px)`,
             marginLeft: `${drawerWidth}px`,
@@ -45,6 +47,7 @@ export default function CustomAppBar({ open, handleDrawerOpen }: AppBarProps) {
     const { title, themeMode } = useSelector(
         (state: RootState) => state.dashboard
     );
+    const theme = useTheme();
     const dispatch = useDispatch();
 
     const handleToggleTheme = () => {
@@ -69,7 +72,10 @@ export default function CustomAppBar({ open, handleDrawerOpen }: AppBarProps) {
                         {title}
                     </Typography>
                     <FlexBetween>
-                        <IconButton onClick={handleToggleTheme}>
+                        <IconButton
+                            onClick={handleToggleTheme}
+                            sx={{ color: theme.palette.primary.contrastText }}
+                        >
                             {themeMode === ThemeMode.DARK ? (
                                 <DarkModeOutlined sx={{ fontSize: "25px" }} />
                             ) : (

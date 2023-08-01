@@ -6,16 +6,16 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class DepartmentCollection extends ResourceCollection
 {
-    /**
-     * Transform the resource collection into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
     public function toArray($request)
     {
-        return [
-            'data' => $this->collection,
-        ];
+        return $this->collection->transform(function ($department) {
+            return [
+                'id' => $department->id,
+                'company_id' => $department->company_id,
+                'name' => $department->name,
+                'manager_id' => $department->manager_id,
+                'num_employees' => $department->employees->count(),
+            ];
+        });
     }
 }

@@ -46,7 +46,10 @@ export default function Sidebar({ open, handleDrawerClose }: SidebarProps) {
             open={open}
         >
             <DrawerHeader>
-                <IconButton onClick={handleDrawerClose}>
+                <IconButton
+                    onClick={handleDrawerClose}
+                    sx={{ color: theme.palette.primary.contrastText }}
+                >
                     {theme.direction === "ltr" ? (
                         <ChevronLeftIcon />
                     ) : (

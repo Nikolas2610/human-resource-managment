@@ -17,7 +17,7 @@ const initialState: DashboardState = {
         themeStorage === ThemeMode.LIGHT ? ThemeMode.LIGHT : ThemeMode.DARK,
     drawerOpen: true,
     isLoading: true,
-    drawerWidth: 240,
+    drawerWidth: 300,
     title: "Dashboard",
 };
 

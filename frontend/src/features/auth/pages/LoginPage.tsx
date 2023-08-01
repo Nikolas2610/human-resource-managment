@@ -48,6 +48,8 @@ function LoginPage() {
         (state: RootState) => state.auth.form
     );
     const theme = useTheme();
+    console.log(theme.palette.primary.contrastText);
+    
 
     const onSubmit = async (data: FormData) => {
         try {
@@ -70,7 +72,7 @@ function LoginPage() {
     return (
         <FlexCenter height={"100%"} border={1}>
             <Paper
-                sx={{ padding: 5, width: 700, borderRadius: 4 }}
+                sx={{ padding: 5, width: 700, borderRadius: 4, backgroundColor: theme.palette.background.default }}
                 elevation={2}
             >
                 <Typography
