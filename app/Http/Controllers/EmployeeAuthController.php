@@ -50,26 +50,29 @@ class EmployeeAuthController extends Controller
             $request->validated();
 
             $credentials = $request->only('email', 'password');
-        
+
             // Fetch the employee by email
             $employee = Employee::where('email', $credentials['email'])->first();
-        
+
             // Verify the password
-            if (! $employee || ! Hash::check($credentials['password'], $employee->password)) {
+            if (!$employee || !Hash::check($credentials['password'], $employee->password)) {
                 throw ValidationException::withMessages([
                     'email' => ['The provided credentials are incorrect.'],
                 ]);
             }
-        
+
             // If credentials are correct, issue the token
             $token = $employee->createToken('token-name')->plainTextToken;
-        
+
             return response()->json([
                 'employee' => new LoginEmployeeResource($employee),
                 'token' => $token,
             ]);
         } catch (\Throwable $th) {
-            dump($th);
+            return response()->json([
+                'error' => 'login_fail',
+                'message' => $th->getMessage()
+            ], 404);
         }
     }
 }

@@ -20,9 +20,11 @@ class DepartmentsController extends Controller
      */
     public function index(Company $company)
     {
-        $departments = $company->departments;
+        $departments = $company->departments()->with('employees')->get();
 
+        // return DepartmentCollection::make($departments)->resolve();
         return new DepartmentCollection($departments);
+        // return response()->json($departments);
     }
 
     /**
@@ -55,7 +57,6 @@ class DepartmentsController extends Controller
         try {
             // Make sure the department belongs to the company
             $this->ensureDepartmentBelongsToCompany($company, $department);
-
             return new DepartmentResource($department);
         } catch (\Throwable $exception) {
             return response()->json(['error' => 'Unauthorized', 'message' => $exception->getMessage()], 401);

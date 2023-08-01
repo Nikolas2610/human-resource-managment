@@ -12,14 +12,15 @@ class DepartmentResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+    // public static $wrap = 'departments';
+
     public function toArray($request)
     {
         return [
             'id' => $this->id,
             'name' => $this->name,
             'company_id' => $this->company_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'num_employees' => sizeof($this->employees)
         ];
     }
 }
