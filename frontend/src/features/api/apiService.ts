@@ -1,11 +1,17 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+    createApi,
+    fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 import { LoginArgs, LoginResult } from "../../types/api/auth/login/Login.type";
 import { Employee } from "../../types/employee/Employee.type";
 import { Department } from "../../types/departments/Department.type";
+import { NewDepartment } from "../../types/departments/NewDepartment.type";
+import { ExistingDepartment } from "../../types/departments/ExistingDepartment.type";
 
 interface DashboardResult {
     // Define the shape of the response from the 'dashboard' endpoint here
 }
+
 
 export const apiService = createApi({
     reducerPath: "apiService",
@@ -29,7 +35,7 @@ export const apiService = createApi({
     }),
 });
 
-export const apiServiceWithAuth = createApi({
+export const apiServiceWithAuth = createApi<any, any, any, any>({
     reducerPath: "apiServiceWithAuth",
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8000/api",
@@ -39,7 +45,6 @@ export const apiServiceWithAuth = createApi({
                 // Append the Authorization header
                 headers.set("authorization", `Bearer ${token}`);
             }
-
             return headers;
         },
     }),
@@ -49,9 +54,31 @@ export const apiServiceWithAuth = createApi({
         }),
         getDepartments: builder.query<Department[], number>({
             query: (companyId: number) => `companies/${companyId}/departments`,
+            providesTags: [{ type: "Departments", id: "LIST" }],
+        }),
+        createDepartment: builder.mutation<void, NewDepartment>({
+            query: ({ companyId, department }) => ({
+                url: `companies/${companyId}/departments`,
+                method: "POST",
+                body: department,
+            }),
+            invalidatesTags: [{ type: "Departments", id: "LIST" }],
+        }),
+        editDepartment: builder.mutation<void, ExistingDepartment>({
+            query: ({ companyId, department }) => ({
+                url: `companies/${companyId}/departments/${department.id}`,
+                method: "PUT",
+                body: department,
+            }),
+            invalidatesTags: [{ type: "Departments", id: "LIST" }],
         }),
     }),
 });
 
 export const { useGetDashboardQuery, useLoginMutation } = apiService;
-export const { useGetUserQuery, useGetDepartmentsQuery } = apiServiceWithAuth;
+export const {
+    useGetUserQuery,
+    useGetDepartmentsQuery,
+    useCreateDepartmentMutation,
+    useEditDepartmentMutation,
+} = apiServiceWithAuth;

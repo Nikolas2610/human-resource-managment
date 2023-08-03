@@ -5,6 +5,7 @@ import PrivateRoute from "./PrivateRoute";
 import LoginPage from "../features/auth/pages/LoginPage";
 import Departments from "../features/departments/pages/Departments";
 import DashboardLayout from "../layouts/dashboard/DashboardLayout";
+import CreateDepartment from "../features/departments/pages/CreateDepartment";
 
 export default function Routers() {
   return (
@@ -21,11 +22,11 @@ export default function Routers() {
           <Route path="dashboard" element={<div>Employee - Dashboard</div>} />
           <Route path="profile" element={<div>Employee - Profile</div>} />
           <Route
-            path="leave-request/post"
+            path="leave-request-post"
             element={<div>Employee - Post Leave Request</div>}
           />
           <Route
-            path="leave-request/history"
+            path="leave-request-history"
             element={<div>Employee - History Leave Request</div>}
           />
           <Route
@@ -50,6 +51,7 @@ export default function Routers() {
             />
             <Route path="employees" element={<div>HR - Edit employees</div>} />
             <Route path="departments" element={<Departments />} />
+            <Route path="departments/create" element={<CreateDepartment />} />
             <Route path="positions" element={<div>HR - Positions</div>} />
           </Route>
         </Route>
