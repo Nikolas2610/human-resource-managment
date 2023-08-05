@@ -21,6 +21,7 @@ import { themeSettings } from "./themes/theme";
 import BackdropLoading from "./components/ui/BackdropLoading";
 import { ModalProvider } from "./contexts/ModalContext";
 import ConfirmModal from "./components/modal/ConfirmModal";
+import SnackbarAlert from "./features/snackbars/components/SnackBarAlert";
 
 function App() {
     const dispatch = useDispatch();
@@ -63,6 +64,7 @@ function App() {
                 <ModalProvider>
                     <ConfirmModal />
                     <Routers />
+                    <SnackbarAlert />
                 </ModalProvider>
             ) : (
                 <Box

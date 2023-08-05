@@ -1,5 +1,4 @@
 import { Button, Stack, TextField } from "@mui/material";
-import PageTitleBlock from "../../../components/ui/PageTitleBlock";
 import RouteList from "@/routes/RouteList";
 import FlexCenter from "../../../components/ui/wrappers/FlexCenter";
 import { useForm } from "react-hook-form";
@@ -8,7 +7,12 @@ import { RootState } from "../../../app/store";
 import { useEffect } from "react";
 import { toggleDashboardLoading } from "@/features/dashboard/dashboardSlice";
 import { useNavigate } from "react-router-dom";
-import { useCreateDepartmentMutation, useEditDepartmentMutation } from "../departmentEndopoints";
+import {
+    useCreateDepartmentMutation,
+    useEditDepartmentMutation,
+} from "../departmentEndpoints";
+import HeaderPageBackFeature from "@/components/ui/HeaderPageBackFeature";
+import { setSnackbar } from "@/features/snackbars/snackbarSlice";
 
 export default function DepartmentForm({
     formTitle,
@@ -36,7 +40,7 @@ export default function DepartmentForm({
         if (initialData) {
             editDepartment({
                 companyId,
-                department: { id: initialData.id, ...data },
+                department: { id: (initialData.id), ...data },
             });
         } else {
             createDepartment({ companyId, department: data });
@@ -49,6 +53,9 @@ export default function DepartmentForm({
 
     useEffect(() => {
         if (isSuccess) {
+            dispatch(setSnackbar({
+                message: "Department created successfully"
+            }))
             navigate(RouteList.departments);
         }
     }, [isSuccess]);
@@ -59,6 +66,9 @@ export default function DepartmentForm({
 
     useEffect(() => {
         if (isEditSuccess) {
+            dispatch(setSnackbar({
+                message: "Department updated successfully"
+            }))
             navigate(RouteList.departments);
         }
     }, [isEditSuccess]);
@@ -66,10 +76,10 @@ export default function DepartmentForm({
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4}>
-                <PageTitleBlock
-                    formTitle={formTitle}
+                <HeaderPageBackFeature
+                    headerTitle={formTitle}
                     to={RouteList.departments}
-                    buttonText="Back to Departments"
+                    buttonTitle="Back to Departments"
                 />
 
                 <TextField
@@ -85,7 +95,11 @@ export default function DepartmentForm({
                 />
 
                 <FlexCenter>
-                    <Button variant="contained" type="submit">
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        disabled={isEditLoading || isCreateLoading}
+                    >
                         Submit
                     </Button>
                 </FlexCenter>
@@ -100,6 +114,6 @@ interface DepartmentFormProps {
 }
 
 interface NewDepartment {
-    id?: number;
+    id?: number | string;
     name: string;
 }

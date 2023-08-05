@@ -9,7 +9,7 @@ import { selectCompany } from "../../auth/authSlice";
 import RouteList from "@/routes/RouteList";
 import DepartmentForm from "../forms/DepartmentForm";
 import { Department } from "../../../types/departments/Department.type";
-import { useGetDepartmentQuery } from "../departmentEndopoints";
+import { useGetDepartmentQuery } from "../departmentEndpoints";
 
 export default function EditDepartment() {
     const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export default function EditDepartment() {
     const navigate = useNavigate();
     const departmentId = departmentIdString ? parseInt(departmentIdString) : 0;
 
-    const { data, error, isError, isLoading } = useGetDepartmentQuery({
+    const { data, isError, isLoading } = useGetDepartmentQuery({
         companyId,
         departmentId,
     }) as {
@@ -31,10 +31,6 @@ export default function EditDepartment() {
     useEffect(() => {
         dispatch(setPageTitle("Edit Department"));
     }, [dispatch]);
-
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
 
     useEffect(() => {
         dispatch(toggleDashboardLoading(isLoading));

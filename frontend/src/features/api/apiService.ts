@@ -4,7 +4,7 @@ import { Employee } from "../../types/employee/Employee.type";
 
 export const apiService = createApi({
     reducerPath: "apiService",
-    tagTypes: ["Department"],
+    tagTypes: ["Department", "Position"],
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8000/api",
         prepareHeaders(headers) {

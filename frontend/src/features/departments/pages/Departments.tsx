@@ -1,7 +1,6 @@
 import {
     Alert,
     Box,
-    Button,
     Grid,
     IconButton,
     Skeleton,
@@ -9,10 +8,7 @@ import {
     Typography,
     useTheme,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/store";
 import { useEffect } from "react";
 import {
     setPageTitle,
@@ -20,21 +16,27 @@ import {
 } from "../../dashboard/dashboardSlice";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import PeopleIcon from "@mui/icons-material/People";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import RouteList from "@/routes/RouteList";
 import EditIcon from "@mui/icons-material/Edit";
 import FlexBetween from "@/components/ui/wrappers/FlexBetween";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Department } from "@/types/departments/Department.type";
 import { useModalContext } from "@/contexts/ModalContext";
-import { useDeleteDepartmentMutation, useGetDepartmentsQuery } from "../departmentEndopoints";
+import {
+    useDeleteDepartmentMutation,
+    useGetDepartmentsQuery,
+} from "../departmentEndpoints";
+import HeaderPageAddFeature from "@/components/ui/HeaderPageAddFeature";
+import { selectCompany } from "@/features/auth/authSlice";
+import { setSnackbar } from "@/features/snackbars/snackbarSlice";
+import { SnackBarSeverity } from "@/features/snackbars/enums/SnackBarSeverity.enum";
 
 function Departments() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const companyId =
-        useSelector((state: RootState) => state.auth.user?.company_id) || 0;
+    const companyId = useSelector(selectCompany);
     const {
         data: departments = [],
         error,
@@ -73,11 +75,16 @@ function Departments() {
             await deleteDepartment({ companyId, departmentId: id });
 
             if (isSuccess) {
-                console.log("Department deleted successfully");
+                dispatch(setSnackbar({
+                    message: "Department deleted successfully"
+                }))
             }
 
             if (isDeleteError) {
-                console.error("Failed to delete department");
+                dispatch(setSnackbar({
+                    message: "Department deleted successfully",
+                    severity: SnackBarSeverity.ERROR
+                }))
             }
         };
 
@@ -89,29 +96,11 @@ function Departments() {
 
     return (
         <>
-            <Box
-                p={3}
-                borderRadius={4}
-                boxShadow={4}
-                bgcolor={theme.palette.background.paper}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-            >
-                <Typography variant="h3" fontWeight={700}>
-                    Departments
-                </Typography>
-                <Link to={RouteList.createDepartment}>
-                    <Button
-                        variant={"contained"}
-                        size="large"
-                        startIcon={<AddIcon />}
-                    >
-                        Add a new Department
-                    </Button>
-                </Link>
-            </Box>
-
+            <HeaderPageAddFeature
+                to={RouteList.createDepartment}
+                buttonTitle={"Add a new Department"}
+                headerTitle={"Departments"}
+            />
             {isLoading ? (
                 <Grid container mt={4} spacing={4}>
                     {[...Array(3)].map((_, index) => (
@@ -125,12 +114,20 @@ function Departments() {
                     ))}
                 </Grid>
             ) : isError || (departments && departments?.length === 0) ? (
-                <Alert severity="info">There are no departments</Alert>
+                <Alert sx={{ marginTop: 4 }} severity="info">
+                    There are no departments
+                </Alert>
             ) : (
                 <Grid container spacing={4} mt={4}>
                     {departments &&
                         departments?.map((department: Department) => (
-                            <Grid item key={department.id} xs={12} md={6} lg={4}>
+                            <Grid
+                                item
+                                key={department.id}
+                                xs={12}
+                                md={6}
+                                lg={4}
+                            >
                                 <Stack
                                     spacing={3}
                                     p={2}
@@ -149,7 +146,7 @@ function Departments() {
                                             <IconButton
                                                 onClick={() =>
                                                     handleEditDepartment(
-                                                        department.id
+                                                        department.id as number
                                                     )
                                                 }
                                             >
@@ -159,7 +156,7 @@ function Departments() {
                                                 color="error"
                                                 onClick={() =>
                                                     handleDeleteDepartment(
-                                                        department.id
+                                                        department.id as number
                                                     )
                                                 }
                                             >

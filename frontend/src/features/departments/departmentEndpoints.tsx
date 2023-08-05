@@ -34,7 +34,6 @@ export const departmentEndpoints = apiService.injectEndpoints({
                 method: "PUT",
                 body: department,
             }),
-            // Only invalidate `Department` with a specific ID and `Departments` list
             invalidatesTags: [{ type: "Department" }],
         }),
         deleteDepartment: builder.mutation<
