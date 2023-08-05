@@ -1,14 +1,14 @@
 import { Button, Stack, TextField } from "@mui/material";
 import PageTitleBlock from "../../../components/ui/PageTitleBlock";
-import RouteList from "../../../routes/routeList";
+import RouteList from "@/routes/RouteList";
 import FlexCenter from "../../../components/ui/wrappers/FlexCenter";
 import { useForm } from "react-hook-form";
-import {
-    useCreateDepartmentMutation,
-    useEditDepartmentMutation,
-} from "../../api/apiService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../app/store";
+import { useEffect } from "react";
+import { toggleDashboardLoading } from "@/features/dashboard/dashboardSlice";
+import { useNavigate } from "react-router-dom";
+import { useCreateDepartmentMutation, useEditDepartmentMutation } from "../departmentEndopoints";
 
 export default function DepartmentForm({
     formTitle,
@@ -16,6 +16,8 @@ export default function DepartmentForm({
 }: DepartmentFormProps) {
     const companyId =
         useSelector((state: RootState) => state.auth.user?.company_id) || 0;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -23,10 +25,14 @@ export default function DepartmentForm({
     } = useForm({
         defaultValues: initialData,
     });
-    const [createDepartment] = useCreateDepartmentMutation();
-    const [editDepartment] = useEditDepartmentMutation();
+    const [createDepartment, { isLoading: isCreateLoading, isSuccess }] =
+        useCreateDepartmentMutation();
+    const [
+        editDepartment,
+        { isLoading: isEditLoading, isSuccess: isEditSuccess },
+    ] = useEditDepartmentMutation();
 
-    const onSubmit = (data: Department) => {
+    const onSubmit = (data: NewDepartment) => {
         if (initialData) {
             editDepartment({
                 companyId,
@@ -36,6 +42,26 @@ export default function DepartmentForm({
             createDepartment({ companyId, department: data });
         }
     };
+
+    useEffect(() => {
+        dispatch(toggleDashboardLoading(isCreateLoading));
+    }, [isCreateLoading]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            navigate(RouteList.departments);
+        }
+    }, [isSuccess]);
+
+    useEffect(() => {
+        dispatch(toggleDashboardLoading(isEditLoading));
+    }, [isEditLoading]);
+
+    useEffect(() => {
+        if (isEditSuccess) {
+            navigate(RouteList.departments);
+        }
+    }, [isEditSuccess]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -70,10 +96,10 @@ export default function DepartmentForm({
 
 interface DepartmentFormProps {
     formTitle: string;
-    initialData?: Department;
+    initialData?: NewDepartment;
 }
 
-interface Department {
+interface NewDepartment {
     id?: number;
     name: string;
 }

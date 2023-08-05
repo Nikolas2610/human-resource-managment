@@ -19,7 +19,8 @@ import Routers from "./routes/Routers";
 // Others
 import { themeSettings } from "./themes/theme";
 import BackdropLoading from "./components/ui/BackdropLoading";
-
+import { ModalProvider } from "./contexts/ModalContext";
+import ConfirmModal from "./components/modal/ConfirmModal";
 
 function App() {
     const dispatch = useDispatch();
@@ -52,21 +53,24 @@ function App() {
                 navigate("/auth/login");
             }
         }
-        
+
         setPrevIsLoading(isLoading);
     }, [isLoading, data, dispatch, navigate]);
 
     return (
         <ThemeProvider theme={theme}>
             {!isAppLoading ? (
-                <Routers />
+                <ModalProvider>
+                    <ConfirmModal />
+                    <Routers />
+                </ModalProvider>
             ) : (
                 <Box
                     height="100vh"
                     bgcolor={theme.palette.background.default}
                 ></Box>
             )}
-            <BackdropLoading isLoading={isAppLoading}/>
+            <BackdropLoading isLoading={isAppLoading} />
         </ThemeProvider>
     );
 }

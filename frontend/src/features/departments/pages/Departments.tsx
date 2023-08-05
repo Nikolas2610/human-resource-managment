@@ -10,9 +10,9 @@ import {
     useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useGetDepartmentsQuery } from "../../api/apiService";
+
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../app/store";
+import { RootState } from "@/app/store";
 import { useEffect } from "react";
 import {
     setPageTitle,
@@ -20,15 +20,19 @@ import {
 } from "../../dashboard/dashboardSlice";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import PeopleIcon from "@mui/icons-material/People";
-import { Link } from "react-router-dom";
-import RouteList from "../../../routes/routeList";
+import { Link, useNavigate } from "react-router-dom";
+import RouteList from "@/routes/RouteList";
 import EditIcon from "@mui/icons-material/Edit";
-import FlexBetween from "../../../components/ui/wrappers/FlexBetween";
+import FlexBetween from "@/components/ui/wrappers/FlexBetween";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Department } from "../../../types/departments/Department.type";
+import { Department } from "@/types/departments/Department.type";
+import { useModalContext } from "@/contexts/ModalContext";
+import { useDeleteDepartmentMutation, useGetDepartmentsQuery } from "../departmentEndopoints";
 
 function Departments() {
     const theme = useTheme();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const companyId =
         useSelector((state: RootState) => state.auth.user?.company_id) || 0;
     const {
@@ -42,8 +46,11 @@ function Departments() {
         isError: boolean;
         isLoading: boolean;
     };
-
-    const dispatch = useDispatch();
+    const { showModal } = useModalContext();
+    const [
+        deleteDepartment,
+        { isSuccess, isError: isDeleteError, isLoading: isDeleteLoading },
+    ] = useDeleteDepartmentMutation();
 
     useEffect(() => {
         dispatch(setPageTitle("Departments"));
@@ -52,6 +59,33 @@ function Departments() {
     useEffect(() => {
         dispatch(toggleDashboardLoading(isLoading));
     }, [isLoading, departments, error]);
+
+    useEffect(() => {
+        dispatch(toggleDashboardLoading(isDeleteLoading));
+    }, [isDeleteLoading, dispatch]);
+
+    const handleEditDepartment = (id: number) => {
+        navigate(RouteList.editDepartment(id));
+    };
+
+    const handleDeleteDepartment = (id: number) => {
+        const onDeleteDepartment = async () => {
+            await deleteDepartment({ companyId, departmentId: id });
+
+            if (isSuccess) {
+                console.log("Department deleted successfully");
+            }
+
+            if (isDeleteError) {
+                console.error("Failed to delete department");
+            }
+        };
+
+        showModal(
+            "Are you sure you want to delete this department?",
+            onDeleteDepartment
+        );
+    };
 
     return (
         <>
@@ -96,7 +130,7 @@ function Departments() {
                 <Grid container spacing={4} mt={4}>
                     {departments &&
                         departments?.map((department: Department) => (
-                            <Grid item key={department.id} md={4}>
+                            <Grid item key={department.id} xs={12} md={6} lg={4}>
                                 <Stack
                                     spacing={3}
                                     p={2}
@@ -112,10 +146,23 @@ function Departments() {
                                             {department.name}
                                         </Typography>
                                         <Box>
-                                            <IconButton>
+                                            <IconButton
+                                                onClick={() =>
+                                                    handleEditDepartment(
+                                                        department.id
+                                                    )
+                                                }
+                                            >
                                                 <EditIcon />
                                             </IconButton>
-                                            <IconButton color="error">
+                                            <IconButton
+                                                color="error"
+                                                onClick={() =>
+                                                    handleDeleteDepartment(
+                                                        department.id
+                                                    )
+                                                }
+                                            >
                                                 <DeleteIcon />
                                             </IconButton>
                                         </Box>

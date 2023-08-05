@@ -6,6 +6,7 @@ import LoginPage from "../features/auth/pages/LoginPage";
 import Departments from "../features/departments/pages/Departments";
 import DashboardLayout from "../layouts/dashboard/DashboardLayout";
 import CreateDepartment from "../features/departments/pages/CreateDepartment";
+import EditDepartment from "../features/departments/pages/EditDepartment";
 
 export default function Routers() {
   return (
@@ -52,6 +53,7 @@ export default function Routers() {
             <Route path="employees" element={<div>HR - Edit employees</div>} />
             <Route path="departments" element={<Departments />} />
             <Route path="departments/create" element={<CreateDepartment />} />
+            <Route path="departments/edit/:departmentId" element={<EditDepartment />} />
             <Route path="positions" element={<div>HR - Positions</div>} />
           </Route>
         </Route>
