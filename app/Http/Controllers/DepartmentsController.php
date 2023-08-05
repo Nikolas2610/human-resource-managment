@@ -71,7 +71,7 @@ class DepartmentsController extends Controller
      * @param  \App\Models\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $company, Department $department)
+    public function update(StoreDepartmentRequest $request, Company $company, Department $department)
     {
         try {
             $this->ensureDepartmentBelongsToCompany($company, $department);

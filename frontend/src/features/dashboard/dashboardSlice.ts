@@ -8,6 +8,7 @@ export interface DashboardState {
     themeMode: ThemeMode;
     drawerOpen: boolean;
     isLoading: boolean;
+    isAppLoading: boolean;
     drawerWidth: number;
     title: string;
 }
@@ -16,7 +17,8 @@ const initialState: DashboardState = {
     themeMode:
         themeStorage === ThemeMode.LIGHT ? ThemeMode.LIGHT : ThemeMode.DARK,
     drawerOpen: true,
-    isLoading: true,
+    isLoading: false,
+    isAppLoading: true,
     drawerWidth: 300,
     title: "Dashboard",
 };
@@ -36,8 +38,11 @@ const dashboardSlice = createSlice({
         toggleDrawerOpen: (state) => {
             state.drawerOpen = !state.drawerOpen;
         },
-        setLoading: (state, action: PayloadAction<boolean>) => {
+        toggleDashboardLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
+        },
+        toggleAppLoading: (state, action: PayloadAction<boolean>) => {
+            state.isAppLoading = action.payload;
         },
         toggleDrawer: (state, action: PayloadAction<boolean>) => {
             state.drawerOpen = action.payload;
@@ -54,9 +59,10 @@ export const selectDrawerWidth = (state: RootState) =>
 export const {
     toggleThemeMode,
     toggleDrawerOpen,
-    setLoading,
+    toggleDashboardLoading,
     toggleDrawer,
     setPageTitle,
+    toggleAppLoading
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

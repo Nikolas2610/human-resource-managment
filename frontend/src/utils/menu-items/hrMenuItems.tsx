@@ -17,12 +17,12 @@ export const hrMenuItems: HRMenuItems = {
     dashboard: { link: "/dashboard", title: "Dashboard", icon: DashboardIcon },
     profile: { link: "/profile", title: "Profile", icon: AccountBoxIcon },
     leaveRequestHistory: {
-        link: "/leave-request/history",
+        link: "/leave-request-history",
         title: "Leave Request History",
         icon: HistoryIcon,
     },
     leaveRequestPost: {
-        link: "/leave-request/post",
+        link: "/leave-request-post",
         title: "Post Leave Request",
         icon: PostAddIcon,
     },

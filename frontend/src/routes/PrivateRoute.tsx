@@ -9,9 +9,9 @@ interface PrivateRouteProps {
 const PrivateRoute = ({ roles }: PrivateRouteProps) => {
     let location = useLocation();
     const { user } = useSelector((state: RootState) => state.auth); // Use selector to access Redux state
-    const { isLoading } = useSelector((state: RootState) => state.dashboard); // Use selector to access Redux state
+    const { isAppLoading } = useSelector((state: RootState) => state.dashboard); // Use selector to access Redux state
 
-    if (!isLoading) {
+    if (!isAppLoading) {
         if (!user) {
             // User is not logged in, redirect to login page
             return <Navigate to="/auth/login" state={{ from: location }} />;

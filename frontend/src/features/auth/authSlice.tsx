@@ -51,8 +51,8 @@ export const authSlice = createSlice({
 });
 
 // Selectors
-export const selectUserRole = (state: RootState) => state.auth.user?.role;
-export const selectCompany = (state: RootState) => state.auth.user?.company_id;
+export const selectUserRole = (state: RootState) => state.auth.user?.role ?? 0;
+export const selectCompany = (state: RootState) => state.auth.user?.company_id ?? 0;
 
 // Export actions
 export const {

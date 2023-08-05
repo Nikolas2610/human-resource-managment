@@ -13,8 +13,6 @@ class PositionResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'department' => new DepartmentResource($this->department),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

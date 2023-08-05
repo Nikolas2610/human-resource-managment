@@ -1,52 +1,78 @@
-import { useEffect } from "react";
+// React
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+// Redux
 import { useDispatch } from "react-redux";
-import { setToken, setUser } from "./features/auth/authSlice";
-import Routers from "./routes/Routers";
-import { ThemeProvider } from "@mui/material";
-import { themeSettings } from "./themes/theme";
 import { useAppSelector } from "./app/hook";
-import { createTheme } from "@mui/material/styles";
+import { setToken, setUser } from "./features/auth/authSlice";
 import { useGetUserQuery } from "./features/api/apiService";
-import { useNavigate } from "react-router-dom";
-import LoadingBackdrop from "./components/LoadingBackdrop";
-import { setLoading } from "./features/dashboard/dashboardSlice";
-import { useTheme } from "@emotion/react";
+import { toggleAppLoading } from "./features/dashboard/dashboardSlice";
+
+// Material UI
+import { Box, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+
+// Components
+import Routers from "./routes/Routers";
+
+// Others
+import { themeSettings } from "./themes/theme";
+import BackdropLoading from "./components/ui/BackdropLoading";
+import { ModalProvider } from "./contexts/ModalContext";
+import ConfirmModal from "./components/modal/ConfirmModal";
+import SnackbarAlert from "./features/snackbars/components/SnackBarAlert";
 
 function App() {
     const dispatch = useDispatch();
-    const { themeMode } = useAppSelector((state) => state.dashboard);
-    const { data, isLoading } = useGetUserQuery();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
 
-    // const theme = useMemo(
-    //     () => createTheme(themeSettings(themeMode: PaletteMode): ThemeSettings),
-    //     [themeMode]
-    // );
-
+    const { themeMode, isAppLoading } = useAppSelector(
+        (state) => state.dashboard
+    );
+    const { data, isLoading, error } = useGetUserQuery();
     const theme = createTheme(themeSettings(themeMode));
-    // const theme = useTheme();
+    const [prevIsLoading, setPrevIsLoading] = useState(isLoading);
 
+    // If a token is stored in localStorage, dispatch it
     useEffect(() => {
-        dispatch(setLoading(true));
+        const token = localStorage.getItem("token");
 
-        const token: string | null = localStorage.getItem("token");
-        if (token) {
-            dispatch(setToken(token));
-        }
+        token ? dispatch(setToken(token)) : dispatch(toggleAppLoading(false));
     }, [dispatch]);
 
+    // Track the loading state and navigate based on data or error
     useEffect(() => {
-        dispatch(setLoading(isLoading));
-        if (data) {
-            dispatch(setUser(data));
-            navigate("/dashboard");
+        if (prevIsLoading && !isLoading) {
+            if (data) {
+                dispatch(setUser(data));
+                dispatch(toggleAppLoading(false));
+                navigate(pathname ?? "/dashboard");
+            } else if (error || !data) {
+                dispatch(toggleAppLoading(false));
+                navigate("/auth/login");
+            }
         }
-    }, [isLoading]);
+
+        setPrevIsLoading(isLoading);
+    }, [isLoading, data, dispatch, navigate]);
 
     return (
         <ThemeProvider theme={theme}>
-            <Routers />
-            <LoadingBackdrop />
+            {!isAppLoading ? (
+                <ModalProvider>
+                    <ConfirmModal />
+                    <Routers />
+                    <SnackbarAlert />
+                </ModalProvider>
+            ) : (
+                <Box
+                    height="100vh"
+                    bgcolor={theme.palette.background.default}
+                ></Box>
+            )}
+            <BackdropLoading isLoading={isAppLoading} />
         </ThemeProvider>
     );
 }

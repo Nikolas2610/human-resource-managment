@@ -13,7 +13,7 @@ import { useLoginMutation } from "../../api/apiService";
 import { RootState } from "../../../app/store";
 import { useEffect } from "react";
 import { LoginError } from "../../../types/api/auth/login/LoginError.type";
-import { setLoading } from "../../dashboard/dashboardSlice";
+import { toggleDashboardLoading } from "../../dashboard/dashboardSlice";
 import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -48,8 +48,6 @@ function LoginPage() {
         (state: RootState) => state.auth.form
     );
     const theme = useTheme();
-    console.log(theme.palette.primary.contrastText);
-    
 
     const onSubmit = async (data: FormData) => {
         try {
@@ -66,7 +64,7 @@ function LoginPage() {
     }
 
     useEffect(() => {
-        dispatch(setLoading(isLoading));
+        dispatch(toggleDashboardLoading(isLoading));
     }, [isLoading]);
 
     return (

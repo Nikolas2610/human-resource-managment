@@ -1,9 +1,10 @@
 import { Backdrop, CircularProgress } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
 
-export default function LoadingBackdrop() {
-    const { isLoading } = useSelector((state: RootState) => state.dashboard);
+interface BackdropLoadingProps {
+    isLoading: boolean;
+}
+
+export default function BackdropLoading({ isLoading }: BackdropLoadingProps) {
     return (
         <Backdrop
             sx={{

@@ -10,6 +10,7 @@ import {
 } from "../../features/dashboard/dashboardSlice";
 import { RootState } from "../../app/store";
 import { Outlet } from "react-router-dom";
+import BackdropLoading from "../../components/ui/BackdropLoading";
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     open?: boolean;
@@ -43,7 +44,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function DashboardLayout() {
-    const { drawerOpen } = useSelector((state: RootState) => state.dashboard);
+    const { drawerOpen, isLoading } = useSelector(
+        (state: RootState) => state.dashboard
+    );
     const dispatch = useDispatch();
 
     const handleDrawerOpen = () => {
@@ -63,6 +66,7 @@ export default function DashboardLayout() {
             />
             <Sidebar open={drawerOpen} handleDrawerClose={handleDrawerClose} />
             <Main open={drawerOpen}>
+                <BackdropLoading isLoading={isLoading} />
                 <DrawerHeader />
                 <Outlet />
             </Main>
