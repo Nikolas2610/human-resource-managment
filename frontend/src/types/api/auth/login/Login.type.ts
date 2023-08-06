@@ -1,7 +1,7 @@
-import { Employee } from "../../../employee/Employee.type";
+import { UserEmployee } from "../../../employee/UserEmployee.type";
 
 export interface LoginResult {
-   employee: Employee, 
+   employee: UserEmployee, 
    token: string;
 }
 

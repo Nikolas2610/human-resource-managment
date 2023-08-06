@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    // TODO: Country, Type of Job (Onsite, Hybrid, Working from home), personal_email, documents relation, birthday, activeStatus
     /**
      * Run the migrations.
      *

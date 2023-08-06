@@ -5,7 +5,6 @@ import {
     closeSnackbar,
 } from "@/features/snackbars/snackbarSlice";
 import { RootState } from "@/app/store";
-import { useEffect } from "react";
 
 export default function SnackbarAlert() {
     const dispatch = useDispatch();
@@ -23,14 +22,7 @@ export default function SnackbarAlert() {
         }
         dispatch(closeSnackbar());
     };
-
-    console.log("Test");
-    useEffect(() => {
-        console.log(message);
-        
-    }, [message]);
     
-
     return (
         <Snackbar
             open={open}

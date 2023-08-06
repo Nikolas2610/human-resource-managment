@@ -32,6 +32,9 @@ class Employee extends Authenticatable
         'company_id',
         'department_id',
         'position_id',
+        'role',
+        'salary',
+        'reports_to'
     ];
 
     protected $hidden = [
@@ -72,5 +75,9 @@ class Employee extends Authenticatable
     public function leaveAmounts()
     {
         return $this->belongsToMany(LeaveAmount::class, 'employee_leave_amount');
+    }
+
+    public function reportsTo() {
+        return $this->belongsTo(Employee::class, 'reports_to');
     }
 }

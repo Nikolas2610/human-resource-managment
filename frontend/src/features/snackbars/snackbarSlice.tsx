@@ -32,8 +32,6 @@ const snackbarSlice = createSlice({
                 horizontal?: SnackBarHorizontal;
             }>
         ) => {
-            console.log(action.payload);
-            
             const {
                 message,
                 severity = SnackBarSeverity.SUCCESS,

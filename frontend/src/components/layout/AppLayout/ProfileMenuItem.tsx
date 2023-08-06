@@ -9,9 +9,11 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
-import { useDispatch } from "react-redux";
-import { logout } from "../../../features/auth/authSlice";
 import { useTheme } from "@mui/material";
+import { useLogoutMutation } from "@/features/api/apiService";
+import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
+import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
+import RouteList from "@/routes/RouteList";
 
 function ProfileMenuItem() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -23,7 +25,18 @@ function ProfileMenuItem() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const dispatch = useDispatch();
+    const [logout, { isLoading, isSuccess }] = useLogoutMutation();
+    useToggleDashboardLoading(isLoading);
+    useSuccessSnackbar({
+        isSuccess,
+        message: "Has been logout successfully",
+        to: RouteList.login,
+    });
+
+    const handleLogout = () => {
+        handleClose();
+        logout();
+    };
 
     return (
         <React.Fragment>
@@ -102,12 +115,7 @@ function ProfileMenuItem() {
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                <MenuItem
-                    onClick={() => {
-                        handleClose();
-                        dispatch(logout());
-                    }}
-                >
+                <MenuItem onClick={handleLogout}>
                     <ListItemIcon sx={{ color: theme.palette.common.white }}>
                         <Logout fontSize="small" />
                     </ListItemIcon>

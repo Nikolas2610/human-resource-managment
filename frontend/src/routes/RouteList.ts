@@ -7,6 +7,10 @@ interface RouteListProps {
     positions: string;
     createPosition: string;
     editPosition: (id: number) => string;
+    employees: string,
+    createEmployee: string,
+    editEmployee:(id: number) => string;
+    login: string;
 }
 
 const RouteList: RouteListProps = {
@@ -16,6 +20,10 @@ const RouteList: RouteListProps = {
     positions: "/positions",
     createPosition: "/positions/create",
     editPosition: makeEditRoute("/positions"),
+    employees: "/employees",
+    createEmployee: "/employees/create",
+    editEmployee: makeEditRoute("/employees"),
+    login: "auth/login"
 };
 
 export default RouteList;

@@ -4,8 +4,8 @@
 
 #### Important React Libraries 
 ```
--Redux / Toolkit
--Material UI
+- Redux / Toolkit
+- Material UI
 ```
 
 #### Dev environment Versions

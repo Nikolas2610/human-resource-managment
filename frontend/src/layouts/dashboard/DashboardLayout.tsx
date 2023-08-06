@@ -65,7 +65,7 @@ export default function DashboardLayout() {
                 handleDrawerOpen={handleDrawerOpen}
             />
             <Sidebar open={drawerOpen} handleDrawerClose={handleDrawerClose} />
-            <Main open={drawerOpen}>
+            <Main open={drawerOpen} sx={{ overflowX: 'hidden' }}>
                 <BackdropLoading isLoading={isLoading} />
                 <DrawerHeader />
                 <Outlet />

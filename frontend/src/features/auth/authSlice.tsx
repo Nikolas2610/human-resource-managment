@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { Employee } from "../../types/employee/Employee.type";
+import { UserEmployee } from "../../types/employee/UserEmployee.type";
 import { LoginArgs } from "../../types/api/auth/login/Login.type";
 
 interface AuthState {
-    user: Employee | null;
+    user: UserEmployee | null;
     token: string | null;
     form: LoginArgs;
 }
@@ -30,7 +30,7 @@ export const authSlice = createSlice({
         },
         loginUser: (
             state,
-            action: PayloadAction<{ employee: Employee; token: string }>
+            action: PayloadAction<{ employee: UserEmployee; token: string }>
         ) => {
             const { employee, token } = action.payload;
             state.user = employee;
@@ -44,7 +44,7 @@ export const authSlice = createSlice({
         setToken: (state, action: PayloadAction<string>) => {
             state.token = action.payload;
         },
-        setUser: (state, action: PayloadAction<Employee>) => {
+        setUser: (state, action: PayloadAction<UserEmployee>) => {
             state.user = action.payload;
         },
     },

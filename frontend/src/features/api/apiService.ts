@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { LoginArgs, LoginResult } from "../../types/api/auth/login/Login.type";
-import { Employee } from "../../types/employee/Employee.type";
+import { UserEmployee } from "../../types/employee/UserEmployee.type";
 
 export const apiService = createApi({
     reducerPath: "apiService",
-    tagTypes: ["Department", "Position"],
+    tagTypes: ["Department", "Position", "Employee"],
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8000/api",
         prepareHeaders(headers) {
@@ -27,10 +27,16 @@ export const apiService = createApi({
                 },
             }),
         }),
-        getUser: builder.query<Employee, void>({
+        getUser: builder.query<UserEmployee, void>({
             query: () => "user",
+        }),
+        logout: builder.mutation<void, void>({  // <-- Add this section
+            query: () => ({
+                url: "employee/logout",
+                method: "POST",
+            }),
         }),
     }),
 });
 
-export const { useLoginMutation, useGetUserQuery } = apiService;
+export const { useLoginMutation, useGetUserQuery, useLogoutMutation } = apiService;

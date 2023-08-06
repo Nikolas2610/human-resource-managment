@@ -12,6 +12,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import GroupIcon from "@mui/icons-material/Group";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CheckIcon from "@mui/icons-material/Check";
+import PersonIcon from '@mui/icons-material/Person';
 
 export const hrMenuItems: HRMenuItems = {
     dashboard: { link: "/dashboard", title: "Dashboard", icon: DashboardIcon },
@@ -34,7 +35,7 @@ export const hrMenuItems: HRMenuItems = {
     employeesDetails: {
         link: "/employees-details",
         title: "Employee Details",
-        icon: GroupIcon,
+        icon: PersonIcon,
     },
     documents: {
         link: "/documents",

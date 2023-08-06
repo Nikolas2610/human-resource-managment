@@ -4,7 +4,7 @@ namespace App\Http\Requests\Employee;
 
 use App\Http\Requests\Request;
 
-class EmployeeRegisterRequest extends Request
+class StoreEmployeeRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,10 +31,12 @@ class EmployeeRegisterRequest extends Request
             'phone' => 'required|string',
             'address' => 'required|string',
             'work_start_date' => 'required',
-            'company_id' => 'required|integer',
             'department_id' => 'required|integer',
             'position_id' => 'required|integer',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'salary' => 'numeric|min:0',  // Adjust the min and max as needed
+            'role' => 'required|string|in:employee,hr,accounting,admin,owner,manager',
+            'reports_to' => 'nullable|integer|exists:employees,id',  // Ensure the referenced ID exists
         ];
     }
 }
