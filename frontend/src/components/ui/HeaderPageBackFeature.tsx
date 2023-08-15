@@ -19,6 +19,7 @@ export default function HeaderPageBackFeature({
             display={"flex"}
             alignItems={"center"}
             justifyContent={"space-between"}
+            color={theme.palette.primary.contrastText}
         >
             <Typography variant="h3" fontWeight={700}>
                 {headerTitle}

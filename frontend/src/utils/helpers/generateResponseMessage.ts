@@ -1,4 +1,4 @@
-type CRUDOperation = 'store' | 'update' | 'delete';
+export type CRUDOperation = 'store' | 'update' | 'delete';
 
 /**
  * Helper function to generate success and error messages for CRUD operations

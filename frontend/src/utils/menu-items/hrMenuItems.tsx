@@ -13,10 +13,16 @@ import GroupIcon from "@mui/icons-material/Group";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CheckIcon from "@mui/icons-material/Check";
 import PersonIcon from '@mui/icons-material/Person';
+import SignpostIcon from '@mui/icons-material/Signpost';
 
 export const hrMenuItems: HRMenuItems = {
     dashboard: { link: "/dashboard", title: "Dashboard", icon: DashboardIcon },
     profile: { link: "/profile", title: "Profile", icon: AccountBoxIcon },
+    leaveType: {
+        link: "/leave-types",
+        title: "Leave Types",
+        icon: SignpostIcon
+    },
     leaveRequestHistory: {
         link: "/leave-request-history",
         title: "Leave Request History",
@@ -88,4 +94,5 @@ interface HRMenuItems {
     employees: MenuItem;
     departments: MenuItem;
     positions: MenuItem;
+    leaveType: MenuItem;
 }

@@ -19,7 +19,7 @@ export default function HeaderPageAddFeature({
             alignItems={"center"}
             justifyContent={"space-between"}
         >
-            <Typography variant="h3" fontWeight={700}>
+            <Typography variant="h3" fontWeight={700} color={theme.palette.primary.contrastText}>
                 {headerTitle}
             </Typography>
             <Link to={to}>

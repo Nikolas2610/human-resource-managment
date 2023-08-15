@@ -12,6 +12,9 @@ import EditPositionPage from "@/features/positions/pages/EditPositionPage";
 import EmployeesPage from "@/features/employees/pages/EmployeesPage";
 import CreateEmployee from "@/features/employees/pages/CreateEmployee";
 import EditEmployee from "@/features/employees/pages/EditEmployee";
+import LeaveTypesPage from "@/features/leave-types/pages/LeaveTypesPage";
+import CreateLeaveType from "@/features/leave-types/pages/CreateLeaveType";
+import EditLeaveType from "@/features/leave-types/pages/EditLeaveType";
 
 export default function Routers() {
     return (
@@ -75,7 +78,7 @@ export default function Routers() {
                             element={<div>HR - Edit company info</div>}
                         />
 
-                        {/* Departments CRUD */}
+                        {/* Departments CRUD - HR */}
                         <Route path="departments" element={<Departments />} />
                         <Route
                             path="departments/create"
@@ -86,7 +89,7 @@ export default function Routers() {
                             element={<EditDepartment />}
                         />
 
-                        {/* Positions CRUD */}
+                        {/* Positions CRUD - HR */}
                         <Route path="positions" element={<PositionsPage />} />
                         <Route
                             path="positions/create"
@@ -97,10 +100,15 @@ export default function Routers() {
                             element={<EditPositionPage />}
                         />
 
-                        {/* Employees CRUD */}
+                        {/* Employees CRUD - HR */}
                         <Route path="employees" element={<EmployeesPage />} />
                         <Route path="employees/create" element={<CreateEmployee />} />
                         <Route path="employees/edit/:employeeId" element={<EditEmployee />} />
+
+                        {/* Leave Types CRUD - HR */}
+                        <Route path="leave-types" element={<LeaveTypesPage />} />
+                        <Route path="leave-types/create" element={<CreateLeaveType />} />
+                        <Route path="leave-types/edit/:leaveTypeId" element={<EditLeaveType />} />
                     </Route>
                 </Route>
             </Route>
