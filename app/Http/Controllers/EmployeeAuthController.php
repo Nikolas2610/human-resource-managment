@@ -61,6 +61,14 @@ class EmployeeAuthController extends Controller
                 ]);
             }
 
+            // Check if the user is active
+            if (!$employee->active) {
+                return response()->json([
+                    'error' => 'account_inactive',
+                    'message' => 'Your account is inactive. Please contact the administrator.'
+                ], 403);
+            }
+
             // If credentials are correct, issue the token
             $token = $employee->createToken('token-name')->plainTextToken;
 
@@ -79,12 +87,12 @@ class EmployeeAuthController extends Controller
     public function logout(Request $request)
     {
         $user = Auth::guard('employee')->user();
-    
+
         if ($user) {
             $user->tokens()->delete();
             return response()->json(['message' => 'Logged out successfully'], 200);
         }
-    
+
         return response()->json(['error' => 'No authenticated user found'], 404);
     }
 }

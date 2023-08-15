@@ -1,7 +1,14 @@
 import HeaderPageBackFeature from "@/components/ui/HeaderPageBackFeature";
 import FlexCenter from "@/components/ui/wrappers/FlexCenter";
 import RouteList from "@/routes/RouteList";
-import { Box, Button, Stack, TextField } from "@mui/material";
+import {
+    Box,
+    Button,
+    FormControlLabel,
+    Stack,
+    Switch,
+    TextField,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import {
     useCreateLeaveTypeMutation,
@@ -11,6 +18,7 @@ import { useSelector } from "react-redux";
 import { selectCompany } from "@/features/auth/authSlice";
 import { NewLeaveType } from "@/types/leave-types/NewLeaveType.type";
 import { useHandleMutation } from "@/hooks/useHandleMutation";
+import { useState } from "react";
 
 export default function LeaveTypeForm({
     formTitle,
@@ -18,7 +26,11 @@ export default function LeaveTypeForm({
     leaveTypeId,
 }: LeaveTypeFormProps) {
     const companyId = useSelector(selectCompany);
+    const [limit, setLimit] = useState<boolean>(
+        Boolean(initialData?.limit) ?? false
+    ); // Initial state
     const {
+        unregister,
         register,
         handleSubmit,
         formState: { errors },
@@ -54,9 +66,9 @@ export default function LeaveTypeForm({
         error: errorCreateLeaveType,
         entityType: "Leave type",
         actionType: "store",
-        redirectTo: RouteList.leaveTypes
+        redirectTo: RouteList.leaveTypes,
     });
-    
+
     useHandleMutation({
         isLoading: isUpdateLoading,
         isSuccess: isUpdateSuccess,
@@ -64,7 +76,7 @@ export default function LeaveTypeForm({
         error: errorUpdateLeaveType,
         entityType: "Leave type",
         actionType: "update",
-        redirectTo: RouteList.leaveTypes
+        redirectTo: RouteList.leaveTypes,
     });
 
     // Submit form
@@ -73,12 +85,19 @@ export default function LeaveTypeForm({
             // Update LeaveType
             updateLeaveType({
                 companyId,
-                leaveType: { type: data.type, id: leaveTypeId },
+                leaveType: {
+                    type: data.type,
+                    id: leaveTypeId,
+                    leave_amount: data.leave_amount,
+                    limit: data.limit,
+                    visible_to_employees: data.visible_to_employees,
+                },
             });
         } else {
             // Store LeaveType
             createLeaveType({ companyId, leaveType: data });
         }
+        console.log(data);
     };
 
     return (
@@ -102,6 +121,64 @@ export default function LeaveTypeForm({
                         error={Boolean(errors.type)}
                         helperText={errors.type?.message}
                     />
+
+                    <Box display={"flex"} gap={4}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    {...register("limit")}
+                                    checked={limit}
+                                    onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        unregister("leave_amount");
+                                        setLimit(isChecked);
+                                    }}
+                                />
+                            }
+                            label="Limit Leave Amounts"
+                        />
+
+                        {limit && (
+                            <TextField
+                                type="number"
+                                variant="outlined"
+                                label="Leave Amounts"
+                                placeholder="Write the amounts of leave"
+                                {...register("leave_amount", {
+                                    required: "Leave Amounts is required",
+                                    min: {
+                                        value: 1,
+                                        message:
+                                            "Leave Amounts should be at least 1.",
+                                    },
+                                    max: {
+                                        value: 365,
+                                        message:
+                                            "Leave Amounts should not exceed 365.",
+                                    },
+                                })}
+                                disabled={isUpdateLoading || isCreateLoading}
+                                error={Boolean(errors.leave_amount)}
+                                helperText={errors.leave_amount?.message}
+                            />
+                        )}
+                    </Box>
+
+                    <Box display={"flex"} gap={4}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    defaultChecked={
+                                        Boolean(
+                                            initialData?.visible_to_employees
+                                        ) ?? false
+                                    }
+                                    {...register("visible_to_employees")}
+                                />
+                            }
+                            label="Visible to employees dashboard"
+                        />
+                    </Box>
 
                     <FlexCenter>
                         <Button

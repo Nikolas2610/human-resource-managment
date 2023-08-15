@@ -25,6 +25,9 @@ class StoreLeaveTypeRequest extends Request
     {
         return [
             'type' => 'required|string',
+            'leave_amount' => 'required_if:limit,true|integer|nullable',
+            'visible_to_employees' => 'required|boolean',
+            'limit' => 'required|boolean'
         ];
     }
 }

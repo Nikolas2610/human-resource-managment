@@ -33,6 +33,10 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import { useGetDepartmentsQuery } from "@/features/departments/departmentEndpoints";
 import { Department } from "@/types/departments/Department.type";
 import { setSnackbar } from "@/features/snackbars/snackbarSlice";
+import { useHandleDeleteError } from "@/hooks/useHandleDeleteError";
+import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
+import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
+import generateResponseMessage from "@/utils/helpers/generateResponseMessage";
 
 export default function PositionsPage() {
     const theme = useTheme();
@@ -54,7 +58,12 @@ export default function PositionsPage() {
     const { showModal } = useModalContext();
     const [
         deletePosition,
-        { isSuccess, isError: isDeleteError, isLoading: isDeleteLoading },
+        {
+            isSuccess,
+            isError: isDeleteError,
+            isLoading: isDeleteLoading,
+            error: deleteError,
+        },
     ] = useDeletePositionMutation();
     const [departmentId, setDepartmentId] = useState<string | number | null>(
         null
@@ -62,6 +71,14 @@ export default function PositionsPage() {
     const { data: departments = [] } = useGetDepartmentsQuery(companyId) as {
         data: Department[];
     };
+
+    // Custom Hooks
+    useHandleDeleteError(isDeleteError, deleteError);
+    useToggleDashboardLoading(isDeleteLoading)
+    useSuccessSnackbar({
+        isSuccess,
+        message: generateResponseMessage("Position", "delete")
+    })
 
     useEffect(() => {
         dispatch(setPageTitle("Departments"));
@@ -71,10 +88,6 @@ export default function PositionsPage() {
         dispatch(toggleDashboardLoading(isLoading));
     }, [isLoading, positions, error]);
 
-    useEffect(() => {
-        dispatch(toggleDashboardLoading(isDeleteLoading));
-    }, [isDeleteLoading, dispatch]);
-
     const handleEditPosition = (id: number) => {
         navigate(RouteList.editPosition(id));
     };
@@ -82,22 +95,6 @@ export default function PositionsPage() {
     const handleDeletePosition = (id: number) => {
         const onDeleteDepartment = async () => {
             await deletePosition({ companyId, positionId: id });
-
-            if (isSuccess) {
-                dispatch(
-                    setSnackbar({
-                        message: "Position deleted successfully",
-                    })
-                );
-            }
-
-            if (isDeleteError) {
-                dispatch(
-                    setSnackbar({
-                        message: "Failed to delete position",
-                    })
-                );
-            }
         };
 
         showModal(

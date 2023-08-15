@@ -14,6 +14,7 @@ class EmployeeResource extends JsonResource
         // dump($this->reportsTo);
         return [
             'id' => $this->id,
+            'active' => $this->active,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'role' => $this->role,

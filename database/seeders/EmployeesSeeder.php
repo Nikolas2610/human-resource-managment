@@ -19,11 +19,11 @@ class EmployeesSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-    
+
         $companies = DB::table('companies')->pluck('id');
         $departments = DB::table('departments')->get();
         $positions = DB::table('positions')->pluck('id');
-    
+
         $roles = [
             Employee::ROLE_HR,
             Employee::ROLE_ACCOUNTING,
@@ -33,7 +33,7 @@ class EmployeesSeeder extends Seeder
         ];
 
         $employees = []; // store employee ids by their roles
-    
+
         foreach ($companies as $companyId) {
             // Add one employee for each role
             foreach ($roles as $role) {
@@ -66,16 +66,18 @@ class EmployeesSeeder extends Seeder
             }
         }
     }
-    
+
     private function createEmployee($faker, $companyId, $departments, $positions, $role)
     {
         $firstName = $faker->firstName;
         $lastName = $faker->lastName;
-        $email = strtolower($firstName . '.' . $lastName . '@example.com');
+
+        // Generate a unique email
+        $email = $this->generateUniqueEmail($firstName, $lastName);
         
         // Get a random department id for the company
         $departmentId = $faker->randomElement($departments->where('company_id', $companyId)->pluck('id')->toArray());
-        
+
         $employeeId = DB::table('employees')->insertGetId([
             'company_id' => $companyId,
             'department_id' => $departmentId,
@@ -98,5 +100,20 @@ class EmployeesSeeder extends Seeder
         ]);
 
         return $employeeId;
+    }
+
+    private function generateUniqueEmail($firstName, $lastName)
+    {
+        $baseEmail = strtolower($firstName . '.' . $lastName . '@example.com');
+        $email = $baseEmail;
+        $counter = 1;
+
+        // While the email exists in the database, append a number to the email
+        while (DB::table('employees')->where('email', $email)->exists()) {
+            $email = strtolower($firstName . '.' . $lastName . $counter . '@example.com');
+            $counter++;
+        }
+
+        return $email;
     }
 }

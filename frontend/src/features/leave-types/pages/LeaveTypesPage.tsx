@@ -6,7 +6,16 @@ import {
     useDeleteLeaveTypeMutation,
     useGetLeaveTypesQuery,
 } from "../leaveTypesEndpoints";
-import { Box, Grid, IconButton, Tooltip, useTheme } from "@mui/material";
+import {
+    Box,
+    Chip,
+    Grid,
+    IconButton,
+    Stack,
+    Tooltip,
+    Typography,
+    useTheme,
+} from "@mui/material";
 import FlexBetween from "@/components/ui/wrappers/FlexBetween";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -92,14 +101,21 @@ export default function LeaveTypesPage() {
                     <Grid container spacing={4}>
                         {leaveTypes.map((leaveType) => (
                             <Grid key={leaveType.id} item xs={6} md={4}>
-                                <Box
+                                <Stack
                                     boxShadow={4}
                                     p={2}
                                     borderRadius={4}
                                     bgcolor={theme.palette.background.paper}
                                 >
                                     <FlexBetween>
-                                        <Box color={theme.palette.primary.contrastText}>{leaveType.type}</Box>
+                                        <Box
+                                            color={
+                                                theme.palette.primary
+                                                    .contrastText
+                                            }
+                                        >
+                                            {leaveType.type}
+                                        </Box>
                                         <Box>
                                             <Tooltip
                                                 placement="top"
@@ -113,7 +129,7 @@ export default function LeaveTypesPage() {
                                                         )
                                                     }
                                                 >
-                                                    <EditIcon  />
+                                                    <EditIcon />
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip
@@ -133,7 +149,56 @@ export default function LeaveTypesPage() {
                                             </Tooltip>
                                         </Box>
                                     </FlexBetween>
-                                </Box>
+
+                                    <Box
+                                        borderTop={1}
+                                        display={"flex"}
+                                        gap={1}
+                                        my={2}
+                                        pt={2}
+                                        borderColor={
+                                            theme.palette.primary.contrastText
+                                        }
+                                        color={
+                                            theme.palette.primary.contrastText
+                                        }
+                                    >
+                                        <Typography
+                                            fontWeight={500}
+                                            sx={{
+                                                textDecoration: "underline",
+                                                textUnderlineOffset: 3,
+                                            }}
+                                        >
+                                            Leaves:{" "}
+                                        </Typography>
+
+                                        {leaveType.limit
+                                            ? leaveType.leave_amount
+                                            : "Unlimited"}
+                                    </Box>
+                                    <Box>
+                                        {leaveType.visible_to_employees ? (
+                                            <Chip
+                                                label="Visible"
+                                                color="primary"
+                                                sx={{
+                                                    fontWeight: 500,
+                                                    letterSpacing: 1,
+                                                }}
+                                            />
+                                        ) : (
+                                            <Chip
+                                                label="Hide"
+                                                color="error"
+                                                sx={{
+                                                    fontWeight: 500,
+                                                    letterSpacing: 1,
+                                                }}
+                                            />
+                                        )}
+                                    </Box>
+                                </Stack>
                             </Grid>
                         ))}
                     </Grid>

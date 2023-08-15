@@ -1,4 +1,13 @@
-import { Box, Button, Grid, Stack, TextField, Tooltip } from "@mui/material";
+import {
+    Box,
+    Button,
+    FormControlLabel,
+    Grid,
+    Stack,
+    Switch,
+    TextField,
+    Tooltip,
+} from "@mui/material";
 import RouteList from "@/routes/RouteList";
 import FlexCenter from "../../../components/ui/wrappers/FlexCenter";
 import { useForm } from "react-hook-form";
@@ -32,15 +41,6 @@ export default function EmployeeForm({
     employeeId,
 }: EmployeeFormProps) {
     const companyId = useSelector(selectCompany);
-    // const [cleanedInitialData, setCleanInitialData] = useState<any>();
-
-    // useEffect(() => {
-    //     if (initialData) {
-    //         const { password, password_confirmation, ...cleanedData } =
-    //             initialData;
-    //     }
-    // }, [initialData]);
-
     const {
         register,
         control,
@@ -73,7 +73,12 @@ export default function EmployeeForm({
         useGetEmployeesQuery(companyId);
     const [
         updateEmployee,
-        { isLoading: isUpdateLoading, isSuccess: isUpdateSuccess, isError: isUpdateError, error: updateError },
+        {
+            isLoading: isUpdateLoading,
+            isSuccess: isUpdateSuccess,
+            isError: isUpdateError,
+            error: updateError,
+        },
     ] = useUpdateEmployeeMutation();
 
     const userRoleOptions = Object.entries(UserRole)
@@ -133,354 +138,342 @@ export default function EmployeeForm({
     return (
         <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
             {!isDepartmentLoading &&
-                !isPositionLoading &&
-                !isEmployeesLoading && (
-                    <Stack gap={4}>
-                        <HeaderPageBackFeature
-                            headerTitle={formTitle}
-                            to={RouteList.employees}
-                            buttonTitle="Back to Employees"
-                        />
+            !isPositionLoading &&
+            !isEmployeesLoading ? (
+                <Stack gap={4}>
+                    <HeaderPageBackFeature
+                        headerTitle={formTitle}
+                        to={RouteList.employees}
+                        buttonTitle="Back to Employees"
+                    />
 
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    label="First Name"
-                                    placeholder="First Name"
-                                    {...register("first_name", {
-                                        required:
-                                            generateRequiredErrorMessage(
-                                                "First name"
-                                            ),
-                                    })}
-                                    error={Boolean(errors.first_name)}
-                                    helperText={errors.first_name?.message}
-                                    defaultValue={
-                                        initialData
-                                            ? initialData.first_name
-                                            : ""
-                                    }
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    label="Last Name"
-                                    placeholder="Last Name"
-                                    {...register("last_name", {
-                                        required:
-                                            generateRequiredErrorMessage(
-                                                "Last name"
-                                            ),
-                                    })}
-                                    error={Boolean(errors.last_name)}
-                                    helperText={errors.last_name?.message}
-                                />
-                            </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="First Name"
+                                placeholder="First Name"
+                                {...register("first_name", {
+                                    required:
+                                        generateRequiredErrorMessage(
+                                            "First name"
+                                        ),
+                                })}
+                                error={Boolean(errors.first_name)}
+                                helperText={errors.first_name?.message}
+                                defaultValue={
+                                    initialData ? initialData.first_name : ""
+                                }
+                            />
                         </Grid>
-
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            label="Email"
-                            placeholder="Email"
-                            {...register("email", {
-                                required: generateRequiredErrorMessage("Email"),
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                                    message: "Invalid email address",
-                                },
-                            })}
-                            error={Boolean(errors.email)}
-                            helperText={errors.email?.message}
-                        />
-
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    label="Address"
-                                    placeholder="Address"
-                                    {...register("address", {
-                                        required:
-                                            generateRequiredErrorMessage(
-                                                "Address"
-                                            ),
-                                    })}
-                                    error={Boolean(errors.address)}
-                                    helperText={errors.address?.message}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    label="Phone"
-                                    placeholder="Phone"
-                                    {...register("phone", {
-                                        required:
-                                            generateRequiredErrorMessage(
-                                                "Phone"
-                                            ),
-                                    })}
-                                    error={Boolean(errors.phone)}
-                                    helperText={errors.phone?.message}
-                                />
-                            </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="Last Name"
+                                placeholder="Last Name"
+                                {...register("last_name", {
+                                    required:
+                                        generateRequiredErrorMessage(
+                                            "Last name"
+                                        ),
+                                })}
+                                error={Boolean(errors.last_name)}
+                                helperText={errors.last_name?.message}
+                            />
                         </Grid>
+                    </Grid>
 
-                        {!initialData && (
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={6}>
-                                    <TogglePasswordField
-                                        control={control}
-                                        name="password"
-                                        label="Password"
-                                        placeholder="Enter your password"
-                                        rules={{
-                                            required:
-                                                generateRequiredErrorMessage(
-                                                    "Password"
-                                                ),
-                                            minLength: {
-                                                value: 8,
-                                                message:
-                                                    "Password must have at least 8 characters",
-                                            },
-                                            maxLength: {
-                                                value: 24,
-                                                message:
-                                                    "Password can't be longer than 24 characters",
-                                            },
-                                            pattern: {
-                                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\W]{8,24}$/,
-                                                message:
-                                                    "Password must contain 1 uppercase, 1 lowercase, 1 number, and 1 special character",
-                                            },
-                                        }}
-                                        errorObject={errors}
-                                        onChange={(e) => {
-                                            passwordRef.current =
-                                                e.target.value;
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TogglePasswordField
-                                        control={control}
-                                        name="password_confirmation"
-                                        label="Confirm Password"
-                                        placeholder="Confirm your password"
-                                        rules={{
-                                            required:
-                                                generateRequiredErrorMessage(
-                                                    "Confirm Password"
-                                                ),
-                                            validate: (value: string) =>
-                                                value === passwordRef.current ||
-                                                "The passwords do not match",
-                                        }}
-                                        errorObject={errors}
-                                    />
-                                </Grid>
-                            </Grid>
-                        )}
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
-                                {departments?.length > 0 && (
-                                    <SelectField
-                                        name="department_id"
-                                        control={control}
-                                        defaultValue={
-                                            initialData?.department_id
-                                        }
-                                        rules={{
-                                            required: "Department is required",
-                                        }}
-                                        options={departments}
-                                        getOptionLabel={(option) => option.name}
-                                        getOptionValue={(option) => option.id}
-                                        errorObject={errors}
-                                        // isDisabled={isEditLoading || isCreateLoading}
-                                        label="Department"
-                                    />
-                                )}
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                {filteredPositions.length > 0 ? (
-                                    <SelectField
-                                        name="position_id"
-                                        control={control}
-                                        rules={{
-                                            required: "Position is required",
-                                        }}
-                                        options={filteredPositions}
-                                        getOptionLabel={(option) =>
-                                            option.title
-                                        }
-                                        getOptionValue={(option) => option.id}
-                                        defaultValue={initialData?.position_id}
-                                        errorObject={errors}
-                                        label="Position"
-                                    />
-                                ) : (
-                                    <Tooltip
-                                        title="Please select a department first."
-                                        placement="top"
-                                    >
-                                        <span>
-                                            <SelectField
-                                                name="position_id"
-                                                control={control}
-                                                rules={{
-                                                    required:
-                                                        "Position is required",
-                                                }}
-                                                defaultValue={
-                                                    initialData?.position_id
-                                                }
-                                                options={[]}
-                                                getOptionLabel={(option) =>
-                                                    option.title
-                                                }
-                                                getOptionValue={(option) =>
-                                                    option.id
-                                                }
-                                                errorObject={errors}
-                                                label="Position"
-                                                isDisabled={true}
-                                            />
-                                        </span>
-                                    </Tooltip>
-                                )}
-                            </Grid>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="Email"
+                        placeholder="Email"
+                        {...register("email", {
+                            required: generateRequiredErrorMessage("Email"),
+                            pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                message: "Invalid email address",
+                            },
+                        })}
+                        error={Boolean(errors.email)}
+                        helperText={errors.email?.message}
+                    />
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="Address"
+                                placeholder="Address"
+                                {...register("address", {
+                                    required:
+                                        generateRequiredErrorMessage("Address"),
+                                })}
+                                error={Boolean(errors.address)}
+                                helperText={errors.address?.message}
+                            />
                         </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="Phone"
+                                placeholder="Phone"
+                                {...register("phone", {
+                                    required:
+                                        generateRequiredErrorMessage("Phone"),
+                                })}
+                                error={Boolean(errors.phone)}
+                                helperText={errors.phone?.message}
+                            />
+                        </Grid>
+                    </Grid>
 
+                    {!initialData && (
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
-                                <SelectField
-                                    name="role"
+                                <TogglePasswordField
                                     control={control}
-                                    rules={{ required: "Role is required" }}
-                                    options={userRoleOptions}
+                                    name="password"
+                                    label="Password"
+                                    placeholder="Enter your password"
+                                    rules={{
+                                        required:
+                                            generateRequiredErrorMessage(
+                                                "Password"
+                                            ),
+                                        minLength: {
+                                            value: 8,
+                                            message:
+                                                "Password must have at least 8 characters",
+                                        },
+                                        maxLength: {
+                                            value: 24,
+                                            message:
+                                                "Password can't be longer than 24 characters",
+                                        },
+                                        pattern: {
+                                            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\W]{8,24}$/,
+                                            message:
+                                                "Password must contain 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+                                        },
+                                    }}
+                                    errorObject={errors}
+                                    onChange={(e) => {
+                                        passwordRef.current = e.target.value;
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TogglePasswordField
+                                    control={control}
+                                    name="password_confirmation"
+                                    label="Confirm Password"
+                                    placeholder="Confirm your password"
+                                    rules={{
+                                        required:
+                                            generateRequiredErrorMessage(
+                                                "Confirm Password"
+                                            ),
+                                        validate: (value: string) =>
+                                            value === passwordRef.current ||
+                                            "The passwords do not match",
+                                    }}
+                                    errorObject={errors}
+                                />
+                            </Grid>
+                        </Grid>
+                    )}
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            {departments?.length > 0 && (
+                                <SelectField
+                                    name="department_id"
+                                    control={control}
+                                    defaultValue={initialData?.department_id}
+                                    rules={{
+                                        required: "Department is required",
+                                    }}
+                                    options={departments}
+                                    getOptionLabel={(option) => option.name}
+                                    getOptionValue={(option) => option.id}
+                                    errorObject={errors}
+                                    isDisabled={isUpdateLoading || isCreateLoading}
+                                    label="Department"
+                                />
+                            )}
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            {filteredPositions.length > 0 ? (
+                                <SelectField
+                                    name="position_id"
+                                    control={control}
+                                    rules={{
+                                        required: "Position is required",
+                                    }}
+                                    options={filteredPositions}
+                                    getOptionLabel={(option) => option.title}
+                                    getOptionValue={(option) => option.id}
+                                    defaultValue={initialData?.position_id}
+                                    errorObject={errors}
+                                    label="Position"
+                                />
+                            ) : (
+                                <Tooltip
+                                    title="Please select a department first."
+                                    placement="top"
+                                >
+                                    <span>
+                                        <SelectField
+                                            name="position_id"
+                                            control={control}
+                                            rules={{
+                                                required:
+                                                    "Position is required",
+                                            }}
+                                            defaultValue={
+                                                initialData?.position_id
+                                            }
+                                            options={[]}
+                                            getOptionLabel={(option) =>
+                                                option.title
+                                            }
+                                            getOptionValue={(option) =>
+                                                option.id
+                                            }
+                                            errorObject={errors}
+                                            label="Position"
+                                            isDisabled={true}
+                                        />
+                                    </span>
+                                </Tooltip>
+                            )}
+                        </Grid>
+                    </Grid>
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <SelectField
+                                name="role"
+                                control={control}
+                                rules={{ required: "Role is required" }}
+                                options={userRoleOptions}
+                                getOptionLabel={(option) => option.title}
+                                getOptionValue={(option) => option.id}
+                                errorObject={errors}
+                                label="User Role"
+                                defaultValue={
+                                    initialData
+                                        ? initialData?.role
+                                        : UserRole.EMPLOYEE
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            {employees.length > 0 && (
+                                <SelectField
+                                    name="reports_to"
+                                    control={control}
+                                    rules={{}}
+                                    options={[
+                                        { id: null, title: "None" },
+                                        ...employees.map((employee) => ({
+                                            id: employee.id,
+                                            title: `${employee.first_name} ${employee.last_name}`,
+                                        })),
+                                    ]}
+                                    defaultValue={initialData?.reports_to}
                                     getOptionLabel={(option) => option.title}
                                     getOptionValue={(option) => option.id}
                                     errorObject={errors}
-                                    label="User Role"
-                                    defaultValue={
-                                        initialData
-                                            ? initialData?.role
-                                            : UserRole.EMPLOYEE
-                                    }
+                                    label="Reports To"
                                 />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                {employees.length > 0 && (
-                                    <SelectField
-                                        name="reports_to"
-                                        control={control}
-                                        rules={{}}
-                                        options={[
-                                            { id: null, title: "None" },
-                                            ...employees.map((employee) => ({
-                                                id: employee.id,
-                                                title: `${employee.first_name} ${employee.last_name}`,
-                                            })),
-                                        ]}
-                                        defaultValue={initialData?.reports_to}
-                                        getOptionLabel={(option) =>
-                                            option.title
-                                        }
-                                        getOptionValue={(option) => option.id}
-                                        errorObject={errors}
-                                        label="Reports To"
-                                    />
-                                )}
-                            </Grid>
+                            )}
                         </Grid>
+                    </Grid>
 
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    InputLabelProps={{ shrink: true }}
-                                    fullWidth
-                                    type="date"
-                                    variant="outlined"
-                                    label="Work Start Date"
-                                    placeholder="Work Start Date"
-                                    {...register("work_start_date", {
-                                        required:
-                                            generateRequiredErrorMessage(
-                                                "Work Start Date"
-                                            ),
-                                    })}
-                                    error={Boolean(errors.work_start_date)}
-                                    helperText={errors.work_start_date?.message}
-                                    sx={{
-                                        '& input[type="date"]::-webkit-calendar-picker-indicator':
-                                            {
-                                                filter: "invert(1)",
-                                            },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    label="Salary"
-                                    type="number"
-                                    defaultValue={0}
-                                    placeholder="Salary"
-                                    {...register("salary", {
-                                        pattern: {
-                                            value: /^\d+(\.\d{1,2})?$/, // Matches integers and decimals up to two decimal places
-                                            message: "Invalid Salary format", // Custom message for the pattern validation
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                InputLabelProps={{ shrink: true }}
+                                fullWidth
+                                type="date"
+                                variant="outlined"
+                                label="Work Start Date"
+                                placeholder="Work Start Date"
+                                {...register("work_start_date", {
+                                    required:
+                                        generateRequiredErrorMessage(
+                                            "Work Start Date"
+                                        ),
+                                })}
+                                error={Boolean(errors.work_start_date)}
+                                helperText={errors.work_start_date?.message}
+                                sx={{
+                                    '& input[type="date"]::-webkit-calendar-picker-indicator':
+                                        {
+                                            filter: "invert(1)",
                                         },
-                                    })}
-                                    error={Boolean(errors.salary)}
-                                    helperText={errors.salary?.message}
-                                    inputProps={{
-                                        inputMode: "decimal",
-                                        step: "0.01",
-                                    }}
-                                />
-                            </Grid>
+                                }}
+                            />
                         </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="Salary"
+                                type="number"
+                                defaultValue={0}
+                                placeholder="Salary"
+                                {...register("salary", {
+                                    pattern: {
+                                        value: /^\d+(\.\d{1,2})?$/, // Matches integers and decimals up to two decimal places
+                                        message: "Invalid Salary format", // Custom message for the pattern validation
+                                    },
+                                })}
+                                error={Boolean(errors.salary)}
+                                helperText={errors.salary?.message}
+                                inputProps={{
+                                    inputMode: "decimal",
+                                    step: "0.01",
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
 
-                        <FlexCenter>
-                            <Button
-                                variant="contained"
-                                type="submit"
-                                // disabled={isEditLoading || isCreateLoading}
-                            >
-                                Submit
-                            </Button>
-                        </FlexCenter>
-                    </Stack>
-                )}
+                    <Box display={"flex"} gap={4}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    defaultChecked={Boolean(
+                                        initialData?.active ?? true
+                                    )}
+                                    {...register("active")}
+                                />
+                            }
+                            label="Active Employee"
+                        />
+                    </Box>
+
+                    <FlexCenter>
+                        <Button
+                            variant="contained"
+                            type="submit"
+                            disabled={isUpdateLoading || isCreateLoading}
+                        >
+                            Submit
+                        </Button>
+                    </FlexCenter>
+                </Stack>
+            ) : (
+                "Loading form..."
+            )}
         </Box>
     );
 }
-
-// interface Test {
-//     first_name: string;
-//     last_name: string;
-//     address: string;
-//     phone: number;
-//     work_start_date: Date;
-//     email: string;
-//     department_id: number;
-//     position_id: number;
-//     companyId: number;
-//     role: UserRole;
-//     salary?: number;
-//     reports_to?: number;
-// }
 
 interface EmployeeFormProps {
     formTitle: string;

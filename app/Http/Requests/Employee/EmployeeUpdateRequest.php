@@ -35,6 +35,7 @@ class EmployeeUpdateRequest extends Request
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'email' => 'sometimes|string|email|max:255|unique:employees,email,' . $this->employee->id,
             'password' => 'sometimes|string|min:8|confirmed',
+            'active' => 'required|boolean',
         ];
     }
 }

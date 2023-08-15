@@ -2,6 +2,7 @@ import { UserRole } from "@/features/auth/enums/UserRole";
 
 export interface NewEmployee {
     first_name: string;
+    active: boolean;
     last_name: string;
     address: string;
     phone: number;

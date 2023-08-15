@@ -17,9 +17,9 @@ class LeaveTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'type' => $this->type,
-            'company_id' => $this->company_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'leave_amount' =>  $this->leave_amount,
+            'visible_to_employees' =>  $this->visible_to_employees,
+            'limit' =>  $this->limit,
         ];
     }
 }

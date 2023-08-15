@@ -12,7 +12,7 @@ import { selectCompany } from "@/features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Employee } from "@/types/employee/Employee.type";
 import { useEffect, useMemo, useState } from "react";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, Chip } from "@mui/material";
 import EmployeeTableActions from "../components/EmployeeTableActions";
 import { toggleDashboardLoading } from "@/features/dashboard/dashboardSlice";
 
@@ -65,6 +65,19 @@ function EmployeesPage() {
             editable: true,
         },
         { field: "email", headerName: "Email", width: 200 },
+        {
+            field: "active",
+            headerName: "Active",
+            width: 120,
+            renderCell: (params) => {
+                if (params.row.active) {
+                    return <Chip label="Active" color="success"></Chip>;
+                }
+                return <Chip label="Inactive" color="error"></Chip>;
+            },
+            valueGetter: (params) =>
+                params.row.active ? "Active" : "Inactive",
+        },
         { field: "phone", headerName: "Phone", width: 130 },
         { field: "address", headerName: "Address", width: 130 },
 

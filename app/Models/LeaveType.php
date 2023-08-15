@@ -8,7 +8,10 @@ class LeaveType extends Model
 {
     protected $fillable = [
         'type', 
-        'company_id'
+        'company_id',
+        'visible_to_employees',
+        'limit',
+        'leave_amount'
     ];
 
     public function leaveRequests()

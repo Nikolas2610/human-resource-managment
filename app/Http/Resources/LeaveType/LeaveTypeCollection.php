@@ -18,6 +18,9 @@ class LeaveTypeCollection extends ResourceCollection
             return [
                 'id' => $leaveType->id,
                 'type' => $leaveType->type,
+                'leave_amount' =>  $leaveType->leave_amount,
+                'visible_to_employees' =>  $leaveType->visible_to_employees,
+                'limit' =>  $leaveType->limit,
             ];
         });
     }

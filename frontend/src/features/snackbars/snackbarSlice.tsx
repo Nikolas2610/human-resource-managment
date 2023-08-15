@@ -39,6 +39,7 @@ const snackbarSlice = createSlice({
                 horizontal = SnackBarHorizontal.RIGHT,
             } = action.payload;
 
+            state.open = false;
             state.open = true;
             state.message = message;
             state.severity = severity;

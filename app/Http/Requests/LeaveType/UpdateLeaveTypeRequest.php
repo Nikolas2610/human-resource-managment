@@ -25,6 +25,9 @@ class UpdateLeaveTypeRequest extends Request
     {
         return [
             'type' => 'required|string',
+            'leave_amount' => 'nullable|integer',
+            'visible_to_employees' => 'required|boolean',
+            'limit' => 'required|boolean'
         ];
     }
 }

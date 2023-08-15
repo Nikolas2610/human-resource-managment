@@ -4,6 +4,7 @@ import { Position } from "../positions/Position.type";
 
 export interface Employee {
     id: number;
+    active: boolean;
     first_name: string;
     last_name: string;
     email: string;

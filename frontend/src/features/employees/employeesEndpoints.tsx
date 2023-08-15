@@ -26,7 +26,11 @@ export const employeesEndpoints = apiService.injectEndpoints({
                 method: "POST",
                 body: employee,
             }),
-            invalidatesTags: [{ type: "Employee" }],
+            invalidatesTags: [
+                { type: "Employee" },
+                { type: "Department" },
+                { type: "Position" },
+            ],
         }),
         updateEmployee: builder.mutation<Employee, UpdateEmployeeRequest>({
             query: ({ companyId, employeeId, employee }) => ({
@@ -34,16 +38,30 @@ export const employeesEndpoints = apiService.injectEndpoints({
                 method: "PATCH",
                 body: employee,
             }),
-            invalidatesTags: [{ type: "Employee" }],
+            invalidatesTags: [
+                { type: "Employee" },
+                { type: "Department" },
+                { type: "Position" },
+            ],
         }),
-        deleteEmployee: builder.mutation<void, { companyId: number, employeeId: number}>({
+        deleteEmployee: builder.mutation<
+            void,
+            { companyId: number; employeeId: number }
+        >({
             query: ({ companyId, employeeId }) => ({
                 url: `companies/${companyId}/employees/${employeeId}`,
                 method: "DELETE",
             }),
-            invalidatesTags: [{ type: "Employee" }],
+            invalidatesTags: [
+                { type: "Employee" },
+                { type: "Department" },
+                { type: "Position" },
+            ],
         }),
-        resetPassword: builder.mutation<void, { companyId: number, employeeId: number}>({
+        resetPassword: builder.mutation<
+            void,
+            { companyId: number; employeeId: number }
+        >({
             query: ({ companyId, employeeId }) => ({
                 url: `companies/${companyId}/employees/${employeeId}/reset-password`,
                 method: "POST",
@@ -58,5 +76,5 @@ export const {
     useCreateEmployeeMutation,
     useUpdateEmployeeMutation,
     useResetPasswordMutation,
-    useDeleteEmployeeMutation
+    useDeleteEmployeeMutation,
 } = employeesEndpoints;

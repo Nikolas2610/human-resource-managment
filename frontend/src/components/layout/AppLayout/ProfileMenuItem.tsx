@@ -14,6 +14,9 @@ import { useLogoutMutation } from "@/features/api/apiService";
 import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
 import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
 import RouteList from "@/routes/RouteList";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
+import { getAvatarName } from "@/utils/helpers/functions";
 
 function ProfileMenuItem() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -25,6 +28,7 @@ function ProfileMenuItem() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const { user } = useSelector((state: RootState) => state.auth);
     const [logout, { isLoading, isSuccess }] = useLogoutMutation();
     useToggleDashboardLoading(isLoading);
     useSuccessSnackbar({
@@ -56,7 +60,12 @@ function ProfileMenuItem() {
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}>N</Avatar>
+                        <Avatar sx={{ width: 32, height: 32 }}>
+                            {getAvatarName(
+                                user?.first_name ?? "U",
+                                user?.last_name ?? ""
+                            )}
+                        </Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>

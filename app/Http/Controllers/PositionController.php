@@ -9,6 +9,7 @@ use App\Models\Position;
 use App\Http\Resources\Position\PositionResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\QueryException;
 
 class PositionController extends Controller
 {
@@ -80,13 +81,18 @@ class PositionController extends Controller
     {
         try {
             $employee = $this->getAuthenticatedEmployee();
-
+    
             $this->authorizeForCompany($employee, $company);
             $this->ensurePositionBelongsToCompany($company, $position);
-
+    
             $position->delete();
-
+    
             return response()->json(['message' => 'Position deleted successfully.'], 200);
+        } catch (QueryException $qe) {
+            if ($qe->getCode() == 23000) {  // this is the error code for foreign key constraint violations in many database systems
+                return response()->json(['error' => 'DependencyError', 'message' => 'Cannot delete position because it is associated with one or more employees.'], 400);
+            }
+            return response()->json(['error' => 'DatabaseError', 'message' => $qe->getMessage()], 400);
         } catch (\Throwable $th) {
             return response()->json(['error' => 'Unauthorized', 'message' => $th->getMessage()], 401);
         }

@@ -33,6 +33,7 @@ return new class extends Migration
             $table->date('work_end_date')->nullable();
             $table->decimal('salary', 8, 2)->nullable();
             $table->enum('role', ['employee', 'manager', 'hr', 'accounting', 'admin', 'owner'])->default('employee');
+            $table->boolean('active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

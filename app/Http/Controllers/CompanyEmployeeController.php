@@ -35,6 +35,7 @@ class CompanyEmployeeController extends Controller
             'role' => $request->role,
             'salary' => $request->salary,
             'reports_to' => $request->reports_to,
+            'active' => $request->active
         ]);
 
         if ($request->hasFile('image')) {

@@ -30,7 +30,8 @@ import {
 import HeaderPageAddFeature from "@/components/ui/HeaderPageAddFeature";
 import { selectCompany } from "@/features/auth/authSlice";
 import { setSnackbar } from "@/features/snackbars/snackbarSlice";
-import { SnackBarSeverity } from "@/features/snackbars/enums/SnackBarSeverity.enum";
+import { useHandleDeleteError } from "@/hooks/useHandleDeleteError";
+import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
 
 function Departments() {
     const theme = useTheme();
@@ -51,8 +52,12 @@ function Departments() {
     const { showModal } = useModalContext();
     const [
         deleteDepartment,
-        { isSuccess, isError: isDeleteError, isLoading: isDeleteLoading },
+        { isSuccess, isError: isDeleteError, isLoading: isDeleteLoading, error: deleteError },
     ] = useDeleteDepartmentMutation();
+
+    // Custom hooks
+    useHandleDeleteError(isDeleteError, deleteError);
+    useToggleDashboardLoading(isDeleteLoading)
 
     useEffect(() => {
         dispatch(setPageTitle("Departments"));
@@ -61,10 +66,6 @@ function Departments() {
     useEffect(() => {
         dispatch(toggleDashboardLoading(isLoading));
     }, [isLoading, departments, error]);
-
-    useEffect(() => {
-        dispatch(toggleDashboardLoading(isDeleteLoading));
-    }, [isDeleteLoading, dispatch]);
 
     const handleEditDepartment = (id: number) => {
         navigate(RouteList.editDepartment(id));
@@ -78,15 +79,6 @@ function Departments() {
                 dispatch(
                     setSnackbar({
                         message: "Department deleted successfully",
-                    })
-                );
-            }
-
-            if (isDeleteError) {
-                dispatch(
-                    setSnackbar({
-                        message: "Department deleted successfully",
-                        severity: SnackBarSeverity.ERROR,
                     })
                 );
             }

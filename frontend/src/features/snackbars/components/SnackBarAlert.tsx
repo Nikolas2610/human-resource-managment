@@ -1,5 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Snackbar, Alert } from "@mui/material";
+import Slide, { SlideProps } from "@mui/material/Slide";
+
 import {
     SnackbarState,
     closeSnackbar,
@@ -22,13 +24,14 @@ export default function SnackbarAlert() {
         }
         dispatch(closeSnackbar());
     };
-    
+
     return (
         <Snackbar
             open={open}
             autoHideDuration={6000}
             onClose={handleClose}
             anchorOrigin={{ vertical, horizontal }}
+            TransitionComponent={(props: SlideProps) => <Slide {...props} direction="down" />}
         >
             <Alert
                 onClose={handleClose}
