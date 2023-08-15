@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useAppSelector } from "./app/hook";
 import { setToken, setUser } from "./features/auth/authSlice";
 import { useGetUserQuery } from "./features/api/apiService";
-import { toggleAppLoading } from "./features/dashboard/dashboardSlice";
+import { toggleAppLoading, toggleDrawer } from "./features/dashboard/dashboardSlice";
 
 // Material UI
 import { Box, ThemeProvider } from "@mui/material";
@@ -37,9 +37,14 @@ function App() {
 
     // If a token is stored in localStorage, dispatch it
     useEffect(() => {
+        // Get token and get user
         const token = localStorage.getItem("token");
-
         token ? dispatch(setToken(token)) : dispatch(toggleAppLoading(false));
+
+        const openDrawer = localStorage.getItem("openDrawer");
+        if (openDrawer) {
+            dispatch(toggleDrawer(openDrawer === "open"));
+        } 
     }, [dispatch]);
 
     // Track the loading state and navigate based on data or error

@@ -20,7 +20,8 @@ class DepartmentResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'company_id' => $this->company_id,
-            'num_employees' => sizeof($this->employees)
+            'num_employees' => sizeof($this->employees),
+            'manager' => new DepartmentManagerResource($this->manager)
         ];
     }
 }

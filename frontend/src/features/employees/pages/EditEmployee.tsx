@@ -26,7 +26,6 @@ export default function EditEmployee() {
     }, [isError, navigate]);
 
     useEffect(() => {
-        console.log(employee);
         if (employee) {
             setEditEmployee({
                 first_name: employee.first_name,
@@ -47,17 +46,13 @@ export default function EditEmployee() {
         }
     }, [employee]);
 
-    useEffect(() => {
-        console.log("\x1b[31m%s\x1b[0m", "EDIT");
-        console.log(editEmployee);
-    }, [editEmployee]);
-
     return (
         <>
             {editEmployee && (
                 <EmployeeForm
                     formTitle="Edit Employee"
                     initialData={editEmployee}
+                    employeeId={employee?.id}
                 />
             )}
         </>

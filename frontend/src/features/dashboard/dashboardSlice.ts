@@ -45,6 +45,7 @@ const dashboardSlice = createSlice({
             state.isAppLoading = action.payload;
         },
         toggleDrawer: (state, action: PayloadAction<boolean>) => {
+            localStorage.setItem("openDrawer", action.payload ? "open" : "close");
             state.drawerOpen = action.payload;
         },
         setPageTitle: (state, action: PayloadAction<string>) => {

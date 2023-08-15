@@ -36,6 +36,19 @@ export const employeesEndpoints = apiService.injectEndpoints({
             }),
             invalidatesTags: [{ type: "Employee" }],
         }),
+        deleteEmployee: builder.mutation<void, { companyId: number, employeeId: number}>({
+            query: ({ companyId, employeeId }) => ({
+                url: `companies/${companyId}/employees/${employeeId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: [{ type: "Employee" }],
+        }),
+        resetPassword: builder.mutation<void, { companyId: number, employeeId: number}>({
+            query: ({ companyId, employeeId }) => ({
+                url: `companies/${companyId}/employees/${employeeId}/reset-password`,
+                method: "POST",
+            }),
+        }),
     }),
 });
 
@@ -44,4 +57,6 @@ export const {
     useGetEmployeeQuery,
     useCreateEmployeeMutation,
     useUpdateEmployeeMutation,
+    useResetPasswordMutation,
+    useDeleteEmployeeMutation
 } = employeesEndpoints;

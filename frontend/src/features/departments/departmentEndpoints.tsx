@@ -1,6 +1,6 @@
 import { Department } from "@/types/departments/Department.type";
 import { apiService } from "../api/apiService";
-import { NewDepartment } from "@/types/departments/NewDepartment.type";
+import { NewDepartmentRequest } from "@/types/departments/NewDepartmentRequest.type";
 import { ExistingDepartment } from "@/types/departments/ExistingDepartment.type";
 
 export const departmentEndpoints = apiService.injectEndpoints({
@@ -20,7 +20,7 @@ export const departmentEndpoints = apiService.injectEndpoints({
                 { type: "Department", id: departmentId },
             ],
         }),
-        createDepartment: builder.mutation<void, NewDepartment>({
+        createDepartment: builder.mutation<void, NewDepartmentRequest>({
             query: ({ companyId, department }) => ({
                 url: `companies/${companyId}/departments`,
                 method: "POST",

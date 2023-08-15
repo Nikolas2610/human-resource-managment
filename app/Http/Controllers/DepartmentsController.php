@@ -40,6 +40,7 @@ class DepartmentsController extends Controller
 
         $department = $company->departments()->create([
             'name' => $validateData['name'],
+            'manager_id' => $validateData['manager_id'] ?? null
         ]);
 
         return new DepartmentResource($department);
@@ -80,6 +81,7 @@ class DepartmentsController extends Controller
 
             $department->update([
                 'name' => $validatedData['name'],
+                'manager_id' => $validatedData['manager_id'] ?? null
             ]);
 
             return new DepartmentResource($department);

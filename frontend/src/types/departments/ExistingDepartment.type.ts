@@ -3,5 +3,6 @@ export interface ExistingDepartment {
     department: {
         id?: number | string;
         name: string;
+        manager_id?: string | number | null; 
     };
 }

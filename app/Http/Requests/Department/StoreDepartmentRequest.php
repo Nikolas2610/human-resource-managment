@@ -25,6 +25,7 @@ class StoreDepartmentRequest extends Request
     {
         return [
             'name' => 'required|string|max:255',
+            'manager_id' =>  'nullable|integer|exists:employees,id'
         ];
     }
 }

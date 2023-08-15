@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    // TODO: Add fields => celebrate birthdays, celebrate name days, celebrate anniversaries, email, logo, contact information [Address, Phone Number, email, website], information: [Description, company start date]
     /**
      * Run the migrations.
      *

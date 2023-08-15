@@ -2,3 +2,14 @@
 Leave requests can deleted AND by the HR
 Leave requests can updated AND by the HR
 Leave requests can STORE AND by the HR
+
+ADD TABLES: documents, holiday's 
+
+FIXES: 
+
+delete with foreign keys
+update without password the employee
+set password reset for the employee with create password from his data
+show departments with employees and positions
+
+UPDATE / DELETE employee

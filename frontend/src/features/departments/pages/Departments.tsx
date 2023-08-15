@@ -75,16 +75,20 @@ function Departments() {
             await deleteDepartment({ companyId, departmentId: id });
 
             if (isSuccess) {
-                dispatch(setSnackbar({
-                    message: "Department deleted successfully"
-                }))
+                dispatch(
+                    setSnackbar({
+                        message: "Department deleted successfully",
+                    })
+                );
             }
 
             if (isDeleteError) {
-                dispatch(setSnackbar({
-                    message: "Department deleted successfully",
-                    severity: SnackBarSeverity.ERROR
-                }))
+                dispatch(
+                    setSnackbar({
+                        message: "Department deleted successfully",
+                        severity: SnackBarSeverity.ERROR,
+                    })
+                );
             }
         };
 
@@ -173,7 +177,13 @@ function Departments() {
                                         >
                                             <AccessibilityNewIcon fontSize="large" />
                                             <Typography variant="h4">
-                                                Psillovits
+                                                {department?.manager
+                                                    ? department.manager
+                                                          ?.first_name +
+                                                      "" +
+                                                      department.manager
+                                                          ?.last_name
+                                                    : "-"}
                                             </Typography>
                                         </Box>
                                         <Box

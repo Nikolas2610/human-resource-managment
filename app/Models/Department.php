@@ -9,6 +9,7 @@ class Department extends Model
     protected $fillable = [
         'name',
         'company_id',
+        'manager_id'
     ];
 
     public function company()
@@ -33,6 +34,6 @@ class Department extends Model
 
     public function manager()
     {
-        return $this->belongsTo(Client::class, 'manager_id');
+        return $this->belongsTo(Employee::class, 'manager_id');
     }
 }

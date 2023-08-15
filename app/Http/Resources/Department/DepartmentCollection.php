@@ -13,7 +13,7 @@ class DepartmentCollection extends ResourceCollection
                 'id' => $department->id,
                 'company_id' => $department->company_id,
                 'name' => $department->name,
-                'manager_id' => $department->manager_id,
+                'manager' => new DepartmentManagerResource($department->manager),
                 'num_employees' => $department->employees->count(),
             ];
         });

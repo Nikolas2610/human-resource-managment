@@ -9,6 +9,18 @@ import { GridRenderCellParams } from "@mui/x-data-grid";
 import FlexCenter from "@/components/ui/wrappers/FlexCenter";
 import { useNavigate } from "react-router-dom";
 import RouteList from "@/routes/RouteList";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import {
+    useDeleteEmployeeMutation,
+    useResetPasswordMutation,
+} from "../employeesEndpoints";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCompany } from "@/features/auth/authSlice";
+import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
+import { setSnackbar } from "@/features/snackbars/snackbarSlice";
+import { useHandleServerError } from "@/hooks/useHandleServerError";
+import { SnackBarSeverity } from "@/features/snackbars/enums/SnackBarSeverity.enum";
+import { useModalContext } from "@/contexts/ModalContext";
 
 export default function EmployeeTableActions({
     params,
@@ -18,6 +30,35 @@ export default function EmployeeTableActions({
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { showModal } = useModalContext();
+    const companyId = useSelector(selectCompany);
+
+    // RTK Query
+    const [
+        resetPassword,
+        {
+            isLoading: isResetPasswordLoading,
+            isSuccess: isResetPasswordSuccess,
+            isError: isResetPasswordError,
+            error: resetPasswordError,
+        },
+    ] = useResetPasswordMutation();
+
+    const [
+        deleteEmployee,
+        {
+            isLoading: isDeleteLoading,
+            isSuccess: isDeleteSuccess,
+            isError: isDeleteError,
+        }
+    ] = useDeleteEmployeeMutation();
+
+
+    // Hooks
+    useToggleDashboardLoading(isResetPasswordLoading);
+    useToggleDashboardLoading(isDeleteLoading);
+    useHandleServerError(isResetPasswordError, resetPasswordError);
 
     const handleSubmit = () => {
         setLoading(true);
@@ -37,11 +78,57 @@ export default function EmployeeTableActions({
     // Check if the current row id exists in editedRowIds
     const isEdited = editedRowIds.includes(params.id);
 
+    const handleResetPassword = () => {
+        const id = parseInt(params.id.toString(), 10);
+        resetPassword({ companyId, employeeId: id });
+    };
+
+    const handleDeleteEmployee = () => {
+        const id = parseInt(params.id.toString(), 10);
+        const onDeleteEmployee = async () => {
+            await deleteEmployee({ companyId, employeeId: id });
+
+            if (isDeleteSuccess) {
+                dispatch(
+                    setSnackbar({
+                        message: "Employee deleted successfully",
+                    })
+                );
+            }
+
+            if (isDeleteError) {
+                dispatch(
+                    setSnackbar({
+                        message: "Employee not deleted",
+                        severity: SnackBarSeverity.ERROR,
+                    })
+                );
+            }
+        };
+
+        const fullName = params.row.first_name + " " + params.row.last_name;
+
+        showModal(
+            `Are you sure you want to delete ${fullName}?`,
+            onDeleteEmployee
+        );
+    };
+
     useEffect(() => {
         if (isEdited && success) {
             setSuccess(false);
         }
     }, [editedRowIds]);
+
+    useEffect(() => {
+        if (isResetPasswordSuccess) {
+            dispatch(
+                setSnackbar({
+                    message: "Reset password has be done successfully.",
+                })
+            );
+        }
+    }, [isResetPasswordSuccess]);
 
     return (
         <FlexCenter>
@@ -53,8 +140,15 @@ export default function EmployeeTableActions({
                 </Tooltip>
             </Box>
             <Box>
+                <Tooltip placement="top" title="Reset Password Employee">
+                    <IconButton color="info" onClick={handleResetPassword}>
+                        <LockResetIcon />
+                    </IconButton>
+                </Tooltip>
+            </Box>
+            <Box>
                 <Tooltip placement="top" title="Delete Employee">
-                    <IconButton color="error">
+                    <IconButton color="error" onClick={handleDeleteEmployee}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>

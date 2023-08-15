@@ -1,4 +1,5 @@
 export interface NewDepartment {
-    companyId: number;
-    department: Omit<{ id?: number | string; name: string }, "id">;
+    id?: number | string;
+    name: string;
+    manager_id?: number | string | null;
 }

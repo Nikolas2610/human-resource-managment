@@ -101,6 +101,7 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
             Route::post('/', [CompanyEmployeeController::class, 'store']);
             Route::patch('/{employee}', [CompanyEmployeeController::class, 'update']);
             Route::delete('/{employee}', [CompanyEmployeeController::class, 'destroy']);
+            Route::post('/{employee}/reset-password', [CompanyEmployeeController::class, 'resetPassword']);
         });
     });
 });

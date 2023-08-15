@@ -33,8 +33,8 @@ class CompanyEmployeeController extends Controller
             'department_id' => $request->department_id,
             'position_id' => $request->position_id,
             'role' => $request->role,
-            'salary'=> $request->salary,
-            'reports_to'=> $request->reports_to,
+            'salary' => $request->salary,
+            'reports_to' => $request->reports_to,
         ]);
 
         if ($request->hasFile('image')) {
@@ -63,14 +63,14 @@ class CompanyEmployeeController extends Controller
         if ($employee->company_id != $company->id) {
             return response()->json(['error' => 'Employee does not belong to this company'], 404);
         }
-    
+
         // Get validated data and exclude password and password_confirmation
         $dataToUpdate = collect($request->validated())
-                        ->except(['password', 'password_confirmation'])
-                        ->toArray();
-    
+            ->except(['password', 'password_confirmation'])
+            ->toArray();
+
         $employee->update($dataToUpdate);
-    
+
         return response()->json($employee);
     }
 
@@ -85,6 +85,27 @@ class CompanyEmployeeController extends Controller
 
         $employee->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Employee deleted successfully.'], 200);
+    }
+
+    public function resetPassword(Company $company, Employee $employee)
+    {
+        // Check if the employee belongs to the company
+        if ($employee->company_id != $company->id) {
+            return response()->json(['error' => 'Employee does not belong to this company'], 404);
+        }
+
+        // Generate new password base employee credentials
+        $newPassword = $employee->first_name . $employee->last_name . "|$employee->id";
+        // Delete spaces
+        $newPassword = str_replace(' ', '', $newPassword);
+
+        $employee->password = Hash::make($newPassword);
+        $employee->save();
+
+        return response()->json([
+            'message' => 'Employee reset password successfully',
+            "pass" => $newPassword
+        ]);
     }
 }
