@@ -29,7 +29,8 @@ class EmployeeResource extends JsonResource
             'position' => new PositionResource($this->position),
             'managed_departments' => DepartmentResource::collection($this->managedDepartments),
             'leave_amounts' => LeaveAmountResource::collection($this->leaveAmounts),
-            'reports_to' => new ReportToEmployeeResource($this->reportsTo)
+            'reports_to' => new ReportToEmployeeResource($this->reportsTo),
+            'leave_types' => EmployeeLeaveTypeResource::collection($this->leaveTypes),
         ];
     }
 }

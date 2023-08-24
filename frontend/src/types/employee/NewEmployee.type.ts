@@ -1,4 +1,5 @@
 import { UserRole } from "@/features/auth/enums/UserRole";
+import { NewEmployeeLeaveType } from "./NewEmployeeLeaveType.type";
 
 export interface NewEmployee {
     first_name: string;
@@ -13,7 +14,8 @@ export interface NewEmployee {
     department_id: number;
     position_id: number;
     companyId: number;
-    role: UserRole,
+    role: UserRole;
     salary?: number;
     reports_to?: number;
+    leave_types?: NewEmployeeLeaveType[];
 }

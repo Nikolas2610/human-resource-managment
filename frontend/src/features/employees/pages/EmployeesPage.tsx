@@ -78,6 +78,11 @@ function EmployeesPage() {
             valueGetter: (params) =>
                 params.row.active ? "Active" : "Inactive",
         },
+        {
+            field: "role",
+            headerName: "Role",
+            width: 100,
+        },
         { field: "phone", headerName: "Phone", width: 130 },
         { field: "address", headerName: "Address", width: 130 },
 

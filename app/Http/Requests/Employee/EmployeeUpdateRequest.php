@@ -36,6 +36,13 @@ class EmployeeUpdateRequest extends Request
             'email' => 'sometimes|string|email|max:255|unique:employees,email,' . $this->employee->id,
             'password' => 'sometimes|string|min:8|confirmed',
             'active' => 'required|boolean',
+            'role' => 'required|string|in:employee,hr,accounting,admin,owner,manager',
+            'leave_types' => 'sometimes|array',
+            'leave_types.*.id' => 'sometimes|required|integer|exists:leave_types,id',
+            'leave_types.*.allocated_leaves' => 'sometimes|required|integer|min:0',
+            'leave_types.*.used_leaves' => 'sometimes|required|integer|min:0',
+            'leave_types.*.unavailable_leaves' => 'sometimes|required|integer|min:0',
+            'leave_types.*.year' => 'sometimes|required|integer|min:1900|max:2100',
         ];
     }
 }

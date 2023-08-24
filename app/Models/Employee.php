@@ -78,7 +78,15 @@ class Employee extends Authenticatable
         return $this->belongsToMany(LeaveAmount::class, 'employee_leave_amount');
     }
 
-    public function reportsTo() {
+    public function reportsTo()
+    {
         return $this->belongsTo(Employee::class, 'reports_to');
+    }
+
+    public function leaveTypes()
+    {
+        return $this->belongsToMany('App\Models\LeaveType', 'employee_leave_type')  // specify the pivot table name if it's not the default
+            ->withPivot('allocated_leaves', 'used_leaves', 'unavailable_leaves', 'year')
+            ->orderByDesc('pivot_year');  // specify the additional pivot fields
     }
 }

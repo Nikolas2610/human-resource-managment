@@ -34,6 +34,8 @@ import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
 import generateResponseMessage from "@/utils/helpers/generateResponseMessage";
 import { UserRole } from "@/features/auth/enums/UserRole";
 import { capitalizeFirstLetter } from "@/utils/helpers/functions";
+import { useGetLeaveTypesQuery } from "@/features/leave-types/leaveTypesEndpoints";
+import AddLeaveTypes from "./AddLeaveTypes";
 
 export default function EmployeeForm({
     formTitle,
@@ -46,6 +48,7 @@ export default function EmployeeForm({
         control,
         handleSubmit,
         watch,
+        getValues,
         formState: { errors },
     } = useForm({
         defaultValues: initialData,
@@ -61,6 +64,9 @@ export default function EmployeeForm({
             data: Position[];
             isLoading: boolean;
         };
+    const { data: leaveTypes = [], isLoading: isLeaveTypesLoading } =
+        useGetLeaveTypesQuery(companyId);
+
     const selectedDepartmentId = watch("department_id");
     const [filteredPositions, setFilteredPositions] =
         useState<Position[]>(positions);
@@ -83,7 +89,7 @@ export default function EmployeeForm({
 
     const userRoleOptions = Object.entries(UserRole)
         .filter(([key]) => key !== "GUEST")
-        .map(([key, value]) => ({
+        .map(([_key, value]) => ({
             id: value,
             title: capitalizeFirstLetter(value),
         }));
@@ -124,6 +130,8 @@ export default function EmployeeForm({
             const { password, password_confirmation, ...cleanData } = data;
 
             if (employeeId) {
+                console.log(cleanData);
+                
                 updateEmployee({
                     companyId,
                     employeeId,
@@ -301,7 +309,9 @@ export default function EmployeeForm({
                                     getOptionLabel={(option) => option.name}
                                     getOptionValue={(option) => option.id}
                                     errorObject={errors}
-                                    isDisabled={isUpdateLoading || isCreateLoading}
+                                    isDisabled={
+                                        isUpdateLoading || isCreateLoading
+                                    }
                                     label="Department"
                                 />
                             )}
@@ -457,6 +467,15 @@ export default function EmployeeForm({
                             label="Active Employee"
                         />
                     </Box>
+
+                    <AddLeaveTypes
+                        register={register}
+                        control={control}
+                        getValues={getValues}
+                        errors={errors}
+                        leaveTypes={leaveTypes}
+                        initialData={initialData?.leave_types ?? []}
+                    />
 
                     <FlexCenter>
                         <Button

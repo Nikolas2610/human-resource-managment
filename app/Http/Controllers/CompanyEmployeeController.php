@@ -8,12 +8,14 @@ use App\Http\Resources\Employee\EmployeeResource;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\LeaveType;
+use Illuminate\Support\Facades\DB;
 
 class CompanyEmployeeController extends Controller
 {
     public function index(Company $company)
     {
-        $employees = $company->employees()->with('reportsTo')->get();
+        $employees = $company->employees()->with('reportsTo', 'leaveTypes')->get();
         return EmployeeResource::collection($employees);
     }
 
@@ -45,6 +47,9 @@ class CompanyEmployeeController extends Controller
 
         $employee->save();
 
+        // Check if leave_types are provided in the request
+        $this->syncEmployeeLeaveTypes($employee, $request, $company);
+
         return response()->json([
             'message' => 'Employee registered successfully',
         ]);
@@ -72,6 +77,8 @@ class CompanyEmployeeController extends Controller
 
         $employee->update($dataToUpdate);
 
+        $this->syncEmployeeLeaveTypes($employee, $request, $company);
+
         return response()->json($employee);
     }
 
@@ -83,6 +90,9 @@ class CompanyEmployeeController extends Controller
         if ($employee->company_id != $company->id) {
             return response()->json(['error' => 'Employee does not belong to this company'], 404);
         }
+
+        // Manually delete related rows in employee_leave_type
+        $employee->leaveTypes()->detach();
 
         $employee->delete();
 
@@ -108,5 +118,33 @@ class CompanyEmployeeController extends Controller
             'message' => 'Employee reset password successfully',
             "pass" => $newPassword
         ]);
+    }
+
+    private function syncEmployeeLeaveTypes(Employee $employee, $request, Company $company)
+    {
+        if ($request->has('leave_types')) {
+            // Fetch the leave type IDs associated with the current company
+            $validLeaveTypeIds = LeaveType::where('company_id', $company->id)->pluck('id')->toArray();
+
+            foreach ($request->leave_types as $leaveType) {
+                if (in_array($leaveType['id'], $validLeaveTypeIds)) {
+                    $conditions = [
+                        'employee_id' => $employee->id,
+                        'leave_type_id' => $leaveType['id'],
+                        'year' => $leaveType['year']
+                    ];
+
+                    $values = [
+                        'allocated_leaves' => $leaveType['allocated_leaves'],
+                        'used_leaves' => $leaveType['used_leaves'],
+                        'unavailable_leaves' => $leaveType['unavailable_leaves'],
+                        'remaining_leaves' => $leaveType['allocated_leaves'] - ($leaveType['used_leaves'] + $leaveType['unavailable_leaves'])
+                    ];
+
+                    // Use updateOrInsert to either update the existing record or insert a new one
+                    DB::table('employee_leave_type')->updateOrInsert($conditions, $values);
+                }
+            }
+        }
     }
 }

@@ -43,6 +43,7 @@ export default function EditEmployee() {
                 password: "",
                 password_confirmation: "",
                 companyId: companyId,
+                leave_types: employee.leave_types
             });
         }
     }, [employee]);

@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained();
             $table->foreignId('leave_type_id')->constrained();
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->text('reason')->nullable();
-            $table->string('status')->default('pending'); // Statuses: pending, approved, rejected
+            $table->enum('status', ['pending', 'approved', 'rejected', 'done'])->default('pending');
             $table->timestamps();
         });
     }

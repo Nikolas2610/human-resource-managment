@@ -38,6 +38,12 @@ class StoreEmployeeRequest extends Request
             'salary' => 'numeric|min:0',  // Adjust the min and max as needed
             'role' => 'required|string|in:employee,hr,accounting,admin,owner,manager',
             'reports_to' => 'nullable|integer|exists:employees,id',  // Ensure the referenced ID exists
+            'leave_types' => 'sometimes|array',
+            'leave_types.*.id' => 'required|integer|exists:leave_types,id',
+            'leave_types.*.allocated_leaves' => 'required|integer|min:0',
+            'leave_types.*.used_leaves' => 'required|integer|min:0',
+            'leave_types.*.unavailable_leaves' => 'required|integer|min:0',
+            'leave_types.*.year' => 'required|integer|min:1900|max:2100'
         ];
     }
 }

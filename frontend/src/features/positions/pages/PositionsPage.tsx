@@ -32,7 +32,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import { useGetDepartmentsQuery } from "@/features/departments/departmentEndpoints";
 import { Department } from "@/types/departments/Department.type";
-import { setSnackbar } from "@/features/snackbars/snackbarSlice";
 import { useHandleDeleteError } from "@/hooks/useHandleDeleteError";
 import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
 import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
