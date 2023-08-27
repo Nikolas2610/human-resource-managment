@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LeaveType\StoreLeaveTypeRequest;
 use App\Http\Requests\LeaveType\UpdateLeaveTypeRequest;
+use App\Http\Requests\Request;
+use App\Http\Resources\LeaveType\EmployeeLeavesResource;
 use App\Models\LeaveType;
 use App\Models\Company;
 use App\Http\Resources\LeaveType\LeaveTypeResource;
 use App\Http\Resources\LeaveType\LeaveTypeCollection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class LeaveTypeController extends Controller
 {
@@ -21,6 +24,12 @@ class LeaveTypeController extends Controller
         } catch (\Throwable $exception) {
             return response()->json(['error' => 'Unauthorized', 'message' => $exception->getMessage()], 401);
         }
+    }
+
+    public function getEmployeeLeaveTypes(Company $company, Request $request)
+    {
+        $employee = Auth::guard('employee')->user();
+        return EmployeeLeavesResource::collection($employee->currentYearLeaveTypes);
     }
 
     public function store(StoreLeaveTypeRequest $request, Company $company)

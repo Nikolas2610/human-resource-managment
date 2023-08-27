@@ -14,8 +14,26 @@ class LeaveRequestCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return [
-            'data' => LeaveRequestResource::collection($this->collection),
-        ];
+        return $this->collection->transform(function ($leaveRequest) {
+            return [
+                'id' => $leaveRequest->id,
+                'employee_id' => $leaveRequest->employee_id,
+                'employee_name' => $leaveRequest->employee->first_name . " " . $leaveRequest->employee->last_name,
+                'department' => [
+                    'id' => $leaveRequest->employee->department->id,
+                    'name' => $leaveRequest->employee->department->name,
+                ],
+                'leave_type_id' =>  $leaveRequest->leave_type_id,
+                'leave_type_name' =>  $leaveRequest->leaveType->type,
+                'start_date' =>  $leaveRequest->start_date,
+                'end_date' =>  $leaveRequest->end_date,
+                'reason' =>  $leaveRequest->reason,
+                'status' =>  $leaveRequest->status,
+                'days_requested' =>  $leaveRequest->days_requested,
+                'manager_approved' =>  $leaveRequest->manager_approved,
+                'hr_approved' =>  $leaveRequest->hr_approved,
+                'created_at' =>  $leaveRequest->created_at,
+            ];
+        });
     }
 }

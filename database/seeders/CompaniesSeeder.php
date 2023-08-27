@@ -21,7 +21,8 @@ class CompaniesSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             DB::table('companies')->insert([
                 'name' => $faker->company,
-                'default_leave_amount' => $faker->numberBetween(10, 30),
+                'require_manager_approval' => $faker->boolean(),
+                'require_hr_approval' => $faker->boolean(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

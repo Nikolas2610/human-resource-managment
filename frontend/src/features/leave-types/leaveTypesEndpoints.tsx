@@ -2,6 +2,7 @@ import { LeaveType } from "@/types/leave-types/LeaveType.type";
 import { apiService } from "../api/apiService";
 import { NewLeaveTypeRequest } from "@/types/leave-types/NewLeaveTypeRequest.type";
 import { UpdateLeaveTypeRequest } from "@/types/leave-types/UpdateLeaveTypeRequest.type";
+import { EmployeeLeaves } from "@/types/leave-types/EmployeeLeaves.type";
 
 export const leaveTypesEndpoints = apiService.injectEndpoints({
     endpoints: (builder) => ({
@@ -19,6 +20,10 @@ export const leaveTypesEndpoints = apiService.injectEndpoints({
             providesTags: (_result, _error, { leaveTypeId }) => [
                 { type: "LeaveType", id: leaveTypeId },
             ],
+        }),
+        getEmployeeLeaves: builder.query<EmployeeLeaves[], number>({
+            query: (companyId: number) =>
+                `companies/${companyId}/leave-types/employee`,
         }),
         createLeaveType: builder.mutation<void, NewLeaveTypeRequest>({
             query: ({ companyId, leaveType }) => ({
@@ -52,6 +57,7 @@ export const leaveTypesEndpoints = apiService.injectEndpoints({
 export const {
     useGetLeaveTypeQuery,
     useGetLeaveTypesQuery,
+    useGetEmployeeLeavesQuery,
     useCreateLeaveTypeMutation,
     useUpdateLeaveTypeMutation,
     useDeleteLeaveTypeMutation,

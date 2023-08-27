@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { UserEmployee } from "../../types/employee/UserEmployee.type";
 import { LoginArgs } from "../../types/api/auth/login/Login.type";
+import { UserRole } from "./enums/UserRole";
 
 interface AuthState {
     user: UserEmployee | null;
@@ -51,8 +52,9 @@ export const authSlice = createSlice({
 });
 
 // Selectors
-export const selectUserRole = (state: RootState) => state.auth.user?.role ?? 0;
-export const selectCompany = (state: RootState) => state.auth.user?.company_id ?? 0;
+export const selectUserRole = (state: RootState) => state.auth.user?.role ?? UserRole.GUEST;
+export const selectUserID = (state: RootState) => state.auth.user?.id ?? 0;
+export const selectCompany = (state: RootState): number => state.auth.user?.company_id ?? 0;
 
 // Export actions
 export const {

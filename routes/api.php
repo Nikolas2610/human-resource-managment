@@ -32,12 +32,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // TODO: Must move for the admin
     Route::prefix('companies')->group(function () {
         Route::get('/', [CompanyController::class, 'index'])->name('companies.index');
-        Route::get('/{company}', [CompanyController::class, 'show'])->name('companies.show');
         Route::put('/{company}', [CompanyController::class, 'update'])->name('companies.update');
         Route::delete('/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
     });
-
-
 });
 
 Route::middleware(['custom.sanctum.auth'])->group(function () {
@@ -49,7 +46,11 @@ Route::middleware(['custom.sanctum.auth'])->group(function () {
 Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
 
 
+
     Route::prefix('companies/{company}')->group(function () {
+        // Get company settings
+        Route::get('/', [CompanyController::class, 'show'])->name('companies.show');
+
         // Departments
         Route::prefix('departments')->group(function () {
             Route::get('/', [DepartmentsController::class, 'index']);
@@ -68,19 +69,21 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
             Route::delete('/{position}', [PositionController::class, 'destroy']);
         });
 
-        // Leave Amounts
-        Route::prefix('leave-amounts')->group(function () {
-            Route::get('/', [LeaveAmountController::class, 'index']);
-            Route::post('/', [LeaveAmountController::class, 'store']);
-            Route::get('/{leaveAmount}', [LeaveAmountController::class, 'show']);
-            Route::put('/{leaveAmount}', [LeaveAmountController::class, 'update']);
-            Route::delete('/{leaveAmount}', [LeaveAmountController::class, 'destroy']);
-        });
+        // Leave Amounts - Not using
+        // Route::prefix('leave-amounts')->group(function () {
+        //     Route::get('/', [LeaveAmountController::class, 'index']);
+        //     Route::post('/', [LeaveAmountController::class, 'store']);
+        //     Route::get('/{leaveAmount}', [LeaveAmountController::class, 'show']);
+        //     Route::put('/{leaveAmount}', [LeaveAmountController::class, 'update']);
+        //     Route::delete('/{leaveAmount}', [LeaveAmountController::class, 'destroy']);
+        // });
 
         // Leave Types
         Route::prefix('leave-types')->group(function () {
             Route::get('/', [LeaveTypeController::class, 'index']);
             Route::post('/', [LeaveTypeController::class, 'store']);
+            // Employee Route
+            Route::get('/employee', [LeaveTypeController::class, 'getEmployeeLeaveTypes']);
             Route::get('/{leaveType}', [LeaveTypeController::class, 'show']);
             Route::put('/{leaveType}', [LeaveTypeController::class, 'update']);
             Route::delete('/{leaveType}', [LeaveTypeController::class, 'destroy']);
@@ -89,11 +92,18 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
         // Leave Requests
         Route::prefix('leave-requests')->group(function () {
             Route::get('/', [LeaveRequestController::class, 'index']);
+            Route::get('/employee', [LeaveRequestController::class, 'getEmployeeLeaveRequests']);
+            // Only for manager role
+            Route::get('/manager', [LeaveRequestController::class, 'getManagerEmployeeLeaveRequests']);
+            // For Employees and all
             Route::post('/', [LeaveRequestController::class, 'store']);
             Route::get('/{leaveRequest}', [LeaveRequestController::class, 'show']);
             Route::put('/{leaveRequest}', [LeaveRequestController::class, 'update']);
             Route::delete('/{leaveRequest}', [LeaveRequestController::class, 'destroy']);
+            // For HR and manager
+            Route::put('/{leaveRequest}/status-update', [LeaveRequestController::class, 'updateLeaveRequestStatus']);
         });
+
 
         Route::prefix('employees')->group(function () {
             Route::get('/', [CompanyEmployeeController::class, 'index']);
@@ -107,7 +117,6 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
 });
 
 
-// Testing
 Route::get('/user', function (Request $request) {
     $user = Auth::guard('employee')->user();
     return response()->json([

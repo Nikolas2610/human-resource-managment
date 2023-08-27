@@ -8,7 +8,8 @@ class Company extends Model
 {
     protected $fillable = [
         'name',
-        'default_leave_amount',
+        'require_manager_approval',
+        'require_hr_approval',
     ];
 
     public function departments()

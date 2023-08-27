@@ -17,10 +17,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained();
             $table->foreignId('leave_type_id')->constrained();
+            $table->integer('days_requested');
             $table->date('start_date');
             $table->date('end_date');
             $table->text('reason')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'done'])->default('pending');
+            $table->enum('manager_approved', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('hr_approved', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

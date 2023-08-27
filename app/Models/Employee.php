@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -88,5 +89,15 @@ class Employee extends Authenticatable
         return $this->belongsToMany('App\Models\LeaveType', 'employee_leave_type')  // specify the pivot table name if it's not the default
             ->withPivot('allocated_leaves', 'used_leaves', 'unavailable_leaves', 'year')
             ->orderByDesc('pivot_year');  // specify the additional pivot fields
+    }
+
+    public function currentYearLeaveTypes()
+    {
+        $currentYear = Carbon::now()->year; // Getting the current year using Carbon
+
+        return $this->belongsToMany('App\Models\LeaveType', 'employee_leave_type')
+            ->withPivot('allocated_leaves', 'used_leaves', 'unavailable_leaves', 'remaining_leaves', 'year')
+            ->wherePivot('year', $currentYear) // Filtering by the current year
+            ->orderByDesc('pivot_year');
     }
 }

@@ -8,13 +8,13 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTheme } from "@mui/material";
-import { useLogoutMutation } from "@/features/api/apiService";
+import { apiService, useLogoutMutation } from "@/features/api/apiService";
 import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
 import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
 import RouteList from "@/routes/RouteList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store";
 import { getAvatarName } from "@/utils/helpers/functions";
 
@@ -29,13 +29,22 @@ function ProfileMenuItem() {
         setAnchorEl(null);
     };
     const { user } = useSelector((state: RootState) => state.auth);
-    const [logout, { isLoading, isSuccess }] = useLogoutMutation();
+    const [logout, { isLoading, isSuccess, isError }] = useLogoutMutation();
+    const dispatch = useDispatch();
     useToggleDashboardLoading(isLoading);
-    useSuccessSnackbar({
-        isSuccess,
-        message: "Has been logout successfully",
-        to: RouteList.login,
-    });
+    // !FIX ME: The snackbar stay on the DOM 
+    // useSuccessSnackbar({
+    //     isSuccess,
+    //     message: "Has been logout successfully",
+    //     to: RouteList.login,
+    // });
+
+    useEffect(() => {
+        if (isSuccess || isError) {
+            // reset the API state here
+            dispatch(apiService.util.resetApiState());
+        }
+    }, [isSuccess, isError, dispatch]);
 
     const handleLogout = () => {
         handleClose();

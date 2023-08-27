@@ -15,6 +15,10 @@ import EditEmployee from "@/features/employees/pages/EditEmployee";
 import LeaveTypesPage from "@/features/leave-types/pages/LeaveTypesPage";
 import CreateLeaveType from "@/features/leave-types/pages/CreateLeaveType";
 import EditLeaveType from "@/features/leave-types/pages/EditLeaveType";
+import CreateLeaveRequest from "@/features/leave-requests/pages/CreateLeaveRequest";
+import LeaveRequestsPage from "@/features/leave-requests/pages/LeaveRequestsPage";
+import LeaveRequestsApproved from "@/features/leave-requests/pages/LeaveRequestsApproved";
+import { UserRole } from "@/features/auth/enums/UserRole";
 
 export default function Routers() {
     return (
@@ -32,7 +36,17 @@ export default function Routers() {
                 />
             </Route>
 
-            <Route element={<PrivateRoute roles={["employee", "hr"]} />}>
+            <Route
+                element={
+                    <PrivateRoute
+                        roles={[
+                            UserRole.EMPLOYEE,
+                            UserRole.HR,
+                            UserRole.MANAGER,
+                        ]}
+                    />
+                }
+            >
                 <Route path="/" element={<DashboardLayout />}>
                     <Route
                         path="dashboard"
@@ -44,11 +58,11 @@ export default function Routers() {
                     />
                     <Route
                         path="leave-request-post"
-                        element={<div>Employee - Post Leave Request</div>}
+                        element={<CreateLeaveRequest />}
                     />
                     <Route
                         path="leave-request-history"
-                        element={<div>Employee - History Leave Request</div>}
+                        element={<LeaveRequestsPage />}
                     />
                     <Route
                         path="company-details"
@@ -63,16 +77,26 @@ export default function Routers() {
                         element={<div>Employee - Documents</div>}
                     />
 
+                    <Route
+                        element={
+                            <PrivateRoute
+                                roles={[UserRole.HR, UserRole.MANAGER]}
+                            />
+                        }
+                    >
+                        <Route
+                            path="approve-leave"
+                            element={<LeaveRequestsApproved />}
+                        />
+                    </Route>
+
                     {/* HR routes */}
-                    <Route element={<PrivateRoute roles={["hr"]} />}>
+                    <Route element={<PrivateRoute roles={[UserRole.HR]} />}>
                         <Route
                             path="integrations"
                             element={<div>HR - Integrations</div>}
                         />
-                        <Route
-                            path="approve-leave"
-                            element={<div>HR - Approve Leave</div>}
-                        />
+
                         <Route
                             path="edit-company"
                             element={<div>HR - Edit company info</div>}
@@ -102,13 +126,28 @@ export default function Routers() {
 
                         {/* Employees CRUD - HR */}
                         <Route path="employees" element={<EmployeesPage />} />
-                        <Route path="employees/create" element={<CreateEmployee />} />
-                        <Route path="employees/edit/:employeeId" element={<EditEmployee />} />
+                        <Route
+                            path="employees/create"
+                            element={<CreateEmployee />}
+                        />
+                        <Route
+                            path="employees/edit/:employeeId"
+                            element={<EditEmployee />}
+                        />
 
                         {/* Leave Types CRUD - HR */}
-                        <Route path="leave-types" element={<LeaveTypesPage />} />
-                        <Route path="leave-types/create" element={<CreateLeaveType />} />
-                        <Route path="leave-types/edit/:leaveTypeId" element={<EditLeaveType />} />
+                        <Route
+                            path="leave-types"
+                            element={<LeaveTypesPage />}
+                        />
+                        <Route
+                            path="leave-types/create"
+                            element={<CreateLeaveType />}
+                        />
+                        <Route
+                            path="leave-types/edit/:leaveTypeId"
+                            element={<EditLeaveType />}
+                        />
                     </Route>
                 </Route>
             </Route>

@@ -59,11 +59,9 @@ export default function Sidebar({ open, handleDrawerClose }: SidebarProps) {
             </DrawerHeader>
             <Divider />
             <List>
-                {user && user.role === UserRole.HR ? (
-                    <HrSidebarMenu />
-                ) : (
-                    <EmployeeSidebarMenu />
-                )}
+                {user && user.role === UserRole.HR && <HrSidebarMenu />}
+                {user && user.role === UserRole.MANAGER && <HrSidebarMenu />}
+                {user && user.role === UserRole.EMPLOYEE && <EmployeeSidebarMenu />}
             </List>
         </Drawer>
     );

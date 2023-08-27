@@ -17,9 +17,8 @@ class CompanyResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'default_leave_amount' => $this->default_leave_amount,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'require_manager_approval' => (bool) $this->require_manager_approval,
+            'require_hr_approval' => (bool) $this->require_hr_approval,
         ];
     }
 }

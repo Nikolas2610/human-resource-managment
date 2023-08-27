@@ -1,6 +1,7 @@
 const makeEditRoute = (base: string) => (id: number) => `${base}/edit/${id}`;
 
 interface RouteListProps {
+    dashboard: string;
     departments: string;
     createDepartment: string;
     editDepartment: (id: number) => string;
@@ -14,9 +15,12 @@ interface RouteListProps {
     leaveTypes: string;
     createLeaveType: string;
     editLeaveType: (id: number) => string;
+    leaveRequests: string;
+    createLeaveRequest: string
 }
 
 const RouteList: RouteListProps = {
+    dashboard: "/dashboard",
     departments: "/departments",
     createDepartment: "/departments/create",
     editDepartment: makeEditRoute("/departments"),
@@ -29,7 +33,10 @@ const RouteList: RouteListProps = {
     login: "auth/login",
     leaveTypes: "/leave-types",
     createLeaveType: "/leave-types/create",
-    editLeaveType: makeEditRoute("/leave-types")
+    editLeaveType: makeEditRoute("/leave-types"),
+    leaveRequests: "/leave-request-history",
+    createLeaveRequest: "/leave-request-post"
+
 };
 
 export default RouteList;

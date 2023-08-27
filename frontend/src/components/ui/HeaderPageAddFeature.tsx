@@ -19,24 +19,30 @@ export default function HeaderPageAddFeature({
             alignItems={"center"}
             justifyContent={"space-between"}
         >
-            <Typography variant="h3" fontWeight={700} color={theme.palette.primary.contrastText}>
+            <Typography
+                variant="h3"
+                fontWeight={700}
+                color={theme.palette.primary.contrastText}
+            >
                 {headerTitle}
             </Typography>
-            <Link to={to}>
-                <Button
-                    variant={"contained"}
-                    size="large"
-                    startIcon={<AddIcon />}
-                >
-                    {buttonTitle}
-                </Button>
-            </Link>
+            {to && (
+                <Link to={to}>
+                    <Button
+                        variant={"contained"}
+                        size="large"
+                        startIcon={<AddIcon />}
+                    >
+                        {buttonTitle}
+                    </Button>
+                </Link>
+            )}
         </Box>
     );
 }
 
 interface HeaderPageAddFeatureProps {
-    to: string;
-    buttonTitle: string;
+    to?: string;
+    buttonTitle?: string;
     headerTitle: string;
 }

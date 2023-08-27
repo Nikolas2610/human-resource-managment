@@ -5,7 +5,6 @@ import HistoryIcon from "@mui/icons-material/History";
 import BusinessIcon from "@mui/icons-material/Business";
 import GroupIcon from "@mui/icons-material/Group";
 import DescriptionIcon from "@mui/icons-material/Description";
-import CheckIcon from "@mui/icons-material/Check";
 import { MenuItem } from "../../types/MenuItem.type";
 
 export const employeeMenuItems: EmployeeMenuItems = {
@@ -36,11 +35,6 @@ export const employeeMenuItems: EmployeeMenuItems = {
         title: "Documents",
         icon: DescriptionIcon,
     },
-    approveLeave: {
-        link: "/approve-leave",
-        title: "Approve Leave",
-        icon: CheckIcon,
-    },
 };
 
 interface EmployeeMenuItems {
@@ -51,5 +45,4 @@ interface EmployeeMenuItems {
     companyDetails: MenuItem;
     employeesDetails: MenuItem;
     documents: MenuItem;
-    approveLeave: MenuItem;
 }

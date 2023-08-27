@@ -33,8 +33,11 @@ class LeaveRequestsSeeder extends Seeder
                     'leave_type_id' => $faker->randomElement($leaveTypes),
                     'start_date' => $startDate,
                     'end_date' => $endDate,
+                    'days_requested' => 4,
                     'reason' => $faker->paragraph,
                     'status' => $faker->randomElement(['pending', 'approved', 'rejected']),
+                    'manager_approved' => 'pending',
+                    'hr_approved' => 'pending',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

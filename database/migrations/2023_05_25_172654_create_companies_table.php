@@ -17,7 +17,8 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('default_leave_amount');
+            $table->boolean('require_manager_approval')->default(true);
+            $table->boolean('require_hr_approval')->default(true);
             $table->timestamps();
         });
     }

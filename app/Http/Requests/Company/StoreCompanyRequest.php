@@ -25,7 +25,8 @@ class StoreCompanyRequest extends Request
     {
         return [
             'name' => 'required|string|max:255',
-            'default_leave_amount' => 'required|integer',
+            'require_manager_approval' => 'boolean',
+            'require_hr_approval' => 'boolean',
             'position_title' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',

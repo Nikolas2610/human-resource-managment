@@ -21,10 +21,8 @@ class CompanyController extends Controller
         return new CompanyCollection($companies);
     }
 
-    public function show($id)
+    public function show(Company $company)
     {
-        $company = Company::findOrFail($id);
-
         return new CompanyResource($company);
     }
 
@@ -34,7 +32,8 @@ class CompanyController extends Controller
 
         $company = Company::create([
             'name' => $validatedData['name'],
-            'default_leave_amount' => $validatedData['default_leave_amount'],
+            'require_manager_approval' => $validatedData['require_manager_approval'] ?? true,
+            'require_hr_approval' => $validatedData['require_hr_approval'] ?? true,
         ]);
 
         // Create the management department
