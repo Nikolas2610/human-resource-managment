@@ -13,3 +13,37 @@ set password reset for the employee with create password from his data
 show departments with employees and positions
 
 UPDATE / DELETE employee
+
+
+TODO: 
+Dashboard : 
+-Add birthdays (Add new fields)
+-get employees on leave and anniversaries current month 
+-add buttons to view all for the current year
+
+Register Company
+Leave Request History: Filter by status
+ProfileMenuBar: Add a name and links
+Fix Snackbars (Multiple message and on logout)
+Fix Cache Data
+
+Profile User: Create (Add new fields)
+Company Details: Create (Add new fields)
+All Employee Details: Create (Add new fields)
+Add Documents to the employee: Create (Add new fields)
+View Documents: Create (Add new fields)
+Integrations: Create (Add new fields)
+Notifications - Emails: Create (Final)
+
+Add JOBS:
+-LeaveRequest from approved to done daily
+-LeaveRequest => create new employee_leave_type yearly 
+
+Create middleware for roles
+Create middleware for api_key
+
+
+
+
+
+

@@ -22,8 +22,9 @@ interface Props {
     register: any;
     errors: any;
     getValues: any;
+    setValue: any;
     leaveTypes: LeaveType[];
-    initialData: NewEmployeeLeaveType[]
+    initialData: NewEmployeeLeaveType[];
 }
 
 export default function AddLeaveTypes({
@@ -32,18 +33,15 @@ export default function AddLeaveTypes({
     errors,
     getValues,
     leaveTypes,
-    initialData
+    initialData,
+    setValue
 }: Props) {
     const { fields, append, remove } = useFieldArray({
         control,
         name: "leave_types",
     });
 
-    console.log(initialData);
-    
-
-    console.log(fields);
-    
+    const currentYear = new Date().getFullYear();
 
     return (
         <Box py={2}>
@@ -78,12 +76,29 @@ export default function AddLeaveTypes({
                                     name={`leave_types[${index}].id`}
                                     rules={{ required: "Required value" }}
                                     control={control}
-                                    defaultValue={initialData[index]?.leave_type_id || ''} 
+                                    defaultValue={
+                                        initialData[index]?.leave_type_id || ""
+                                    }
                                     render={({ field }) => (
                                         <Select
                                             {...field}
                                             label="Leave Type"
                                             labelId={`leave-type-label-${index}`}
+                                            onChange={(e) => {
+                                                field.onChange(e); // default React Hook Form's onChange handler
+                                                const selectedLeaveType =
+                                                    leaveTypes.find(
+                                                        (leaveType) =>
+                                                            leaveType.id ===
+                                                            e.target.value
+                                                    );
+                                                if (selectedLeaveType) {
+                                                    setValue(
+                                                        `leave_types[${index}].allocated_leaves`,
+                                                        selectedLeaveType.leave_amount
+                                                    );
+                                                }
+                                            }}
                                         >
                                             {leaveTypes.map((leaveType) =>
                                                 selectedLeaveTypes.includes(
@@ -95,7 +110,9 @@ export default function AddLeaveTypes({
                                                         value={leaveType.id}
                                                         key={leaveType.id}
                                                     >
-                                                        {leaveType.type + " | " + leaveType.leave_amount}
+                                                        {leaveType.type +
+                                                            " | " +
+                                                            leaveType.leave_amount}
                                                     </MenuItem>
                                                 )
                                             )}
@@ -109,28 +126,22 @@ export default function AddLeaveTypes({
                             </FormControl>
                         </Grid>
                         <Grid item xs={9} md={2}>
-                            <TextField
-                                label={`Allocated Leaves`}
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                                {...register(
-                                    `leave_types[${index}].allocated_leaves`,
-                                    {
-                                        required: "Required value",
-                                    }
+                            <Controller
+                                name={`leave_types[${index}].allocated_leaves`}
+                                control={control}
+                                rules={{ required: "Required value" }}
+                                render={({ field, fieldState }) => (
+                                    <TextField
+                                        label="Default Leaves"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        {...field}
+                                        style={{ marginRight: "8px" }}
+                                        error={Boolean(fieldState.error)}
+                                        helperText={fieldState.error?.message}
+                                    />
                                 )}
-                                style={{ marginRight: "8px" }}
-                                error={Boolean(
-                                    errors.leave_types &&
-                                        errors.leave_types[index]
-                                            ?.allocated_leaves
-                                )}
-                                helperText={
-                                    errors.leave_types &&
-                                    errors.leave_types[index]?.allocated_leaves
-                                        ?.message
-                                }
                             />
                         </Grid>
                         <Grid item xs={9} md={2}>
@@ -224,7 +235,7 @@ export default function AddLeaveTypes({
                             leave_type_id: "",
                             allocated_leaves: "",
                             used_leaves: "",
-                            year: "",
+                            year: currentYear,
                         })
                     }
                     style={{ marginTop: "8px" }}

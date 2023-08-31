@@ -26,6 +26,7 @@ class LeaveType extends Model
 
     public function employees()
     {
+        // TODO: maybe need to not include the active employees
         return $this->belongsToMany('App\Models\Employee')
             ->withPivot('leave_days_taken');
     }

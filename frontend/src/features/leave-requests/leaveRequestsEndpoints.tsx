@@ -17,6 +17,12 @@ export const leaveRequestsEndpoints = apiService.injectEndpoints({
             providesTags: (result, _error, _arg) =>
                 result ? ["LeaveRequest"] : [],
         }),
+        getEmployeeLeaveRequestOnLeave: builder.query<LeaveRequest[], number>({
+            query: (companyId: number) =>
+                `companies/${companyId}/leave-requests/on-leave`,
+            providesTags: (result, _error, _arg) =>
+                result ? ["LeaveRequest"] : [],
+        }),
         // getLeaveRequests: builder.query<LeaveType[], number>({
         //     query: (companyId: number) => `companies/${companyId}/leave-types`,
         //     providesTags: (result, _error, _arg) =>
@@ -43,13 +49,16 @@ export const leaveRequestsEndpoints = apiService.injectEndpoints({
                 { type: "LeaveRequestEmployee" },
             ],
         }),
-        updateLeaveRequestStatus: builder.mutation<LeaveRequest, UpdateLeaveRequestStatusRequest>({
+        updateLeaveRequestStatus: builder.mutation<
+            LeaveRequest,
+            UpdateLeaveRequestStatusRequest
+        >({
             query: ({ companyId, leaveRequest, leaveRequestId }) => ({
                 url: `companies/${companyId}/leave-requests/${leaveRequestId}/status-update`,
                 method: "PUT",
                 body: leaveRequest,
             }),
-            invalidatesTags: [{ type: "LeaveRequest" }],
+            invalidatesTags: [{ type: "LeaveRequest" }, { type: "Employee" }],
         }),
         // deleteLeaveType: builder.mutation<
         //     void,
@@ -68,5 +77,6 @@ export const {
     useCreateLeaveRequestMutation,
     useGetEmployeeLeaveRequestQuery,
     useGetManagerLeaveRequestQuery,
-    useUpdateLeaveRequestStatusMutation
+    useGetEmployeeLeaveRequestOnLeaveQuery,
+    useUpdateLeaveRequestStatusMutation,
 } = leaveRequestsEndpoints;

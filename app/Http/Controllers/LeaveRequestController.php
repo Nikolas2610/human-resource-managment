@@ -89,6 +89,24 @@ class LeaveRequestController extends Controller
         return new LeaveRequestCollection($pendingLeaveRequests);
     }
 
+    public function getEmployeeLeaveRequestsOnLeave(Company $company)
+    {
+        // Get the authenticated employee ID from the JWT token
+        $employee = Auth::guard('employee')->user();
+
+        // Get the current date
+        $today = Carbon::today()->toDateString();
+
+        // Fetch the leave requests of the current authenticated employee where they are currently on leave
+        $leaveRequests = $company->leaveRequests()
+            ->where('start_date', '<=', $today)
+            ->where('end_date', '>=', $today)
+            ->where('status', "approved")
+            ->get();
+
+        return new LeaveRequestCollection($leaveRequests);
+    }
+
     public function store(StoreLeaveRequestRequest $request, Company $company)
     {
         try {
@@ -110,13 +128,13 @@ class LeaveRequestController extends Controller
                 $validatedData['hr_approved'] = "approved";
             }
 
-            if ($validatedData['manager_approved'] === "approved" && $validatedData['hr_approved'] === "approved") {
+            if (($validatedData['manager_approved'] ?? null) === "approved" && ($validatedData['hr_approved'] ?? null) === "approved") {
                 $validatedData['status'] = "approved";
             }
 
             $leaveRequest = LeaveRequest::create($validatedData);
 
-            if ($validatedData['status'] === "approved") {
+            if ($leaveRequest['status'] === "approved") {
                 $this->updateAmountLeaves($leaveRequest, $leaveRequest->days_requested);
             }
 

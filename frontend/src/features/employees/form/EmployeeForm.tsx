@@ -49,6 +49,7 @@ export default function EmployeeForm({
         handleSubmit,
         watch,
         getValues,
+        setValue,
         formState: { errors },
     } = useForm({
         defaultValues: initialData,
@@ -473,6 +474,7 @@ export default function EmployeeForm({
                         control={control}
                         getValues={getValues}
                         errors={errors}
+                        setValue={setValue}
                         leaveTypes={leaveTypes}
                         initialData={initialData?.leave_types ?? []}
                     />

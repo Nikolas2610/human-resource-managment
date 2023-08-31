@@ -2,6 +2,7 @@ import { Employee } from "@/types/employee/Employee.type";
 import { apiService } from "../api/apiService";
 import { NewEmployeeRequest } from "@/types/employee/NewEmployeeRequest.type";
 import { UpdateEmployeeRequest } from "@/types/employee/UpdateEmployeeRequest.type";
+import { EmployeeAnniversary } from "@/types/employee/EmployeeAnniversary";
 
 export const employeesEndpoints = apiService.injectEndpoints({
     endpoints: (builder) => ({
@@ -9,6 +10,9 @@ export const employeesEndpoints = apiService.injectEndpoints({
             query: (companyId: number) => `companies/${companyId}/employees`,
             providesTags: (result, _error, _arg) =>
                 result ? ["Employee"] : [],
+        }),
+        getEmployeesAnniversaries: builder.query<EmployeeAnniversary[], number>({
+            query: (companyId: number) => `companies/${companyId}/employees/anniversaries`,
         }),
         getEmployee: builder.query<
             Employee,
@@ -73,6 +77,7 @@ export const employeesEndpoints = apiService.injectEndpoints({
 export const {
     useGetEmployeesQuery,
     useGetEmployeeQuery,
+    useGetEmployeesAnniversariesQuery,
     useCreateEmployeeMutation,
     useUpdateEmployeeMutation,
     useResetPasswordMutation,

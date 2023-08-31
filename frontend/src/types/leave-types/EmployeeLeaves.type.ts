@@ -6,5 +6,6 @@ export interface EmployeeLeaves {
     allocated_leaves: number;
     used_leaves: number;
     remaining_leaves: number;
-    year: string
+    year: string;
+    visible_to_employees: boolean;
 }

@@ -19,6 +19,7 @@ class LeaveRequestCollection extends ResourceCollection
                 'id' => $leaveRequest->id,
                 'employee_id' => $leaveRequest->employee_id,
                 'employee_name' => $leaveRequest->employee->first_name . " " . $leaveRequest->employee->last_name,
+                'employee_image' => $leaveRequest->employee->image,
                 'department' => [
                     'id' => $leaveRequest->employee->department->id,
                     'name' => $leaveRequest->employee->department->name,

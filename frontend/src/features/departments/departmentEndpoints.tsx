@@ -2,6 +2,7 @@ import { Department } from "@/types/departments/Department.type";
 import { apiService } from "../api/apiService";
 import { NewDepartmentRequest } from "@/types/departments/NewDepartmentRequest.type";
 import { ExistingDepartment } from "@/types/departments/ExistingDepartment.type";
+import { DepartmentEmployees } from "@/types/departments/DepartmnetEmployees.type";
 
 export const departmentEndpoints = apiService.injectEndpoints({
     endpoints: (builder) => ({
@@ -18,6 +19,16 @@ export const departmentEndpoints = apiService.injectEndpoints({
                 `companies/${companyId}/departments/${departmentId}`,
             providesTags: (_result, _error, { departmentId }) => [
                 { type: "Department", id: departmentId },
+            ],
+        }),
+        getDepartmentEmployees: builder.query<
+            DepartmentEmployees,
+            { companyId: number; departmentId: number }
+        >({
+            query: ({ companyId, departmentId }) =>
+                `companies/${companyId}/departments/${departmentId}/employees`,
+            providesTags: (_result, _error, { departmentId }) => [
+                { type: "Department", id: departmentId }, { type: "Employee" }
             ],
         }),
         createDepartment: builder.mutation<void, NewDepartmentRequest>({
@@ -53,6 +64,7 @@ export const departmentEndpoints = apiService.injectEndpoints({
 export const {
     useGetDepartmentQuery,
     useGetDepartmentsQuery,
+    useGetDepartmentEmployeesQuery,
     useCreateDepartmentMutation,
     useEditDepartmentMutation,
     useDeleteDepartmentMutation,

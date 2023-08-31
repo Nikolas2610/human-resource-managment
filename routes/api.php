@@ -56,6 +56,7 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
             Route::get('/', [DepartmentsController::class, 'index']);
             Route::post('/', [DepartmentsController::class, 'store']);
             Route::get('/{department}', [DepartmentsController::class, 'show']);
+            Route::get('/{department}/employees', [DepartmentsController::class, 'getEmployeesByDepartment']);
             Route::put('/{department}', [DepartmentsController::class, 'update']);
             Route::delete('/{department}', [DepartmentsController::class, 'destroy']);
         });
@@ -96,7 +97,9 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
             // Only for manager role
             Route::get('/manager', [LeaveRequestController::class, 'getManagerEmployeeLeaveRequests']);
             // For Employees and all
+            Route::get('/on-leave', [LeaveRequestController::class, 'getEmployeeLeaveRequestsOnLeave']);
             Route::post('/', [LeaveRequestController::class, 'store']);
+
             Route::get('/{leaveRequest}', [LeaveRequestController::class, 'show']);
             Route::put('/{leaveRequest}', [LeaveRequestController::class, 'update']);
             Route::delete('/{leaveRequest}', [LeaveRequestController::class, 'destroy']);
@@ -107,6 +110,7 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
 
         Route::prefix('employees')->group(function () {
             Route::get('/', [CompanyEmployeeController::class, 'index']);
+            Route::get('/anniversaries', [CompanyEmployeeController::class, 'employeesWithAnniversaries']);
             Route::get('/{employee}', [CompanyEmployeeController::class, 'show']);
             Route::post('/', [CompanyEmployeeController::class, 'store']);
             Route::patch('/{employee}', [CompanyEmployeeController::class, 'update']);

@@ -5,6 +5,7 @@ import {
     IconButton,
     Skeleton,
     Stack,
+    Tooltip,
     Typography,
     useTheme,
 } from "@mui/material";
@@ -32,6 +33,7 @@ import { selectCompany } from "@/features/auth/authSlice";
 import { setSnackbar } from "@/features/snackbars/snackbarSlice";
 import { useHandleDeleteError } from "@/hooks/useHandleDeleteError";
 import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 function Departments() {
     const theme = useTheme();
@@ -52,12 +54,17 @@ function Departments() {
     const { showModal } = useModalContext();
     const [
         deleteDepartment,
-        { isSuccess, isError: isDeleteError, isLoading: isDeleteLoading, error: deleteError },
+        {
+            isSuccess,
+            isError: isDeleteError,
+            isLoading: isDeleteLoading,
+            error: deleteError,
+        },
     ] = useDeleteDepartmentMutation();
 
     // Custom hooks
     useHandleDeleteError(isDeleteError, deleteError);
-    useToggleDashboardLoading(isDeleteLoading)
+    useToggleDashboardLoading(isDeleteLoading);
 
     useEffect(() => {
         dispatch(setPageTitle("Departments"));
@@ -70,6 +77,10 @@ function Departments() {
     const handleEditDepartment = (id: number) => {
         navigate(RouteList.editDepartment(id));
     };
+
+    const handleViewDepartment = (id: number) => {
+        navigate(RouteList.viewDepartment(id));
+    }
 
     const handleDeleteDepartment = (id: number) => {
         const onDeleteDepartment = async () => {
@@ -139,25 +150,41 @@ function Departments() {
                                             {department.name}
                                         </Typography>
                                         <Box>
-                                            <IconButton
-                                                onClick={() =>
-                                                    handleEditDepartment(
-                                                        department.id as number
-                                                    )
-                                                }
-                                            >
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                color="error"
-                                                onClick={() =>
-                                                    handleDeleteDepartment(
-                                                        department.id as number
-                                                    )
-                                                }
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
+                                            <Tooltip title="View Employees">
+                                                <IconButton
+                                                    onClick={() => {
+                                                        handleViewDepartment(
+                                                            department.id as number
+                                                        );
+                                                    }}
+                                                >
+                                                    <VisibilityIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Edit Department">
+                                                <IconButton
+                                                    color="info"
+                                                    onClick={() =>
+                                                        handleEditDepartment(
+                                                            department.id as number
+                                                        )
+                                                    }
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Delete Department">
+                                                <IconButton
+                                                    color="error"
+                                                    onClick={() =>
+                                                        handleDeleteDepartment(
+                                                            department.id as number
+                                                        )
+                                                    }
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>
                                         </Box>
                                     </FlexBetween>
 

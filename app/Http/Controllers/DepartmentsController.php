@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Department\StoreDepartmentRequest;
 use App\Http\Resources\Department\DepartmentCollection;
+use App\Http\Resources\Department\DepartmentEmployeesResource;
 use App\Http\Resources\Department\DepartmentResource;
 use App\Models\Company;
 use App\Models\Department;
@@ -22,6 +23,17 @@ class DepartmentsController extends Controller
     {
         $departments = $company->departments()->with('employees')->get();
         return new DepartmentCollection($departments);
+    }
+
+    public function getEmployeesByDepartment(Company $company, Department $department) 
+    {
+        try {
+            // Make sure the department belongs to the company
+            $this->ensureDepartmentBelongsToCompany($company, $department);
+            return new DepartmentEmployeesResource($department);
+        } catch (\Throwable $exception) {
+            return response()->json(['error' => 'Unauthorized', 'message' => $exception->getMessage()], 401);
+        }
     }
 
     /**

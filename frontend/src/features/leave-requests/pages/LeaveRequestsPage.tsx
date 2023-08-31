@@ -26,7 +26,7 @@ export default function LeaveRequestsPage() {
     const companyId = useSelector(selectCompany);
     const { data: leaveRequests = [], isLoading: isLeaveRequestsLoading } =
         useGetEmployeeLeaveRequestQuery(companyId);
-    const { data: company, isLoading: isCompanyLoading } =
+    const { data: company } =
         useGetCompanyQuery(companyId);
     const [selectedYear, setSelectedYear] = useState<number | null>(
         new Date().getFullYear()

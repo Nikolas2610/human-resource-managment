@@ -5,6 +5,7 @@ export interface LeaveRequest {
     id: number;
     employee_id: number;
     employee_name: string;
+    employee_image: string;
     department: {
         id: number;
         name: string;

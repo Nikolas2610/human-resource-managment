@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Employee\EmployeeUpdateRequest;
 use App\Http\Requests\Employee\StoreEmployeeRequest;
+use App\Http\Resources\Employee\EmployeeAnniversaryResource;
 use App\Http\Resources\Employee\EmployeeResource;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\LeaveType;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CompanyEmployeeController extends Controller
 {
@@ -17,6 +19,30 @@ class CompanyEmployeeController extends Controller
     {
         $employees = $company->employees()->with('reportsTo', 'leaveTypes')->get();
         return EmployeeResource::collection($employees);
+    }
+
+    public function employeesWithAnniversaries(Company $company)
+    {
+        $employees = $company->employees()->get();
+
+        $employees->each(function ($employee) {
+            $workStartDate = Carbon::parse($employee->work_start_date);
+            $today = Carbon::today();
+            $yearsWorked = $today->diffInYears($workStartDate);
+
+            $nextAnniversary = $workStartDate->copy()->year($today->year);
+
+            if ($today->greaterThan($nextAnniversary)) {
+                $nextAnniversary->addYear();
+            }
+
+            $employee->next_anniversary = $nextAnniversary->toDateString();
+            $employee->years_worked = $yearsWorked;
+        });
+
+        $sortedEmployees = $employees->sortBy('next_anniversary');
+
+        return EmployeeAnniversaryResource::collection($sortedEmployees);
     }
 
     public function store(Company $company, StoreEmployeeRequest $request)

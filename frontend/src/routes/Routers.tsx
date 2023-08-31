@@ -19,6 +19,9 @@ import CreateLeaveRequest from "@/features/leave-requests/pages/CreateLeaveReque
 import LeaveRequestsPage from "@/features/leave-requests/pages/LeaveRequestsPage";
 import LeaveRequestsApproved from "@/features/leave-requests/pages/LeaveRequestsApproved";
 import { UserRole } from "@/features/auth/enums/UserRole";
+import DashboardEmployeePage from "@/features/dashboard/pages/DashboardEmployeePage";
+import Integrations from "@/features/intergrations/Integrations";
+import ViewDepartment from "@/features/departments/pages/ViewDepartment";
 
 export default function Routers() {
     return (
@@ -50,7 +53,7 @@ export default function Routers() {
                 <Route path="/" element={<DashboardLayout />}>
                     <Route
                         path="dashboard"
-                        element={<div>Employee - Dashboard</div>}
+                        element={<DashboardEmployeePage />}
                     />
                     <Route
                         path="profile"
@@ -94,7 +97,7 @@ export default function Routers() {
                     <Route element={<PrivateRoute roles={[UserRole.HR]} />}>
                         <Route
                             path="integrations"
-                            element={<div>HR - Integrations</div>}
+                            element={<Integrations />}
                         />
 
                         <Route
@@ -111,6 +114,10 @@ export default function Routers() {
                         <Route
                             path="departments/edit/:departmentId"
                             element={<EditDepartment />}
+                        />
+                        <Route
+                            path="departments/view/:departmentId"
+                            element={<ViewDepartment />}
                         />
 
                         {/* Positions CRUD - HR */}

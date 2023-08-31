@@ -20,6 +20,7 @@ import { UserRole } from "@/features/auth/enums/UserRole";
 import { useGetCompanyQuery } from "@/features/companies/companiesEndpoints";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
+import { LeaveRequestStatus } from "../enums/LeaveRequestStatus.enum";
 
 export default function LeaveRequestsApproved() {
     const [value, setValue] = useState("1");
@@ -31,6 +32,8 @@ export default function LeaveRequestsApproved() {
     const [selectedEmployee, setSelectedEmployee] = useState<string | null>(
         null
     );
+    const [selectedStatus, setSelectedStatus] =
+        useState<LeaveRequestStatus | null>(null);
     const [isFilterTab, setIsFilterTab] = useState<boolean>(false);
     const { data: leaveRequests = [], isLoading: isDataLoading } =
         useGetManagerLeaveRequestQuery(companyId);
@@ -101,7 +104,9 @@ export default function LeaveRequestsApproved() {
             return (
                 (!selectedDepartment ||
                     leave.department.name === selectedDepartment) &&
-                (!selectedEmployee || leave.employee_name === selectedEmployee)
+                (!selectedEmployee ||
+                    leave.employee_name === selectedEmployee) &&
+                (!selectedStatus || leave.status === selectedStatus)
             );
         });
     };
@@ -122,7 +127,13 @@ export default function LeaveRequestsApproved() {
                     </TabList>
                 </Box>
 
-                <Box display={"flex"} justifyContent={"end"} alignItems={'center'} mt={4} gap={2}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"end"}
+                    alignItems={"center"}
+                    mt={4}
+                    gap={2}
+                >
                     <Fade in={isFilterTab}>
                         <Box width={"100%"} display={"flex"} gap={2}>
                             <Autocomplete
@@ -153,6 +164,25 @@ export default function LeaveRequestsApproved() {
                                 }
                                 renderInput={(params) => (
                                     <TextField {...params} label="Employee" />
+                                )}
+                            />
+                            <Autocomplete
+                                fullWidth
+                                options={Object.values(
+                                    LeaveRequestStatus
+                                ).filter((status) => status !== "done")}
+                                getOptionLabel={(option) =>
+                                    option.charAt(0).toUpperCase() +
+                                    option.slice(1)
+                                }
+                                value={selectedStatus}
+                                onChange={(_, newValue: string | null) =>
+                                    setSelectedStatus(
+                                        newValue as LeaveRequestStatus | null
+                                    )
+                                }
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Status" />
                                 )}
                             />
                         </Box>
