@@ -1,10 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { LoginArgs, LoginResult } from "../../types/api/auth/login/Login.type";
 import { UserEmployee } from "../../types/employee/UserEmployee.type";
+import { CompanyRegister } from "@/types/api/auth/register/CompanyRegister.type";
+import { Company } from "@/types/companies/Company.type";
 
 export const apiService = createApi({
     reducerPath: "apiService",
-    tagTypes: ["Department", "Position", "Employee", "LeaveType", "LeaveRequest", "LeaveRequestEmployee", "Company"],
+    tagTypes: [
+        "Department",
+        "Position",
+        "Employee",
+        "LeaveType",
+        "LeaveRequest",
+        "LeaveRequestEmployee",
+        "Company",
+    ],
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8000/api",
         prepareHeaders(headers) {
@@ -17,6 +27,13 @@ export const apiService = createApi({
         },
     }),
     endpoints: (builder) => ({
+        registerCompany: builder.mutation<Company, CompanyRegister>({
+            query: (body) => ({
+                url: "companies",
+                method: "POST",
+                body,
+            }),
+        }),
         login: builder.mutation<LoginResult, LoginArgs>({
             query: ({ email, password }) => ({
                 url: "employee/login",
@@ -30,7 +47,8 @@ export const apiService = createApi({
         getUser: builder.query<UserEmployee, void>({
             query: () => "user",
         }),
-        logout: builder.mutation<void, void>({  // <-- Add this section
+        logout: builder.mutation<void, void>({
+            // <-- Add this section
             query: () => ({
                 url: "employee/logout",
                 method: "POST",
@@ -39,4 +57,9 @@ export const apiService = createApi({
     }),
 });
 
-export const { useLoginMutation, useGetUserQuery, useLogoutMutation } = apiService;
+export const {
+    useLoginMutation,
+    useRegisterCompanyMutation,
+    useGetUserQuery,
+    useLogoutMutation,
+} = apiService;

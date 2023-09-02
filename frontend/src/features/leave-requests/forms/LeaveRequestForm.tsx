@@ -86,6 +86,10 @@ export default function LeaveRequestForm() {
         return <>Loading...</>;
     }
 
+    console.log(dayjs(new Date()));
+    console.log(new Date());
+    
+
     return (
         <>
             <HeaderPageAddFeature headerTitle="Post Leave Request" />
@@ -188,7 +192,7 @@ export default function LeaveRequestForm() {
                                                         );
                                                     }
                                                 }}
-                                                minDate={dayjs(new Date())}
+                                                minDate={dayjs(new Date()) as any}
                                                 slotProps={{
                                                     textField: {
                                                         variant: "outlined",
@@ -233,7 +237,7 @@ export default function LeaveRequestForm() {
                                                 minDate={dayjs(
                                                     getValues("start_date") ||
                                                         minEndDate
-                                                )}
+                                                )  as any}
                                                 onChange={(newValue) => {
                                                     field.onChange(newValue);
                                                     setValue(

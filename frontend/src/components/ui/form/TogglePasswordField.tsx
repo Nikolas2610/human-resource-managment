@@ -19,6 +19,7 @@ interface TogglePasswordFieldProps {
     rules: any;
     errorObject: any;
     onChange?: (e: any) => void;
+    disabled?: boolean;
 }
 
 export const TogglePasswordField: React.FC<TogglePasswordFieldProps> = ({
@@ -29,6 +30,7 @@ export const TogglePasswordField: React.FC<TogglePasswordFieldProps> = ({
     rules,
     errorObject,
     onChange,
+    disabled = false,
 }) => {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -52,6 +54,7 @@ export const TogglePasswordField: React.FC<TogglePasswordFieldProps> = ({
                             field.onChange(e); // default handler
                             onChange && onChange(e); // additional handler
                         }}
+                        disabled={disabled}
                         placeholder={placeholder}
                         endAdornment={
                             <InputAdornment position="end">

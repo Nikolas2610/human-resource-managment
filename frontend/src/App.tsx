@@ -56,7 +56,7 @@ function App() {
                 navigate(pathname ?? "/dashboard");
             } else if (error || !data) {
                 dispatch(toggleAppLoading(false));
-                navigate("/auth/login");
+                // navigate("/auth/login");
             }
         }
 

@@ -14,11 +14,12 @@ import { RootState } from "../../../app/store";
 import { useEffect } from "react";
 import { LoginError } from "../../../types/api/auth/login/LoginError.type";
 import { toggleDashboardLoading } from "../../dashboard/dashboardSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "../../../utils/validation/auth/LoginSchema";
 import { loginUser } from "../authSlice";
+import RouteList from "@/routes/RouteList";
 
 interface FetchBaseQueryError {
     data: {
@@ -70,7 +71,12 @@ function LoginPage() {
     return (
         <FlexCenter height={"100%"} border={1}>
             <Paper
-                sx={{ padding: 5, width: 700, borderRadius: 4, backgroundColor: theme.palette.background.default }}
+                sx={{
+                    padding: 5,
+                    width: 700,
+                    borderRadius: 4,
+                    backgroundColor: theme.palette.background.default,
+                }}
                 elevation={2}
             >
                 <Typography
@@ -126,19 +132,21 @@ function LoginPage() {
                     </Box>
                 )}
 
-                <Typography
-                    variant="h6"
-                    sx={{
-                        transition: ".3s",
-                        marginTop: 4,
-                        width: "fit-content",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                        "&:hover": { color: theme.palette.primary.main },
-                    }}
-                >
-                    Didn't have already account yet?
-                </Typography>
+                <Link to={RouteList.register}>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            transition: ".3s",
+                            marginTop: 4,
+                            width: "fit-content",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            "&:hover": { color: theme.palette.primary.main },
+                        }}
+                    >
+                        Didn't have already account yet?
+                    </Typography>
+                </Link>
             </Paper>
         </FlexCenter>
     );

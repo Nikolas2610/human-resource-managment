@@ -9,14 +9,15 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import React, { useEffect } from "react";
-import { useTheme } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import { apiService, useLogoutMutation } from "@/features/api/apiService";
 import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
-import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
-import RouteList from "@/routes/RouteList";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store";
 import { getAvatarName } from "@/utils/helpers/functions";
+import { Link, useNavigate } from "react-router-dom";
+import RouteList from "@/routes/RouteList";
+import PersonIcon from "@mui/icons-material/Person";
 
 function ProfileMenuItem() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -32,7 +33,8 @@ function ProfileMenuItem() {
     const [logout, { isLoading, isSuccess, isError }] = useLogoutMutation();
     const dispatch = useDispatch();
     useToggleDashboardLoading(isLoading);
-    // !FIX ME: The snackbar stay on the DOM 
+    const navigate = useNavigate();
+    // !FIX ME: The snackbar stay on the DOM
     // useSuccessSnackbar({
     //     isSuccess,
     //     message: "Has been logout successfully",
@@ -43,8 +45,14 @@ function ProfileMenuItem() {
         if (isSuccess || isError) {
             // reset the API state here
             dispatch(apiService.util.resetApiState());
+            navigate(RouteList.login);
         }
     }, [isSuccess, isError, dispatch]);
+
+    const linkStyle = {
+        display: "flex",
+        alignItems: "center",
+    };
 
     const handleLogout = () => {
         handleClose();
@@ -115,17 +123,28 @@ function ProfileMenuItem() {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
                 <MenuItem onClick={handleClose}>
-                    <Avatar /> Profile
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Avatar /> My account
+                    {user?.first_name + " " + user?.last_name}
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>
-                    <ListItemIcon sx={{ color: theme.palette.common.white }}>
-                        <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    Add another account
+                    <Link to={RouteList.profile} style={linkStyle}>
+                        <ListItemIcon
+                            sx={{ color: theme.palette.common.white }}
+                        >
+                            <PersonIcon fontSize="small" />
+                        </ListItemIcon>
+                        <Typography>Profile</Typography>
+                    </Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                    <Link to={RouteList.createLeaveRequest} style={linkStyle}>
+                        <ListItemIcon
+                            sx={{ color: theme.palette.common.white }}
+                        >
+                            <PersonAdd fontSize="small" />
+                        </ListItemIcon>
+                        <Typography>Post Leave Request</Typography>
+                    </Link>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                     <ListItemIcon sx={{ color: theme.palette.common.white }}>

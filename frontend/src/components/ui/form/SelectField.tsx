@@ -14,7 +14,6 @@ type SelectFieldProps = {
     options: any[];
     getOptionLabel: (option: any) => string;
     getOptionValue: (option: any) => any;
-    errorObject: FieldErrors<any>;
     isDisabled?: boolean;
     label: string;
     defaultValue?: string | number,
@@ -27,7 +26,6 @@ const SelectField: React.FC<SelectFieldProps> = ({
     options,
     getOptionLabel,
     getOptionValue,
-    errorObject,
     defaultValue = "",
     isDisabled = false,
     label,

@@ -21,9 +21,9 @@ Dashboard :
 -get employees on leave and anniversaries current month 
 -add buttons to view all for the current year
 
-Register Company
-Leave Request History: Filter by status
-ProfileMenuBar: Add a name and links
+Register Company - Done
+Leave Request History: Filter by status - Done
+ProfileMenuBar: Add a name and links - Done
 Fix Snackbars (Multiple message and on logout)
 Fix Cache Data
 

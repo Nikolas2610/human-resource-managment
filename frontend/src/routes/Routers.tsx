@@ -22,13 +22,14 @@ import { UserRole } from "@/features/auth/enums/UserRole";
 import DashboardEmployeePage from "@/features/dashboard/pages/DashboardEmployeePage";
 import Integrations from "@/features/intergrations/Integrations";
 import ViewDepartment from "@/features/departments/pages/ViewDepartment";
+import RegisterPage from "@/features/auth/pages/RegisterPage";
 
 export default function Routers() {
     return (
         <Routes>
             <Route path="/auth" element={<AuthLayout />}>
                 <Route path="login" element={<LoginPage />} />
-                <Route path="register" element={<div>Register</div>} />
+                <Route path="register" element={<RegisterPage />} />
                 <Route
                     path="forgot-password"
                     element={<div>Forgot password</div>}

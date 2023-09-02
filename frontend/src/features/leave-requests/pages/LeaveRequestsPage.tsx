@@ -11,6 +11,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
+    capitalizeFirstLetter,
     convertToDDMMYYYY,
     formattedDateFrontend,
     getManagerStatus,
@@ -21,16 +22,18 @@ import FlexBetween from "@/components/ui/wrappers/FlexBetween";
 import { useEffect, useState } from "react";
 import { LeaveRequest } from "@/types/leave-requests/LeaveRequest.type";
 import { useGetCompanyQuery } from "@/features/companies/companiesEndpoints";
+import { LeaveRequestStatus } from "../enums/LeaveRequestStatus.enum";
 
 export default function LeaveRequestsPage() {
     const companyId = useSelector(selectCompany);
     const { data: leaveRequests = [], isLoading: isLeaveRequestsLoading } =
         useGetEmployeeLeaveRequestQuery(companyId);
-    const { data: company } =
-        useGetCompanyQuery(companyId);
+    const { data: company } = useGetCompanyQuery(companyId);
     const [selectedYear, setSelectedYear] = useState<number | null>(
         new Date().getFullYear()
     );
+    const [selectedStatus, setSelectedStatus] =
+        useState<LeaveRequestStatus | null>(null);
     const [filteredLeaveRequests, setFilteredLeaveRequests] =
         useState(leaveRequests);
 
@@ -39,17 +42,25 @@ export default function LeaveRequestsPage() {
 
     useEffect(() => {
         if (leaveRequests.length > 0) {
-            const filtered = selectedYear
-                ? leaveRequests.filter(
-                      (leave) =>
-                          new Date(leave.created_at).getFullYear() ===
-                          selectedYear
-                  )
-                : leaveRequests;
+            let filtered = leaveRequests;
+
+            if (selectedYear) {
+                filtered = filtered.filter(
+                    (leave) =>
+                        new Date(leave.created_at).getFullYear() ===
+                        selectedYear
+                );
+            }
+
+            if (selectedStatus) {
+                filtered = filtered.filter(
+                    (leave) => leave.status === selectedStatus
+                );
+            }
 
             setFilteredLeaveRequests(filtered);
         }
-    }, [selectedYear, leaveRequests]);
+    }, [selectedYear, selectedStatus, leaveRequests]);
 
     const uniqueYears = Array.from(
         new Set(
@@ -70,9 +81,9 @@ export default function LeaveRequestsPage() {
                 buttonTitle="Request a leave"
                 to={RouteList.createLeaveRequest}
             />
-            {filteredLeaveRequests.length > 0 && (
+            {leaveRequests.length > 0 && (
                 <>
-                    <Box display={"flex"} justifyContent={"end"} mt={4}>
+                    <Box display={"flex"} justifyContent={"end"} gap={2} mt={4}>
                         <FormControl variant="outlined">
                             <InputLabel id="year-label">
                                 Filter by Year
@@ -99,6 +110,37 @@ export default function LeaveRequestsPage() {
                                         {year}
                                     </MenuItem>
                                 ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl variant="outlined">
+                            <InputLabel id="year-label">
+                                Filter by Status
+                            </InputLabel>
+                            <Select
+                                labelId="year-label"
+                                id="year-select"
+                                value={selectedStatus || ""}
+                                onChange={(e) =>
+                                    setSelectedStatus(
+                                        e.target.value
+                                            ? (e.target
+                                                  .value as LeaveRequestStatus)
+                                            : null
+                                    )
+                                }
+                                label="Filter by Status"
+                                sx={{ width: "200px" }}
+                            >
+                                <MenuItem value="">
+                                    <em>All</em>
+                                </MenuItem>
+                                {Object.values(LeaveRequestStatus).map(
+                                    (status) => (
+                                        <MenuItem key={status} value={status}>
+                                            {capitalizeFirstLetter(status)}
+                                        </MenuItem>
+                                    )
+                                )}
                             </Select>
                         </FormControl>
                     </Box>
