@@ -20,9 +20,12 @@ import LeaveRequestsPage from "@/features/leave-requests/pages/LeaveRequestsPage
 import LeaveRequestsApproved from "@/features/leave-requests/pages/LeaveRequestsApproved";
 import { UserRole } from "@/features/auth/enums/UserRole";
 import DashboardEmployeePage from "@/features/dashboard/pages/DashboardEmployeePage";
-import Integrations from "@/features/intergrations/Integrations";
 import ViewDepartment from "@/features/departments/pages/ViewDepartment";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
+import SettingsPage from "@/features/settings/pages/SettingsPage";
+import IntegrationsPage from "@/features/settings/pages/IntegrationsPage";
+import CompanyCustomization from "@/features/settings/pages/CompanyCustomization";
+import EditCompanyContactInformation from "@/features/settings/pages/EditCompanyContactInformation";
 
 export default function Routers() {
     return (
@@ -96,10 +99,15 @@ export default function Routers() {
 
                     {/* HR routes */}
                     <Route element={<PrivateRoute roles={[UserRole.HR]} />}>
+                        {/* Settings */}
                         <Route
-                            path="integrations"
-                            element={<Integrations />}
-                        />
+                            path="settings"
+                        >
+                            <Route path="" element={<SettingsPage />} />
+                            <Route path="integrations" element={<IntegrationsPage />} />
+                            <Route path="contact-information" element={<EditCompanyContactInformation />} />
+                            <Route path="customization" element={<CompanyCustomization />} />
+                        </Route>
 
                         <Route
                             path="edit-company"

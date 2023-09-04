@@ -244,7 +244,7 @@ export default function LeaveRequestsApproved() {
                         )
                     ) : (
                         <Alert severity="info">
-                            No approval leave requests
+                            No rejected leave requests
                         </Alert>
                     )}
                 </TabPanel>
@@ -259,7 +259,7 @@ export default function LeaveRequestsApproved() {
                         ))
                     ) : (
                         <Alert severity="info">
-                            No approval leave requests
+                            No leave requests
                         </Alert>
                     )}
                 </TabPanel>

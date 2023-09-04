@@ -10,6 +10,29 @@ class Company extends Model
         'name',
         'require_manager_approval',
         'require_hr_approval',
+        'celebrate_birthdays',
+        'celebrate_name_days',
+        'celebrate_anniversaries',
+        'email_company',
+        'logo',
+        'primary_color',
+        'secondary_color',
+        'address',
+        'phone_number',
+        'contact_email',
+        'website',
+        'facebook',
+        'instagram',
+        'twitter',
+        'linkedin',
+        'youtube',
+        'administrator_mail',
+        'hr_mail',
+        'subscription_plan_id',
+        'subscription_status',
+        'subscription_expiry_date',
+        'trial_started_at',
+        'trial_ends_at',
     ];
 
     public function departments()
@@ -49,5 +72,10 @@ class Company extends Model
     public function leaveAmounts()
     {
         return $this->hasMany(LeaveAmount::class);
+    }
+
+    public function subscriptionPlan()
+    {
+        return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id', 'id');
     }
 }

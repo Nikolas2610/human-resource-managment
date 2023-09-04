@@ -35,6 +35,14 @@ return new class extends Migration
             $table->enum('role', ['employee', 'manager', 'hr', 'accounting', 'admin', 'owner'])->default('employee');
             $table->boolean('active')->default(true);
             $table->rememberToken();
+
+            // New Fields
+            $table->enum('type_of_job', ['on-site', 'hybrid', 'working-from-home'])->nullable('on-site');
+            $table->string('personal_email')->nullable();
+            $table->date('birthday')->nullable();
+            $table->date('name_day')->nullable();
+            $table->boolean('married')->default(false);
+            $table->integer('childs_count')->default(0);
             $table->timestamps();
         });
     }

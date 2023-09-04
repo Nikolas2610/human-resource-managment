@@ -12,15 +12,19 @@ interface RouteListProps {
     positions: string;
     createPosition: string;
     editPosition: (id: number) => string;
-    employees: string,
-    createEmployee: string,
-    editEmployee:(id: number) => string;
+    employees: string;
+    createEmployee: string;
+    editEmployee: (id: number) => string;
     login: string;
     leaveTypes: string;
     createLeaveType: string;
     editLeaveType: (id: number) => string;
     leaveRequests: string;
-    createLeaveRequest: string
+    createLeaveRequest: string;
+    settings: string;
+    integrations: string;
+    editCompanyContactInformation: string;
+    companyCustomization: string;
 }
 
 const RouteList: RouteListProps = {
@@ -42,8 +46,11 @@ const RouteList: RouteListProps = {
     editLeaveType: makeEditRoute("/leave-types"),
     leaveRequests: "/leave-request-history",
     createLeaveRequest: "/leave-request-post",
-    viewDepartment: makeViewRoute("/departments")
-
+    viewDepartment: makeViewRoute("/departments"),
+    settings: "/settings",
+    integrations: "/settings/integrations",
+    editCompanyContactInformation: "/settings/contact-information",
+    companyCustomization: "/settings/customization",
 };
 
 export default RouteList;

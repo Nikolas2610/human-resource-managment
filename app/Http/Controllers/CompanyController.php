@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Company\StoreCompanyRequest;
 use App\Http\Requests\Company\UpdateCompanyRequest;
+use App\Http\Requests\Company\UpdateCustomizationRequest;
 use App\Http\Resources\Company\CompanyResource;
 use App\Models\Company;
 use App\Models\Department;
@@ -11,6 +12,7 @@ use App\Models\Position;
 use App\Http\Resources\Company\CompanyCollection;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -38,7 +40,7 @@ class CompanyController extends Controller
 
         // Create the management department
         $department = Department::create([
-            'name' => 'Management',
+            'name' => $validatedData['department_title'],
             'company_id' => $company->id,
         ]);
 
@@ -60,6 +62,7 @@ class CompanyController extends Controller
             'company_id' => $company->id,
             'department_id' => $department->id,
             'position_id' => $position->id,
+            'role' => 'hr'
         ]);
 
         return new CompanyResource($company);
@@ -75,6 +78,28 @@ class CompanyController extends Controller
             'name' => $validatedData['name'],
             'default_leave_amount' => $validatedData['default_leave_amount'],
         ]);
+
+        return new CompanyResource($company);
+    }
+
+    public function updateCustomization(Company $company, UpdateCustomizationRequest $request)
+    {
+        $validatedData = $request->validated();
+        // return response()->json(['data' => $validatedData]);
+
+        // Handle logo image
+        if ($request->hasFile('logo')) {
+            // Delete previous image if exists
+            if ($company->logo) {
+                Storage::delete($company->logo);
+            }
+
+            // Store new image
+            $logoPath = $request->file('logo')->store('logos', 'public');
+            $validatedData['logo'] = $logoPath;
+        }
+
+        $company->update($validatedData);
 
         return new CompanyResource($company);
     }

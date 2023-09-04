@@ -54,8 +54,8 @@ export const hrMenuItems: HRMenuItems = {
         icon: CheckIcon,
     },
     integrations: {
-        link: "/integrations",
-        title: "Integrations",
+        link: "/settings",
+        title: "Settings",
         icon: SettingsIcon,
     },
     editCompany: {

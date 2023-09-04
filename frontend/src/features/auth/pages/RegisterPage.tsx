@@ -22,9 +22,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { generateRequiredErrorMessage } from "@/utils/functions";
 import { TogglePasswordField } from "@/components/ui/form/TogglePasswordField";
 import { toMysqlFormat } from "@/utils/helpers/functions";
-import { useHandleServerError } from "@/hooks/useHandleServerError";
 import { useHandleMutation } from "@/hooks/useHandleMutation";
-import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
 
 interface FetchBaseQueryError {
     data: {
@@ -56,15 +54,12 @@ export default function RegisterPage() {
         handleSubmit,
         setValue,
         control,
-        setError,
         formState: { errors },
     } = useForm<CompanyRegister>();
     const [registerCompany, { isError, isSuccess, error, isLoading }] =
         useRegisterCompanyMutation();
     const passwordRef = useRef({});
 
-    // TODO: Capture error duplicate email and success message
-    // useHandleServerError(isError, error);
     const onSubmit = (data: CompanyRegister) => {
         const { work_start_date } = data;
         console.log(typeof work_start_date);
@@ -88,8 +83,8 @@ export default function RegisterPage() {
         error,
         entityType: "Company",
         actionType: "store",
-        redirectTo: RouteList.login
-    })
+        redirectTo: RouteList.login,
+    });
 
     function isFetchBaseQueryError(error: any): error is FetchBaseQueryError {
         return error && "data" in error;
@@ -268,7 +263,6 @@ export default function RegisterPage() {
                                 options={selectDepartments}
                                 getOptionLabel={(option) => option.title}
                                 getOptionValue={(option) => option.id}
-                                errorObject={errors}
                                 label="Department"
                                 isDisabled={isLoading}
                             />
@@ -281,7 +275,6 @@ export default function RegisterPage() {
                                 options={selectPosition}
                                 getOptionLabel={(option) => option.title}
                                 getOptionValue={(option) => option.id}
-                                errorObject={errors}
                                 label="Position"
                                 isDisabled={isLoading}
                             />

@@ -86,10 +86,6 @@ export default function LeaveRequestForm() {
         return <>Loading...</>;
     }
 
-    console.log(dayjs(new Date()));
-    console.log(new Date());
-    
-
     return (
         <>
             <HeaderPageAddFeature headerTitle="Post Leave Request" />
@@ -117,7 +113,6 @@ export default function LeaveRequestForm() {
                                 }))}
                                 getOptionLabel={(option) => option.title}
                                 getOptionValue={(option) => option.id}
-                                errorObject={errors}
                                 // isDisabled={isEditLoading || isCreateLoading}
                                 label="Leave Type"
                             />

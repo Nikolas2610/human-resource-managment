@@ -50,6 +50,7 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
     Route::prefix('companies/{company}')->group(function () {
         // Get company settings
         Route::get('/', [CompanyController::class, 'show'])->name('companies.show');
+        Route::post('/updateCustomization', [CompanyController::class, 'updateCustomization']);
 
         // Departments
         Route::prefix('departments')->group(function () {

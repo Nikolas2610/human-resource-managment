@@ -100,4 +100,9 @@ class Employee extends Authenticatable
             ->wherePivot('year', $currentYear) // Filtering by the current year
             ->orderByDesc('pivot_year');
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
 }
