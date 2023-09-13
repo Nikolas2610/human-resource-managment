@@ -53,21 +53,6 @@ export const hrMenuItems: HRMenuItems = {
         title: "Approve Leave",
         icon: CheckIcon,
     },
-    integrations: {
-        link: "/settings",
-        title: "Settings",
-        icon: SettingsIcon,
-    },
-    editCompany: {
-        link: "/edit-company",
-        title: "Edit Company Info",
-        icon: EditIcon,
-    },
-    employees: {
-        link: "/employees",
-        title: "Employees",
-        icon: PeopleIcon,
-    },
     departments: {
         link: "/departments",
         title: "Departments",
@@ -77,6 +62,16 @@ export const hrMenuItems: HRMenuItems = {
         link: "/positions",
         title: "Positions",
         icon: AccountTreeIcon,
+    },
+    employees: {
+        link: "/employees",
+        title: "Employees",
+        icon: PeopleIcon,
+    },
+    integrations: {
+        link: "/settings",
+        title: "Settings",
+        icon: SettingsIcon,
     },
 };
 
@@ -90,7 +85,6 @@ interface HRMenuItems {
     documents: MenuItem;
     approveLeave: MenuItem;
     integrations: MenuItem;
-    editCompany: MenuItem;
     employees: MenuItem;
     departments: MenuItem;
     positions: MenuItem;

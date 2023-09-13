@@ -7,8 +7,8 @@ export interface Company {
     celebrate_name_days: boolean;
     celebrate_anniversaries: boolean;
     logo: string;
-    administrator_mail: string;
-    hr_mail: string;
+    administrator_mail: string | null;
+    hr_mail: string | null;
     primary_color: string | null;
     secondary_color: string | null;
 }

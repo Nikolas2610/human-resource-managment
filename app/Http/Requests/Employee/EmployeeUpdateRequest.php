@@ -34,15 +34,16 @@ class EmployeeUpdateRequest extends Request
             'position_id' => 'sometimes|integer|exists:positions,id',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'email' => 'sometimes|string|email|max:255|unique:employees,email,' . $this->employee->id,
-            'password' => 'sometimes|string|min:8|confirmed',
-            'active' => 'required|boolean',
+            // 'password' => 'sometimes|string|min:8|confirmed',
+            'active' => 'required|in:true,false',
             'role' => 'required|string|in:employee,hr,accounting,admin,owner,manager',
-            'leave_types' => 'sometimes|array',
-            'leave_types.*.id' => 'sometimes|required|integer|exists:leave_types,id',
-            'leave_types.*.allocated_leaves' => 'sometimes|required|integer|min:0',
-            'leave_types.*.used_leaves' => 'sometimes|required|integer|min:0',
-            'leave_types.*.unavailable_leaves' => 'sometimes|required|integer|min:0',
-            'leave_types.*.year' => 'sometimes|required|integer|min:1900|max:2100',
+            'personal_email' => 'nullable|string|email|max:255',
+            'birthday' => 'nullable|date',
+            'name_day' => 'nullable|date',
+            'married' => 'nullable|in:true,false',
+            'childs_count' => 'nullable|integer|min:0',
+            'type_of_job' => 'nullable|string|in:on-site,hybrid,working-from-home',
+            'image' => 'nullable|image|mimes:jpeg,png,gif,svg|max:1024'
         ];
     }
 }

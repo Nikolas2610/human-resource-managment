@@ -26,7 +26,11 @@ interface ThemeSettings {
 }
 
 // mui theme settings
-export const themeSettings = (mode: ThemeMode): ThemeSettings => {
+export const themeSettings = (
+    mode: ThemeMode,
+    primaryColor: string = "#248ad5",
+    secondaryColor: string = "#7c80e3"
+): ThemeSettings => {
     return {
         palette: {
             mode: mode,
@@ -34,11 +38,11 @@ export const themeSettings = (mode: ThemeMode): ThemeSettings => {
                 ? {
                       // palette values for dark mode
                       primary: {
-                          main: "#248ad5",
-                        //   contrastText: "#859ab0",
+                          main: primaryColor,
+                          //   contrastText: "#859ab0",
                       },
                       secondary: {
-                          main: "#7c80e3",
+                          main: secondaryColor,
                       },
                       background: {
                           default: "#171c24",
@@ -48,7 +52,8 @@ export const themeSettings = (mode: ThemeMode): ThemeSettings => {
                 : {
                       // palette values for light mode
                       primary: {
-                          main: "#5F4BB6",
+                        //   main: "#5F4BB6",
+                          main: primaryColor,
                       },
                       secondary: {
                           main: "#F1D302",

@@ -7,10 +7,13 @@ import { useDispatch } from "react-redux";
 import { useAppSelector } from "./app/hook";
 import { setToken, setUser } from "./features/auth/authSlice";
 import { useGetUserQuery } from "./features/api/apiService";
-import { toggleAppLoading, toggleDrawer } from "./features/dashboard/dashboardSlice";
+import {
+    toggleAppLoading,
+    toggleDrawer,
+} from "./features/dashboard/dashboardSlice";
 
 // Material UI
-import { Box, ThemeProvider } from "@mui/material";
+import { Box } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 
 // Components
@@ -22,6 +25,7 @@ import BackdropLoading from "./components/ui/BackdropLoading";
 import { ModalProvider } from "./contexts/ModalContext";
 import ConfirmModal from "./components/modal/ConfirmModal";
 import SnackbarAlert from "./features/snackbars/components/SnackBarAlert";
+import { DynamicThemeProvider } from "./contexts/DynamicThemeProvider";
 
 function App() {
     const dispatch = useDispatch();
@@ -31,8 +35,10 @@ function App() {
     const { themeMode, isAppLoading } = useAppSelector(
         (state) => state.dashboard
     );
+
     const { data, isLoading, error } = useGetUserQuery();
-    const theme = createTheme(themeSettings(themeMode));
+    // const theme = createTheme(themeSettings(themeMode));
+    const baseTheme = createTheme(themeSettings(themeMode));
     const [prevIsLoading, setPrevIsLoading] = useState(isLoading);
 
     // If a token is stored in localStorage, dispatch it
@@ -44,7 +50,7 @@ function App() {
         const openDrawer = localStorage.getItem("openDrawer");
         if (openDrawer) {
             dispatch(toggleDrawer(openDrawer === "open"));
-        } 
+        }
     }, [dispatch]);
 
     // Track the loading state and navigate based on data or error
@@ -64,7 +70,7 @@ function App() {
     }, [isLoading, data, dispatch, navigate]);
 
     return (
-        <ThemeProvider theme={theme}>
+        <DynamicThemeProvider baseTheme={baseTheme}>
             {!isAppLoading ? (
                 <ModalProvider>
                     <ConfirmModal />
@@ -74,11 +80,11 @@ function App() {
             ) : (
                 <Box
                     height="100vh"
-                    bgcolor={theme.palette.background.default}
+                    bgcolor={baseTheme.palette.background.default}
                 ></Box>
             )}
             <BackdropLoading isLoading={isAppLoading} />
-        </ThemeProvider>
+        </DynamicThemeProvider>
     );
 }
 

@@ -8,7 +8,9 @@ use App\Http\Controllers\LeaveAmountController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\CompanyEmployeeController;
+use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\PositionController;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +35,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::prefix('companies')->group(function () {
         Route::get('/', [CompanyController::class, 'index'])->name('companies.index');
         Route::put('/{company}', [CompanyController::class, 'update'])->name('companies.update');
+        Route::get('/{company}/details', [CompanyController::class, 'getCompanyFullDetails']);
         Route::delete('/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
     });
 });
@@ -113,10 +116,20 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
             Route::get('/', [CompanyEmployeeController::class, 'index']);
             Route::get('/anniversaries', [CompanyEmployeeController::class, 'employeesWithAnniversaries']);
             Route::get('/{employee}', [CompanyEmployeeController::class, 'show']);
+            Route::get('/{employee}/documents', [CompanyEmployeeController::class, 'getEmployeeDocuments']);
             Route::post('/', [CompanyEmployeeController::class, 'store']);
-            Route::patch('/{employee}', [CompanyEmployeeController::class, 'update']);
+            Route::post('/{employee}', [CompanyEmployeeController::class, 'update']);
             Route::delete('/{employee}', [CompanyEmployeeController::class, 'destroy']);
             Route::post('/{employee}/reset-password', [CompanyEmployeeController::class, 'resetPassword']);
+        });
+
+        Route::prefix('documents')->group(function () {
+            // Not needed
+            // Route::get('/', [DocumentsController::class, 'index']);
+            // Route::get('/{document}', [DocumentsController::class, 'show']);
+            Route::post('/', [DocumentsController::class, 'store']);
+            Route::post('/{document}', [DocumentsController::class, 'update']);
+            Route::delete('/{document}', [DocumentsController::class, 'destroy']);
         });
     });
 });

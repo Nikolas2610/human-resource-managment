@@ -14,6 +14,7 @@ export const apiService = createApi({
         "LeaveRequest",
         "LeaveRequestEmployee",
         "Company",
+        "EmployeeDocuments"
     ],
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8000/api",

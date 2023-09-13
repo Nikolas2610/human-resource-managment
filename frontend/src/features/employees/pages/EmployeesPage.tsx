@@ -25,7 +25,6 @@ function EmployeesPage() {
         isLoading: boolean;
     };
     const dispatch = useDispatch();
-    const [editedRowIds, setEditedRowIds] = useState<(number | string)[]>([]);
 
     useEffect(() => {
         dispatch(toggleDashboardLoading(isLoading));
@@ -140,16 +139,7 @@ function EmployeesPage() {
             width: 150,
             renderCell: (params: GridRenderCellParams) => (
                 <EmployeeTableActions
-                    {...{
-                        params,
-                        editedRowIds,
-                        onIdRemove: (id: string | number) => {
-                            const newIds = editedRowIds.filter(
-                                (existingId) => existingId !== id
-                            );
-                            setEditedRowIds(newIds);
-                        },
-                    }}
+                    {...{params}}
                 />
             ),
         },
@@ -169,17 +159,6 @@ function EmployeesPage() {
         [employees]
     );
 
-    const handleSelectionModelChange = (_event: any) => {
-        // console.log(_event);
-    };
-
-    const handleCellEditStop = (params: GridCellParams) => {
-        // If the row ID isn't already in the editedRowIds array, add it
-        if (!editedRowIds.includes(params.id)) {
-            setEditedRowIds((prevIds) => [...prevIds, params.id]);
-        }
-    };
-
     return (
         <>
             <HeaderPageAddFeature
@@ -198,15 +177,11 @@ function EmployeesPage() {
                                 paginationModel: { page: 0, pageSize: 15 },
                             },
                         }}
-                        onRowSelectionModelChange={(value) => {
-                            handleSelectionModelChange(value);
-                        }}
                         pageSizeOptions={[10, 15, 20, 25]}
                         checkboxSelection
                         slots={{
                             toolbar: GridToolbar,
                         }}
-                        onCellEditStop={handleCellEditStop}
                     />
                 </Box>
             )}

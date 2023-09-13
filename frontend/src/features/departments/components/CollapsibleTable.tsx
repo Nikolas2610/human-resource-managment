@@ -69,10 +69,7 @@ const Row = ({ employee }: RowProps) => {
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    <UserAvatar 
-                        name={employee.name}
-                        image={employee.image}
-                    />
+                    <UserAvatar name={employee.name} image={employee.image} />
                 </TableCell>
                 <TableCell align="right">{employee.name ?? null}</TableCell>
                 <TableCell align="right">{employee.email}</TableCell>
@@ -88,53 +85,65 @@ const Row = ({ employee }: RowProps) => {
                     style={{ paddingBottom: 0, paddingTop: 0 }}
                     colSpan={12}
                 >
-                    <Collapse in={open} timeout="auto" unmountOnExit >
-                        <Box sx={{ margin: 1, width: '100%' }}>
-                            <Typography
-                                variant="h6"
-                                gutterBottom
-                                component="div"
-                            >
-                                Leaves
-                            </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Leave Type</TableCell>
-                                        <TableCell>Default Leaves</TableCell>
-                                        <TableCell>
-                                            Unavailable Leaves
-                                        </TableCell>
-                                        <TableCell>Used Leaves</TableCell>
-                                        <TableCell>Remaining Leaves</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {employee.leaves.map((leave, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell
-                                                component="th"
-                                                scope="row"
-                                            >
-                                                {leave.type}
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                        {employee.leaves.length > 0 ? (
+                            <Box sx={{ margin: 1, width: "100%" }}>
+                                <Typography
+                                    variant="h6"
+                                    gutterBottom
+                                    component="div"
+                                >
+                                    Leaves
+                                </Typography>
+                                <Table size="small" aria-label="purchases">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Leave Type</TableCell>
+                                            <TableCell>
+                                                Default Leaves
                                             </TableCell>
                                             <TableCell>
-                                                {leave.allocated_leaves}
+                                                Unavailable Leaves
                                             </TableCell>
+                                            <TableCell>Used Leaves</TableCell>
                                             <TableCell>
-                                                {leave.unavailable_leaves}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leave.used_leaves}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leave.remaining_leaves}
+                                                Remaining Leaves
                                             </TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </Box>
+                                    </TableHead>
+                                    <TableBody>
+                                        {employee.leaves.map((leave, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell
+                                                    component="th"
+                                                    scope="row"
+                                                >
+                                                    {leave.type}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {leave.allocated_leaves}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {leave.unavailable_leaves}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {leave.used_leaves}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {leave.remaining_leaves}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </Box>
+                        ) : (
+                            <Box p={2}>
+                                <Typography color={"error"}>
+                                    No Leaves
+                                </Typography>
+                            </Box>
+                        )}
                     </Collapse>
                 </TableCell>
             </TableRow>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Employee\EmployeeUpdateRequest;
 use App\Http\Requests\Employee\StoreEmployeeRequest;
+use App\Http\Resources\Document\DocumentResource;
 use App\Http\Resources\Employee\EmployeeAnniversaryResource;
 use App\Http\Resources\Employee\EmployeeResource;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +13,8 @@ use App\Models\Employee;
 use App\Models\LeaveType;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CompanyEmployeeController extends Controller
 {
@@ -45,36 +48,55 @@ class CompanyEmployeeController extends Controller
         return EmployeeAnniversaryResource::collection($sortedEmployees);
     }
 
+    public function getEmployeeDocuments(Company $company, Employee $employee)
+    {
+        // Check if the employee belongs to the company
+        if ($employee->company_id != $company->id) {
+            return response()->json(['error' => 'Employee does not belong to this company'], 404);
+        }
+
+        $documents = $employee->documents()->get();
+
+        return DocumentResource::collection($documents);
+    }
+
     public function store(Company $company, StoreEmployeeRequest $request)
     {
-        $request->validated();
+        $requestData = $request->validated(); // This contains the validated request data
 
-        $employee = new Employee([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'work_start_date' => $request->work_start_date,
-            'company_id' => $company->id,
-            'department_id' => $request->department_id,
-            'position_id' => $request->position_id,
-            'role' => $request->role,
-            'salary' => $request->salary,
-            'reports_to' => $request->reports_to,
-            'active' => $request->active
-        ]);
+        // Handle Boolean Fields
+        if (isset($requestData['active'])) {
+            $requestData['active'] = $requestData['active'] === 'true' ? true : false;
+        }
+        if (isset($requestData['married'])) {
+            $requestData['married'] = $requestData['married'] === 'true' ? true : false;
+        }
+
+        if (isset($requestData['leave_types'])) {
+            $leaveTypes = json_decode($requestData['leave_types'], true);
+            $rules = [
+                'leave_types' => 'sometimes|array',
+                'leave_types.*.id' => 'required|integer|exists:leave_types,id',
+                'leave_types.*.allocated_leaves' => 'required|integer|min:0',
+                'leave_types.*.used_leaves' => 'required|integer|min:0',
+                'leave_types.*.unavailable_leaves' => 'required|integer|min:0',
+                'leave_types.*.year' => 'required|integer|min:1900|max:2100',
+            ];
+            $requestData['leave_types'] = Validator::make($leaveTypes, $rules);
+        }
+
+        $employee = new Employee($requestData); // Initialize the Employee with validated data
+        $employee->company_id = $company->id;  // Set the company_id here
+
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/user_images');
+            $path = $request->file('image')->store('employee_images', 'public');
             $employee->image = $path;
         }
 
         $employee->save();
 
-        // Check if leave_types are provided in the request
-        $this->syncEmployeeLeaveTypes($employee, $request, $company);
+        $this->syncEmployeeLeaveTypes($employee, $request, $company); // I assumed this is a custom function you've defined elsewhere
 
         return response()->json([
             'message' => 'Employee registered successfully',
@@ -89,21 +111,49 @@ class CompanyEmployeeController extends Controller
         return new EmployeeResource($employee);
     }
 
-    public function update(EmployeeUpdateRequest $request, Company $company, Employee $employee)
+    public function update(Company $company, Employee $employee, EmployeeUpdateRequest $request)
     {
         // Check if the employee belongs to the company
         if ($employee->company_id != $company->id) {
             return response()->json(['error' => 'Employee does not belong to this company'], 404);
         }
 
-        // Get validated data and exclude password and password_confirmation
-        $dataToUpdate = collect($request->validated())
-            ->except(['password', 'password_confirmation'])
-            ->toArray();
+        // Validate data
+        $dataToUpdate = $request->validated();
+
+        // Handle Boolean Fields
+        if (isset($dataToUpdate['active'])) {
+            $dataToUpdate['active'] = $dataToUpdate['active'] === 'true' ? true : false;
+        }
+        if (isset($dataToUpdate['married'])) {
+            $dataToUpdate['married'] = $dataToUpdate['married'] === 'true' ? true : false;
+        }
+
+        if (isset($dataToUpdate['leave_types'])) {
+            $leaveTypes = json_decode($dataToUpdate['leave_types'], true);
+            $rules = [
+                'leave_types' => 'sometimes|array',
+                'leave_types.*.id' => 'required|integer|exists:leave_types,id',
+                'leave_types.*.allocated_leaves' => 'required|integer|min:0',
+                'leave_types.*.used_leaves' => 'required|integer|min:0',
+                'leave_types.*.unavailable_leaves' => 'required|integer|min:0',
+                'leave_types.*.year' => 'required|integer|min:1900|max:2100',
+            ];
+            $dataToUpdate['leave_types'] = Validator::make($leaveTypes, $rules);
+        }
+
+        // Delete the old image if a new one is provided
+        if ($request->hasFile('image')) {
+            if ($employee->image) {
+                Storage::disk('public')->delete($employee->image);
+            }
+            $path = $request->file('image')->store('employee_images', 'public');
+            $dataToUpdate['image'] = $path;
+        }
 
         $employee->update($dataToUpdate);
 
-        $this->syncEmployeeLeaveTypes($employee, $request, $company);
+        $this->syncEmployeeLeaveTypes($employee, $request, $company); // Custom function
 
         return response()->json($employee);
     }
@@ -149,26 +199,31 @@ class CompanyEmployeeController extends Controller
     private function syncEmployeeLeaveTypes(Employee $employee, $request, Company $company)
     {
         if ($request->has('leave_types')) {
-            // Fetch the leave type IDs associated with the current company
-            $validLeaveTypeIds = LeaveType::where('company_id', $company->id)->pluck('id')->toArray();
+            // Decode JSON to array if it's a JSON string
+            $leave_types = gettype($request->leave_types) === 'string' ? json_decode($request->leave_types, true) : $request->leave_types;
 
-            foreach ($request->leave_types as $leaveType) {
-                if (in_array($leaveType['id'], $validLeaveTypeIds)) {
-                    $conditions = [
-                        'employee_id' => $employee->id,
-                        'leave_type_id' => $leaveType['id'],
-                        'year' => $leaveType['year']
-                    ];
+            if (is_array($leave_types)) { // Ensure it's an array before proceeding
+                // Fetch the leave type IDs associated with the current company
+                $validLeaveTypeIds = LeaveType::where('company_id', $company->id)->pluck('id')->toArray();
 
-                    $values = [
-                        'allocated_leaves' => $leaveType['allocated_leaves'],
-                        'used_leaves' => $leaveType['used_leaves'],
-                        'unavailable_leaves' => $leaveType['unavailable_leaves'],
-                        'remaining_leaves' => $leaveType['allocated_leaves'] - ($leaveType['used_leaves'] + $leaveType['unavailable_leaves'])
-                    ];
+                foreach ($leave_types as $leaveType) {
+                    if (in_array($leaveType['id'], $validLeaveTypeIds)) {
+                        $conditions = [
+                            'employee_id' => $employee->id,
+                            'leave_type_id' => $leaveType['id'],
+                            'year' => $leaveType['year']
+                        ];
 
-                    // Use updateOrInsert to either update the existing record or insert a new one
-                    DB::table('employee_leave_type')->updateOrInsert($conditions, $values);
+                        $values = [
+                            'allocated_leaves' => $leaveType['allocated_leaves'],
+                            'used_leaves' => $leaveType['used_leaves'],
+                            'unavailable_leaves' => $leaveType['unavailable_leaves'],
+                            'remaining_leaves' => $leaveType['allocated_leaves'] - ($leaveType['used_leaves'] + $leaveType['unavailable_leaves'])
+                        ];
+
+                        // Use updateOrInsert to either update the existing record or insert a new one
+                        DB::table('employee_leave_type')->updateOrInsert($conditions, $values);
+                    }
                 }
             }
         }

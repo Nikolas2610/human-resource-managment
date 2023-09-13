@@ -36,7 +36,13 @@ class Employee extends Authenticatable
         'role',
         'salary',
         'reports_to',
-        'active'
+        'active',
+        'personal_email',
+        'birthday',
+        'name_day',
+        'married',
+        'childs_count',
+        'type_of_job',
     ];
 
     protected $hidden = [

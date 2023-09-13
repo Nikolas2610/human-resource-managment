@@ -1,15 +1,11 @@
 import { Avatar } from "@mui/material";
 
 export default function UserAvatar({ image, name }: UserAvatarProps) {
-    return (
-        <Avatar
-            sx={{
-                bgcolor: "white",
-            }}
-        >
-            {image ? image : name.charAt(0)}
-        </Avatar>
-    );
+    if (image) {
+        return <Avatar src={image} alt={name} />;
+    }
+
+    return <Avatar>{image ? image : name.charAt(0)}</Avatar>;
 }
 
 interface UserAvatarProps {

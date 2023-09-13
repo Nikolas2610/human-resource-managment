@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\Position;
 use App\Http\Resources\Company\CompanyCollection;
+use App\Http\Resources\Company\FullDetailsCompanyResource;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +27,11 @@ class CompanyController extends Controller
     public function show(Company $company)
     {
         return new CompanyResource($company);
+    }
+
+    public function getCompanyFullDetails(Company $company)
+    {
+        return new FullDetailsCompanyResource($company);
     }
 
     public function store(StoreCompanyRequest $request)
@@ -74,10 +80,11 @@ class CompanyController extends Controller
 
         $company = Company::findOrFail($id);
 
-        $company->update([
-            'name' => $validatedData['name'],
-            'default_leave_amount' => $validatedData['default_leave_amount'],
-        ]);
+        foreach ($validatedData as $key => $value) {
+            $company->$key = $value;
+        }
+
+        $company->save();
 
         return new CompanyResource($company);
     }

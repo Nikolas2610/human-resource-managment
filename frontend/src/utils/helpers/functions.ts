@@ -18,8 +18,17 @@ export const formattedDateFrontend = (date: Date) =>
 export const formattedDateDatabase = (date: Date) =>
     dayjs(date).format("YYYY--MM-DD");
 
+// export const toMysqlFormat = (isoDateString: string): string => {
+//     return isoDateString.slice(0, 19).replace("T", " ");
+// };
+
 export const toMysqlFormat = (isoDateString: string): string => {
-    return isoDateString.slice(0, 19).replace("T", " ");
+    const date = new Date(isoDateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed.
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 };
 
 export const convertToDDMMYYYY = (isoDateString: string): string => {
@@ -42,5 +51,14 @@ export const getManagerStatus = (
         } else {
             return LeaveRequestStatus.REJECTED;
         }
+    }
+};
+
+export const isValidURL = (string: string) => {
+    try {
+        new URL(string);
+        return true;
+    } catch (_) {
+        return false;
     }
 };

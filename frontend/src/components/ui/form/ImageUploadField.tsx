@@ -7,9 +7,12 @@ import {
     Typography,
     Stack,
     useTheme,
+    Tooltip,
+    IconButton,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import FlexBetween from "../wrappers/FlexBetween";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface ImageUploadFieldProps {
     control: any;
@@ -21,6 +24,8 @@ interface ImageUploadFieldProps {
     setError: any;
     clearErrors: any;
     setFile: (value: File | null) => void;
+    title: string;
+    box?: boolean;
 }
 
 const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
@@ -33,6 +38,8 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     setError,
     clearErrors,
     setFile,
+    title,
+    box = false,
 }) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const theme = useTheme();
@@ -83,17 +90,25 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         }
     };
 
+    const handleImageDelete = () => {
+        setSelectedImage(null);
+        setValue(name, null); // Update form value
+        setFile(null);
+    };
+
+    const formStyles = {
+        p: 2,
+        boxShadow: 8,
+        borderRadius: 4,
+        bgcolor: theme.palette.background.paper,
+    };
+
     return (
         <FormControl
             variant="outlined"
             fullWidth
             error={Boolean(errors.logo)}
-            sx={{
-                p: 2,
-                boxShadow: 8,
-                borderRadius: 4,
-                bgcolor: theme.palette.background.paper,
-            }}
+            sx={box ? formStyles : {}}
         >
             <Stack gap={2} spacing={4}>
                 <Controller
@@ -107,8 +122,14 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                     }) => (
                         <>
                             <FlexBetween gap={2} py={2}>
-                                <Box display={"flex"} gap={2}>
-                                    <Typography variant="h3">Logo: </Typography>
+                                <Box
+                                    display={"flex"}
+                                    gap={2}
+                                    alignItems={"center"}
+                                >
+                                    <Typography variant="h3">
+                                        {title}:{" "}
+                                    </Typography>
                                     <Button
                                         variant="contained"
                                         component="label"
@@ -117,6 +138,7 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                                         <input
                                             type="file"
                                             hidden
+                                            accept="image/*"
                                             onChange={(e) => {
                                                 handleImageChange(e);
                                                 onChange(e); // Calling the original onChange method from Controller
@@ -124,7 +146,12 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                                         />
                                     </Button>
                                 </Box>
-                                <FormHelperText sx={{ fontSize: 16 }}>
+                                <FormHelperText
+                                    sx={{
+                                        fontSize: 16,
+                                        color: theme.palette.error.main,
+                                    }}
+                                >
                                     {error?.message}
                                 </FormHelperText>
                             </FlexBetween>
@@ -133,7 +160,17 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                 />
             </Stack>
             {selectedImage && (
-                <img src={selectedImage} alt="Selected" width="300" />
+                <FlexBetween display={"flex"} alignItems={"center"} mt={2}>
+                    <img src={selectedImage} alt="Selected" width="300" />
+                    <Tooltip title="Remove image">
+                        <IconButton
+                            color="error"
+                            onClick={handleImageDelete}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </FlexBetween>
             )}
         </FormControl>
     );

@@ -1,6 +1,5 @@
-import { NewEmployee } from "./NewEmployee.type";
-
 export interface NewEmployeeRequest {
-    employee: Omit<NewEmployee, "id">;
+    // employee: Omit<NewEmployee, "id">;
+    employee: FormData;
     companyId: number;
 }

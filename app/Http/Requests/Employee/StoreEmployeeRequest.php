@@ -24,7 +24,7 @@ class StoreEmployeeRequest extends Request
     public function rules()
     {
         return [
-            'active' => 'required|boolean',
+            'active' => 'required|in:true,false',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:employees',
@@ -38,12 +38,13 @@ class StoreEmployeeRequest extends Request
             'salary' => 'numeric|min:0',  // Adjust the min and max as needed
             'role' => 'required|string|in:employee,hr,accounting,admin,owner,manager',
             'reports_to' => 'nullable|integer|exists:employees,id',  // Ensure the referenced ID exists
-            'leave_types' => 'sometimes|array',
-            'leave_types.*.id' => 'required|integer|exists:leave_types,id',
-            'leave_types.*.allocated_leaves' => 'required|integer|min:0',
-            'leave_types.*.used_leaves' => 'required|integer|min:0',
-            'leave_types.*.unavailable_leaves' => 'required|integer|min:0',
-            'leave_types.*.year' => 'required|integer|min:1900|max:2100'
+            'personal_email' => 'nullable|string|email|max:255',
+            'birthday' => 'nullable|date',
+            'name_day' => 'nullable|date',
+            'married' => 'nullable|in:true,false',
+            'childs_count' => 'nullable|integer|min:0',
+            'type_of_job' => 'nullable|string|in:on-site,hybrid,working-from-home',
+            'image' => 'nullable|image|mimes:jpeg,png,gif,svg|max:1024'
         ];
     }
 }

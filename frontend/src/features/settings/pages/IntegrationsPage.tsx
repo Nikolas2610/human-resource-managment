@@ -1,22 +1,20 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Stack, Typography, Button } from "@mui/material";
+import { Stack, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import FlexCenter from "@/components/ui/wrappers/FlexCenter";
 import { selectCompany } from "@/features/auth/authSlice";
-import { useGetCompanyQuery } from "@/features/companies/companiesEndpoints";
+import {
+    useGetCompanyQuery,
+    useUpdateCompanyIntegrationsMutation,
+} from "@/features/companies/companiesEndpoints";
 import RowIntegrationWrapper from "../components/RowIntegrationWrapper";
 import HeaderPageBackFeature from "@/components/ui/HeaderPageBackFeature";
 import RouteList from "@/routes/RouteList";
 import usePageTitle from "@/hooks/usePageTitle";
-
-interface IntegrationSettings {
-    require_hr_approval: boolean;
-    require_manager_approval: boolean;
-    celebrate_birthdays: boolean;
-    celebrate_name_days: boolean;
-    celebrate_anniversaries: boolean;
-}
+import { CompanyIntegrationSettings } from "@/types/companies/CompanyIntegrationSettings.type";
+import { CompanyIntegrationSettingsRequest } from "@/types/companies/CompanyIntegrationsSettingsRequest.type";
+import { useHandleMutation } from "@/hooks/useHandleMutation";
 
 const integrationMap = {
     require_hr_approval: "HR Approved",
@@ -30,7 +28,7 @@ export default function IntegrationsPage() {
     const companyId = useSelector(selectCompany);
     const { data: company, isLoading } = useGetCompanyQuery(companyId);
     const { handleSubmit, control, reset, formState } =
-        useForm<IntegrationSettings>();
+        useForm<CompanyIntegrationSettings>();
     const { isDirty } = formState;
     usePageTitle("Integrations");
 
@@ -48,9 +46,30 @@ export default function IntegrationsPage() {
         }
     }, [company, reset]);
 
-    const onSubmit = (data: IntegrationSettings) => {
+    const [
+        updateCompanyIntegrations,
+        { isLoading: isUpdateLoading, isError, isSuccess, error },
+    ] = useUpdateCompanyIntegrationsMutation();
+
+    useHandleMutation({
+        isLoading: isUpdateLoading,
+        isError,
+        error,
+        isSuccess,
+        actionType: "update",
+        entityType: "Company",
+        redirectTo: "",
+    });
+
+    const onSubmit = (data: CompanyIntegrationSettings) => {
         // Send updated data to the backend
-        console.log(data);
+        const updatedData: CompanyIntegrationSettingsRequest = {
+            ...data,
+            id: companyId,
+        };
+        console.log(updatedData);
+        
+        updateCompanyIntegrations(updatedData);
         // Reset the form state after saving
         reset(data);
     };
@@ -74,15 +93,15 @@ export default function IntegrationsPage() {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <HeaderPageBackFeature 
-                headerTitle="Integrations"  
+            <HeaderPageBackFeature
+                headerTitle="Integrations"
                 to={RouteList.settings}
-                buttonTitle="Back to Settings"              
+                buttonTitle="Back to Settings"
             />
             <Stack mt={4}>
                 {(
                     Object.keys(integrationMap) as Array<
-                        keyof IntegrationSettings
+                        keyof CompanyIntegrationSettings
                     >
                 ).map((key) => (
                     <Controller

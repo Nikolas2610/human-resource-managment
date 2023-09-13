@@ -2,6 +2,8 @@ import { UserRole } from "@/features/auth/enums/UserRole";
 import { Department } from "../departments/Department.type";
 import { Position } from "../positions/Position.type";
 import { NewEmployeeLeaveType } from "./NewEmployeeLeaveType.type";
+import { TypeOfJob } from "@/features/employees/enums/TypeOfJob.enum";
+import { Document } from "@/types/employee/Document.type"
 
 export interface Employee {
     id: number;
@@ -17,8 +19,6 @@ export interface Employee {
     department: Department;
     position: Position;
     managed_departments: Department;
-    // TODO: Add the type LeaveAmounts
-    leave_amounts: any;
     role: UserRole;
     salary: number;
     reports_to: {
@@ -26,5 +26,12 @@ export interface Employee {
         first_name: string;
         last_name: string;
     },
-    leave_types?: NewEmployeeLeaveType[]
+    leave_types?: NewEmployeeLeaveType[];
+    personal_email?: string | null;
+    birthday?: Date | null;
+    name_day?: Date | null;
+    married?: boolean;
+    childs_count: number | null;
+    type_of_job: TypeOfJob | null;
+    documents?: Document[];
 }

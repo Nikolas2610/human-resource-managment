@@ -3,6 +3,8 @@ import { apiService } from "../api/apiService";
 import { NewEmployeeRequest } from "@/types/employee/NewEmployeeRequest.type";
 import { UpdateEmployeeRequest } from "@/types/employee/UpdateEmployeeRequest.type";
 import { EmployeeAnniversary } from "@/types/employee/EmployeeAnniversary";
+import { Document } from "@/types/documents/Document.type";
+import { DocumentRequest } from "@/types/documents/DocumentRequest.type";
 
 export const employeesEndpoints = apiService.injectEndpoints({
     endpoints: (builder) => ({
@@ -11,9 +13,12 @@ export const employeesEndpoints = apiService.injectEndpoints({
             providesTags: (result, _error, _arg) =>
                 result ? ["Employee"] : [],
         }),
-        getEmployeesAnniversaries: builder.query<EmployeeAnniversary[], number>({
-            query: (companyId: number) => `companies/${companyId}/employees/anniversaries`,
-        }),
+        getEmployeesAnniversaries: builder.query<EmployeeAnniversary[], number>(
+            {
+                query: (companyId: number) =>
+                    `companies/${companyId}/employees/anniversaries`,
+            }
+        ),
         getEmployee: builder.query<
             Employee,
             { companyId: number; employeeId: number }
@@ -23,6 +28,36 @@ export const employeesEndpoints = apiService.injectEndpoints({
             providesTags: (_result, _error, { employeeId }) => [
                 { type: "Employee", id: employeeId },
             ],
+        }),
+        getEmployeeDocuments: builder.query<
+            Document[],
+            { companyId: number; employeeId: number | string }
+        >({
+            query: ({ companyId, employeeId }) =>
+                `companies/${companyId}/employees/${employeeId}/documents`,
+            providesTags: (_result, _error, { employeeId }) => [
+                { type: "EmployeeDocuments", id: employeeId },
+            ],
+        }),
+        storeDocument: builder.mutation<Document, DocumentRequest>({
+            query: ({ companyId, formData }) => {
+                return {
+                    url: `companies/${companyId}/documents`,
+                    method: "POST",
+                    body: formData,
+                };
+            },
+            invalidatesTags: [{ type: "EmployeeDocuments" }],
+        }),
+        deleteDocument: builder.mutation<
+            void,
+            { companyId: number; id: number }
+        >({
+            query: ({ companyId, id }) => ({
+                url: `companies/${companyId}/documents/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: [{ type: "EmployeeDocuments" }],
         }),
         createEmployee: builder.mutation<void, NewEmployeeRequest>({
             query: ({ companyId, employee }) => ({
@@ -39,7 +74,7 @@ export const employeesEndpoints = apiService.injectEndpoints({
         updateEmployee: builder.mutation<Employee, UpdateEmployeeRequest>({
             query: ({ companyId, employeeId, employee }) => ({
                 url: `companies/${companyId}/employees/${employeeId}`,
-                method: "PATCH",
+                method: "POST",
                 body: employee,
             }),
             invalidatesTags: [
@@ -77,9 +112,12 @@ export const employeesEndpoints = apiService.injectEndpoints({
 export const {
     useGetEmployeesQuery,
     useGetEmployeeQuery,
+    useGetEmployeeDocumentsQuery,
     useGetEmployeesAnniversariesQuery,
+    useStoreDocumentMutation,
     useCreateEmployeeMutation,
     useUpdateEmployeeMutation,
     useResetPasswordMutation,
     useDeleteEmployeeMutation,
+    useDeleteDocumentMutation,
 } = employeesEndpoints;

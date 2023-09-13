@@ -11,7 +11,6 @@ class EmployeeResource extends JsonResource
 {
     public function toArray($request)
     {
-        // dump($this->reportsTo);
         return [
             'id' => $this->id,
             'active' => $this->active,
@@ -22,15 +21,21 @@ class EmployeeResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'address' => $this->address,
-            'image' => $this->image,
+            'image' => asset('storage/' . $this->image),
             'work_start_date' => $this->work_start_date,
             'work_end_date' => $this->work_end_date,
             'department' => new DepartmentResource($this->department),
             'position' => new PositionResource($this->position),
             'managed_departments' => DepartmentResource::collection($this->managedDepartments),
-            'leave_amounts' => LeaveAmountResource::collection($this->leaveAmounts),
             'reports_to' => new ReportToEmployeeResource($this->reportsTo),
             'leave_types' => EmployeeLeaveTypeResource::collection($this->leaveTypes),
+            // 'documents' => EmployeeDocumentResource::collection($this->documents),
+            'personal_email' => $this->personal_email,
+            'birthday' => $this->birthday,
+            'name_day' => $this->name_day,
+            'married' => (bool) $this->married,
+            'childs_count' => $this->childs_count,
+            'type_of_job' => $this->type_of_job,
         ];
     }
 }

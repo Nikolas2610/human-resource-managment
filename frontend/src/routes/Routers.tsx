@@ -26,8 +26,25 @@ import SettingsPage from "@/features/settings/pages/SettingsPage";
 import IntegrationsPage from "@/features/settings/pages/IntegrationsPage";
 import CompanyCustomization from "@/features/settings/pages/CompanyCustomization";
 import EditCompanyContactInformation from "@/features/settings/pages/EditCompanyContactInformation";
+import { useSelector } from "react-redux";
+import { selectCompany } from "@/features/auth/authSlice";
+import { useGetCompanyQuery } from "@/features/companies/companiesEndpoints";
+import { useThemeContext } from "@/contexts/DynamicThemeProvider";
+import { useEffect } from "react";
+import CompanyDetails from "@/features/companies/pages/CompanyDetails";
+import EmployeeDocumentsPage from "@/features/employees/pages/EmployeeDocumentsPage";
 
 export default function Routers() {
+    const companyId = useSelector(selectCompany);
+    const { data: company = null } = useGetCompanyQuery(companyId);
+    const { setPrimaryColor } = useThemeContext();
+
+    useEffect(() => {
+        if (company && company.primary_color) {
+            setPrimaryColor(company.primary_color);
+        }
+    }, [company]);
+
     return (
         <Routes>
             <Route path="/auth" element={<AuthLayout />}>
@@ -73,7 +90,7 @@ export default function Routers() {
                     />
                     <Route
                         path="company-details"
-                        element={<div>Employee - Company Details</div>}
+                        element={<CompanyDetails />}
                     />
                     <Route
                         path="employees-details"
@@ -100,13 +117,20 @@ export default function Routers() {
                     {/* HR routes */}
                     <Route element={<PrivateRoute roles={[UserRole.HR]} />}>
                         {/* Settings */}
-                        <Route
-                            path="settings"
-                        >
+                        <Route path="settings">
                             <Route path="" element={<SettingsPage />} />
-                            <Route path="integrations" element={<IntegrationsPage />} />
-                            <Route path="contact-information" element={<EditCompanyContactInformation />} />
-                            <Route path="customization" element={<CompanyCustomization />} />
+                            <Route
+                                path="integrations"
+                                element={<IntegrationsPage />}
+                            />
+                            <Route
+                                path="contact-information"
+                                element={<EditCompanyContactInformation />}
+                            />
+                            <Route
+                                path="customization"
+                                element={<CompanyCustomization />}
+                            />
                         </Route>
 
                         <Route
@@ -150,6 +174,11 @@ export default function Routers() {
                             path="employees/edit/:employeeId"
                             element={<EditEmployee />}
                         />
+                        <Route
+                            path="employees/documents/:employeeId"
+                            element={<EmployeeDocumentsPage />}
+                        />
+
 
                         {/* Leave Types CRUD - HR */}
                         <Route

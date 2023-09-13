@@ -1,0 +1,13 @@
+export enum DARK_COLORS {
+    PRIMARY = "#248ad5",
+    SECONDARY = "#7c80e3",
+    BACKGROUND_DEFAULT = "#171c24",
+    BACKGROUND_PAPER = "#222b36",
+}
+
+export enum LIGHT_COLORS {
+    PRIMARY = "#5F4BB6",
+    SECONDARY = "#F1D302",
+    BACKGROUND_DEFAULT = "#D3D5D3",
+    BACKGROUND_PAPER = "#1F2220",
+}

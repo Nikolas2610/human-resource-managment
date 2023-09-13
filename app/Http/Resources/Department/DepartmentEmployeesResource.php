@@ -22,7 +22,7 @@ class DepartmentEmployeesResource extends JsonResource
                 return [
                     'id' => $employee->id,
                     'name' => $employee->first_name . " " . $employee->last_name,
-                    'image' => $employee->image,
+                    'image' => asset('storage/' . $employee->image),
                     'email' => $employee->email,
                     'role' => $employee->role,
                     'salary' => $employee->salary,

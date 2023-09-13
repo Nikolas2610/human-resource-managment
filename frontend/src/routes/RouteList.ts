@@ -25,6 +25,7 @@ interface RouteListProps {
     integrations: string;
     editCompanyContactInformation: string;
     companyCustomization: string;
+    employeeDocuments :(employeeId: number) => string;
 }
 
 const RouteList: RouteListProps = {
@@ -51,6 +52,7 @@ const RouteList: RouteListProps = {
     integrations: "/settings/integrations",
     editCompanyContactInformation: "/settings/contact-information",
     companyCustomization: "/settings/customization",
+    employeeDocuments: (employeeId) => `/employees/documents/${employeeId}`
 };
 
 export default RouteList;
