@@ -5,7 +5,7 @@ export default function UserAvatar({ image, name }: UserAvatarProps) {
         return <Avatar src={image} alt={name} />;
     }
 
-    return <Avatar>{image ? image : name.charAt(0)}</Avatar>;
+    return <Avatar>{image ? image : name.charAt(0).toUpperCase()}</Avatar>;
 }
 
 interface UserAvatarProps {

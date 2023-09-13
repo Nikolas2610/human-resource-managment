@@ -1,5 +1,6 @@
+import UserAvatar from "@/components/ui/UserAvatar";
 import { convertToDDMMYYYY } from "@/utils/helpers/functions";
-import { Grid, Avatar, Typography, useTheme } from "@mui/material";
+import { Grid, Typography, useTheme } from "@mui/material";
 
 export default function DashboardEmployeeAnniversaryBox({
     name,
@@ -17,15 +18,10 @@ export default function DashboardEmployeeAnniversaryBox({
             borderRadius={1}
         >
             <Grid item xs={4} display={"flex"} alignItems={"center"} gap={2}>
-                <Avatar
-                    sx={{
-                        bgcolor: "white",
-                        width: 48,
-                        height: 48,
-                    }}
-                >
-                    {image ? image : name.charAt(0)}
-                </Avatar>
+                <UserAvatar 
+                    name={name} 
+                    image={image}   
+                />
                 <Typography textAlign={"center"}>{name}</Typography>
             </Grid>
 

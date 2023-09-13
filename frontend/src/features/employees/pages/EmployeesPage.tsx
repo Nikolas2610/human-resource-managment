@@ -5,16 +5,16 @@ import {
     GridToolbar,
     GridColDef,
     GridRenderCellParams,
-    GridCellParams,
 } from "@mui/x-data-grid";
 import { useGetEmployeesQuery } from "../employeesEndpoints";
 import { selectCompany } from "@/features/auth/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Employee } from "@/types/employee/Employee.type";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Avatar, Box, Chip } from "@mui/material";
 import EmployeeTableActions from "../components/EmployeeTableActions";
-import { toggleDashboardLoading } from "@/features/dashboard/dashboardSlice";
+import usePageTitle from "@/hooks/usePageTitle";
+import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
 
 function EmployeesPage() {
     const companyId = useSelector(selectCompany);
@@ -24,11 +24,8 @@ function EmployeesPage() {
         data: Employee[];
         isLoading: boolean;
     };
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(toggleDashboardLoading(isLoading));
-    }, [isLoading, dispatch]);
+    usePageTitle("Employees");
+    useToggleDashboardLoading(isLoading);
 
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 70 },
@@ -138,9 +135,7 @@ function EmployeesPage() {
             type: "actions",
             width: 150,
             renderCell: (params: GridRenderCellParams) => (
-                <EmployeeTableActions
-                    {...{params}}
-                />
+                <EmployeeTableActions {...{ params }} />
             ),
         },
     ];

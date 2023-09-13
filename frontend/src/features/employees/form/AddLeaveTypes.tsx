@@ -70,7 +70,6 @@ export default function AddLeaveTypes({
         );
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth() + 1; // January is 0
-        console.log(currentMonth);
 
         const totalMonths = 12;
 
@@ -82,9 +81,10 @@ export default function AddLeaveTypes({
                 const availableLeaves = Math.floor(
                     (totalMonths - currentMonth + 1) * leavesPerMonth
                 );
+                
                 setValue(
                     `leave_types[${index}].unavailable_leaves`,
-                    availableLeaves
+                    totalLeaveAmount - availableLeaves
                 );
             }
         }

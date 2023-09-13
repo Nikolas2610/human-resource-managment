@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import CustomAppBar from "./components/CustomAppBar";
 import Sidebar from "./components/Sidebar";
-import { styled } from "@mui/material";
+import { Container, styled } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
     selectDrawerWidth,
@@ -65,10 +65,14 @@ export default function DashboardLayout() {
                 handleDrawerOpen={handleDrawerOpen}
             />
             <Sidebar open={drawerOpen} handleDrawerClose={handleDrawerClose} />
-            <Main open={drawerOpen} sx={{ overflowX: 'hidden' }}>
+
+            <Main open={drawerOpen} sx={{ overflowX: "hidden" }}>
                 <BackdropLoading isLoading={isLoading} />
                 <DrawerHeader />
-                <Outlet />
+
+                <Container maxWidth="xl">
+                    <Outlet />
+                </Container>
             </Main>
         </Box>
     );

@@ -1,7 +1,5 @@
 import FlexBetween from "@/components/ui/wrappers/FlexBetween";
 import { selectCompany } from "@/features/auth/authSlice";
-import { useGetEmployeesAnniversariesQuery } from "@/features/employees/employeesEndpoints";
-import { useGetEmployeeLeaveRequestOnLeaveQuery } from "@/features/leave-requests/leaveRequestsEndpoints";
 import { useGetEmployeeLeavesQuery } from "@/features/leave-types/leaveTypesEndpoints";
 import RouteList from "@/routes/RouteList";
 import { Box, Button, Grid, Stack, Typography, useTheme } from "@mui/material";
@@ -10,6 +8,8 @@ import { Link } from "react-router-dom";
 import DashboardEmployeeAnniversaryBox from "../components/DashboardEmployeeAnniversaryBox";
 import DashboardEmployeeOnLeaveBox from "../components/DashboardEmployeeOnLeaveBox";
 import ScrollBoxWrapper from "../components/ScrollBoxWrapper";
+import { useGetEmployeeDashboardDataQuery } from "../dashboardEndpoints";
+import DashboardEmployeeCelebrateDateBox from "../components/DashboardEmployeeCelebrateDateBox";
 
 export default function DashboardEmployeePage() {
     const theme = useTheme();
@@ -17,22 +17,14 @@ export default function DashboardEmployeePage() {
     // Queries
     const { data: employeeLeaves = [], isLoading: isDataLoading } =
         useGetEmployeeLeavesQuery(companyId);
-    const {
-        data: leaveRequestsOnLeave = [],
-        isLoading: isLeaveRequestsLoading,
-    } = useGetEmployeeLeaveRequestOnLeaveQuery(companyId);
-    const {
-        data: employeeAnniversaries = [],
-        isLoading: isEmployeeAnniversariesLoading,
-    } = useGetEmployeesAnniversariesQuery(companyId);
 
-    if (
-        isDataLoading ||
-        isLeaveRequestsLoading ||
-        isEmployeeAnniversariesLoading
-    ) {
+    const { data: dashboardData, isLoading: isDashboardDataLoading } =
+        useGetEmployeeDashboardDataQuery(companyId);
+
+    if (isDataLoading || isDashboardDataLoading) {
         return "Loading...";
     }
+
     return (
         <>
             <Box>
@@ -56,7 +48,7 @@ export default function DashboardEmployeePage() {
                                         boxShadow={10}
                                         p={2}
                                         spacing={1}
-                                        borderRadius={4}
+                                        borderRadius={1}
                                         bgcolor={theme.palette.primary.main}
                                     >
                                         <Typography
@@ -88,34 +80,39 @@ export default function DashboardEmployeePage() {
                             ))}
                 </Grid>
             </Box>
-            {leaveRequestsOnLeave?.length > 0 && (
-                <Grid container spacing={4} mt={5}>
-                    <Grid item xs={12} lg={6}>
-                        <Box>
-                            <Typography mb={3} variant="h3">
-                                Employees On Leave
-                            </Typography>
-                        </Box>
-                        <ScrollBoxWrapper>
-                            {leaveRequestsOnLeave.map((leave) => (
-                                <DashboardEmployeeOnLeaveBox
-                                    name={leave.employee_name}
-                                    key={leave.id}
-                                    start_date={leave.start_date}
-                                    end_date={leave.end_date}
-                                    image={leave.employee_image ?? null}
-                                    type={leave.leave_type_name}
-                                />
-                            ))}
-                        </ScrollBoxWrapper>
-                    </Grid>
-                    {employeeAnniversaries.length > 0 && (
+            <Grid container spacing={4} mt={5}>
+                {dashboardData?.leaveRequests &&
+                    dashboardData?.leaveRequests.length > 0 && (
+                        <Grid item xs={12} lg={6}>
+                            <Box>
+                                <Typography mb={3} variant="h3">
+                                    Employees On Leave
+                                </Typography>
+                            </Box>
+                            <ScrollBoxWrapper>
+                                {dashboardData?.leaveRequests.map((leave) => (
+                                    <DashboardEmployeeOnLeaveBox
+                                        name={leave.employee_name}
+                                        key={leave.id}
+                                        start_date={leave.start_date}
+                                        end_date={leave.end_date}
+                                        image={leave.employee_image ?? null}
+                                        type={leave.leave_type_name}
+                                    />
+                                ))}
+                            </ScrollBoxWrapper>
+                        </Grid>
+                    )}
+
+                {dashboardData?.celebrate_anniversaries &&
+                    dashboardData?.anniversaries &&
+                    dashboardData?.anniversaries.length > 0 && (
                         <Grid item xs={12} lg={6}>
                             <Typography mb={3} variant="h3">
                                 Anniversaries
                             </Typography>
                             <ScrollBoxWrapper>
-                                {employeeAnniversaries.map(
+                                {dashboardData?.anniversaries.map(
                                     (
                                         {
                                             name,
@@ -137,13 +134,57 @@ export default function DashboardEmployeePage() {
                             </ScrollBoxWrapper>
                         </Grid>
                     )}
-                    <Grid item xs={12} lg={6}>
-                        <Typography mb={3} variant="h3">
-                            Birthdays
-                        </Typography>
-                    </Grid>
-                </Grid>
-            )}
+                {dashboardData?.celebrate_birthdays &&
+                    dashboardData?.nextBirthdays &&
+                    dashboardData?.nextBirthdays.length > 0 && (
+                        <Grid item xs={12} lg={6}>
+                            <Typography mb={3} variant="h3">
+                                Upcoming Birthdays
+                            </Typography>
+                            <ScrollBoxWrapper>
+                                {dashboardData?.nextBirthdays.map(
+                                    (employee) => (
+                                        <DashboardEmployeeCelebrateDateBox
+                                            employee_name={
+                                                employee.employee_name
+                                            }
+                                            days_until={employee.days_until}
+                                            next_birthday={
+                                                employee.next_birthday
+                                            }
+                                            key={employee.employee_id}
+                                            employee_image={
+                                                employee.employee_image ?? null
+                                            }
+                                        />
+                                    )
+                                )}
+                            </ScrollBoxWrapper>
+                        </Grid>
+                    )}
+                {dashboardData?.celebrate_name_days &&
+                    dashboardData?.nextNameDays &&
+                    dashboardData?.nextNameDays.length > 0 && (
+                        <Grid item xs={12} lg={6}>
+                            <Typography mb={3} variant="h3">
+                                Upcoming Name Days
+                            </Typography>
+                            <ScrollBoxWrapper>
+                                {dashboardData?.nextNameDays.map((employee) => (
+                                    <DashboardEmployeeCelebrateDateBox
+                                        employee_name={employee.employee_name}
+                                        days_until={employee.days_until}
+                                        next_birthday={employee.next_name_day}
+                                        key={employee.employee_id}
+                                        employee_image={
+                                            employee.employee_image ?? null
+                                        }
+                                    />
+                                ))}
+                            </ScrollBoxWrapper>
+                        </Grid>
+                    )}
+            </Grid>
         </>
     );
 }

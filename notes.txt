@@ -29,8 +29,8 @@ Fix Cache Data
 
 Profile User: Create (Add new fields)
 Company Details: Create (Add new fields) 
-All Employee Details: Create (Add new fields)
-Add Documents to the employee: Create (Add new fields)
+All Employee Details: Create (Add new fields) - Done
+Add Documents to the employee: Create (Add new fields) - Done
 View Documents: Create (Add new fields)
 Integrations: Create (Add new fields) - Done
 Notifications - Emails: Create (Final)

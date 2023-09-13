@@ -20,6 +20,7 @@ class LeaveRequestCollection extends ResourceCollection
                 'employee_id' => $leaveRequest->employee_id,
                 'employee_name' => $leaveRequest->employee->first_name . " " . $leaveRequest->employee->last_name,
                 'employee_image' => $leaveRequest->employee->image,
+                'employee_image' =>  $leaveRequest->employee->image ? asset('storage/' . $leaveRequest->employee->image) : null,
                 'department' => [
                     'id' => $leaveRequest->employee->department->id,
                     'name' => $leaveRequest->employee->department->name,

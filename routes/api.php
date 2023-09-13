@@ -8,6 +8,7 @@ use App\Http\Controllers\LeaveAmountController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\CompanyEmployeeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\PositionController;
 use App\Models\Company;
@@ -54,6 +55,8 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
         // Get company settings
         Route::get('/', [CompanyController::class, 'show'])->name('companies.show');
         Route::post('/updateCustomization', [CompanyController::class, 'updateCustomization']);
+
+        Route::get('/dashboard/employee', [DashboardController::class, 'getEmployeeDashboardData']);
 
         // Departments
         Route::prefix('departments')->group(function () {

@@ -19,6 +19,9 @@ class EmployeeAnniversaryResource extends JsonResource
             'next_anniversary' => $this->next_anniversary,
             'years_worked' => $this->years_worked,
             'image' => $this->image,
+            'image' => $this->image
+                ? asset('storage/' . $this->image)
+                : null,
         ];
     }
 }
