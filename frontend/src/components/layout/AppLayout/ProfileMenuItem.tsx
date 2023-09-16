@@ -18,6 +18,10 @@ import { getAvatarName } from "@/utils/helpers/functions";
 import { Link, useNavigate } from "react-router-dom";
 import RouteList from "@/routes/RouteList";
 import PersonIcon from "@mui/icons-material/Person";
+import UserAvatar from "@/components/ui/UserAvatar";
+import { useGetEmployeeQuery } from "@/features/employees/employeesEndpoints";
+import { selectCompany } from "@/features/auth/authSlice";
+import { UserRole } from "@/features/auth/enums/UserRole";
 
 function ProfileMenuItem() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -29,7 +33,12 @@ function ProfileMenuItem() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const companyId = useSelector(selectCompany);
     const { user } = useSelector((state: RootState) => state.auth);
+    const { data: employee = null } = useGetEmployeeQuery({
+        companyId,
+        employeeId: user?.id ?? 0,
+    });
     const [logout, { isLoading, isSuccess, isError }] = useLogoutMutation();
     const dispatch = useDispatch();
     useToggleDashboardLoading(isLoading);
@@ -50,6 +59,7 @@ function ProfileMenuItem() {
     }, [isSuccess, isError, dispatch]);
 
     const linkStyle = {
+        width: "100%",
         display: "flex",
         alignItems: "center",
     };
@@ -77,12 +87,18 @@ function ProfileMenuItem() {
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}>
+                        {/* <Avatar sx={{ width: 32, height: 32 }}>
                             {getAvatarName(
                                 user?.first_name ?? "U",
                                 user?.last_name ?? ""
                             )}
-                        </Avatar>
+                        </Avatar> */}
+                        {employee && (
+                            <UserAvatar
+                                image={employee.image}
+                                name={employee.first_name}
+                            />
+                        )}
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -126,33 +142,44 @@ function ProfileMenuItem() {
                     {user?.first_name + " " + user?.last_name}
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleClose}>
-                    <Link to={RouteList.profile} style={linkStyle}>
+                <Link to={RouteList.profile} style={linkStyle}>
+                    <MenuItem onClick={handleClose} sx={{ width: "100%" }}>
                         <ListItemIcon
                             sx={{ color: theme.palette.common.white }}
                         >
                             <PersonIcon fontSize="small" />
                         </ListItemIcon>
                         <Typography>Profile</Typography>
-                    </Link>
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Link to={RouteList.createLeaveRequest} style={linkStyle}>
+                    </MenuItem>
+                </Link>
+                <Link to={RouteList.createLeaveRequest} style={linkStyle}>
+                    <MenuItem onClick={handleClose} sx={{ width: "100%" }}>
                         <ListItemIcon
                             sx={{ color: theme.palette.common.white }}
                         >
                             <PersonAdd fontSize="small" />
                         </ListItemIcon>
                         <Typography>Post Leave Request</Typography>
-                    </Link>
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon sx={{ color: theme.palette.common.white }}>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
+                    </MenuItem>
+                </Link>
+                {user?.role === UserRole.ADMIN ||
+                    (user?.role === UserRole.HR && (
+                        <Link to={RouteList.settings} style={linkStyle}>
+                            <MenuItem
+                                onClick={handleClose}
+                                sx={{ width: "100%" }}
+                            >
+                                <ListItemIcon
+                                    sx={{ color: theme.palette.common.white }}
+                                >
+                                    <Settings fontSize="small" />
+                                </ListItemIcon>
+                                Settings
+                            </MenuItem>
+                        </Link>
+                    ))}
+
+                <MenuItem onClick={handleLogout} sx={{ width: "100%" }}>
                     <ListItemIcon sx={{ color: theme.palette.common.white }}>
                         <Logout fontSize="small" />
                     </ListItemIcon>

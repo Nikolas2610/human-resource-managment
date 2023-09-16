@@ -4,4 +4,5 @@ export interface NewEmployeeLeaveType {
     used_leaves: number;
     unavailable_leaves: number;
     year: number;
+    leave_type: string;
 }

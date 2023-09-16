@@ -4,6 +4,7 @@ import { UpdateCompanyCustomizationRequest } from "@/types/companies/UpdateCompa
 import { CompanyFullDetails } from "@/types/companies/CompanyFullDetails.type";
 import { CompanyContactInformationForm } from "@/types/companies/CompanyContactInformationForm.type";
 import { CompanyIntegrationSettingsRequest } from "@/types/companies/CompanyIntegrationsSettingsRequest.type";
+import { CompanyDepartment } from "@/types/companies/CompanyDepartment.type";
 
 export const companyEndpoints = apiService.injectEndpoints({
     endpoints: (builder) => ({
@@ -14,6 +15,15 @@ export const companyEndpoints = apiService.injectEndpoints({
         getCompanyFullDetails: builder.query<CompanyFullDetails, number>({
             query: (companyId: number) => `companies/${companyId}/details`,
             providesTags: (result, _error, _arg) => (result ? ["Company"] : []),
+        }),
+        getEmployeesCompanyByDepartment: builder.query<
+            CompanyDepartment[],
+            number
+        >({
+            query: (companyId: number) =>
+                `companies/${companyId}/get-company-employees`,
+            providesTags: (result, _error, _arg) =>
+                result ? ["Company", "Employee"] : [],
         }),
         updateCompanyCustomization: builder.mutation<
             void,
@@ -34,7 +44,10 @@ export const companyEndpoints = apiService.injectEndpoints({
             }),
             invalidatesTags: [{ type: "Company" }],
         }),
-        updateCompanyIntegrations: builder.mutation<void, CompanyIntegrationSettingsRequest>({
+        updateCompanyIntegrations: builder.mutation<
+            void,
+            CompanyIntegrationSettingsRequest
+        >({
             query: (company) => ({
                 url: `companies/${company.id}`,
                 method: "PUT",
@@ -47,6 +60,7 @@ export const companyEndpoints = apiService.injectEndpoints({
 
 export const {
     useGetCompanyQuery,
+    useGetEmployeesCompanyByDepartmentQuery,
     useUpdateCompanyCustomizationMutation,
     useGetCompanyFullDetailsQuery,
     useUpdateCompanyMutation,

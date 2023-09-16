@@ -26,6 +26,7 @@ interface RouteListProps {
     editCompanyContactInformation: string;
     companyCustomization: string;
     employeeDocuments :(employeeId: number) => string;
+    companyEmployees: string;
 }
 
 const RouteList: RouteListProps = {
@@ -40,6 +41,7 @@ const RouteList: RouteListProps = {
     editPosition: makeEditRoute("/positions"),
     employees: "/employees",
     createEmployee: "/employees/create",
+    companyEmployees: "/company/employees",
     editEmployee: makeEditRoute("/employees"),
     login: "/auth/login",
     leaveTypes: "/leave-types",

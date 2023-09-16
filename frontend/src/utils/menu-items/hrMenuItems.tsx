@@ -1,23 +1,24 @@
 import { MenuItem } from "../../types/MenuItem.type";
 import SettingsIcon from "@mui/icons-material/Settings";
-import EditIcon from "@mui/icons-material/Edit";
+// import EditIcon from "@mui/icons-material/Edit";
 import PeopleIcon from "@mui/icons-material/People";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+// import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import HistoryIcon from "@mui/icons-material/History";
 import BusinessIcon from "@mui/icons-material/Business";
 import GroupIcon from "@mui/icons-material/Group";
-import DescriptionIcon from "@mui/icons-material/Description";
+// import DescriptionIcon from "@mui/icons-material/Description";
 import CheckIcon from "@mui/icons-material/Check";
 import PersonIcon from '@mui/icons-material/Person';
 import SignpostIcon from '@mui/icons-material/Signpost';
+import RouteList from "@/routes/RouteList";
 
 export const hrMenuItems: HRMenuItems = {
     dashboard: { link: "/dashboard", title: "Dashboard", icon: DashboardIcon },
-    profile: { link: "/profile", title: "Profile", icon: AccountBoxIcon },
+    profile: { link: "/profile", title: "Profile", icon: PersonIcon },
     leaveType: {
         link: "/leave-types",
         title: "Leave Types",
@@ -39,15 +40,15 @@ export const hrMenuItems: HRMenuItems = {
         icon: BusinessIcon,
     },
     employeesDetails: {
-        link: "/employees-details",
+        link: RouteList.companyEmployees,
         title: "Employee Details",
-        icon: PersonIcon,
+        icon: GroupIcon,
     },
-    documents: {
-        link: "/documents",
-        title: "Documents",
-        icon: DescriptionIcon,
-    },
+    // documents: {
+    //     link: "/documents",
+    //     title: "Documents",
+    //     icon: DescriptionIcon,
+    // },
     approveLeave: {
         link: "/approve-leave",
         title: "Approve Leave",
@@ -82,7 +83,7 @@ interface HRMenuItems {
     leaveRequestPost: MenuItem;
     companyDetails: MenuItem;
     employeesDetails: MenuItem;
-    documents: MenuItem;
+    // documents: MenuItem;
     approveLeave: MenuItem;
     integrations: MenuItem;
     employees: MenuItem;

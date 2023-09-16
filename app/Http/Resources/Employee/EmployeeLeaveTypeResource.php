@@ -20,6 +20,7 @@ class EmployeeLeaveTypeResource extends JsonResource
             'unavailable_leaves' => $this->pivot->unavailable_leaves,
             'year' => $this->pivot->year,
             'leave_type_id' => $this->pivot->leave_type_id,
+            'leave_type' => $this->type,
         ];
     }
 }

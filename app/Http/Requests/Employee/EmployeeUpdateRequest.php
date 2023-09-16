@@ -43,7 +43,9 @@ class EmployeeUpdateRequest extends Request
             'married' => 'nullable|in:true,false',
             'childs_count' => 'nullable|integer|min:0',
             'type_of_job' => 'nullable|string|in:on-site,hybrid,working-from-home',
-            'image' => 'nullable|image|mimes:jpeg,png,gif,svg|max:1024'
+            'image' => 'nullable|image|mimes:jpeg,png,gif,svg|max:1024',
+            'reports_to' => 'nullable|integer|exists:employees,id',
+            'salary' => 'numeric|min:0',
         ];
     }
 }

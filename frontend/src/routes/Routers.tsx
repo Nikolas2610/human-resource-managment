@@ -33,6 +33,8 @@ import { useThemeContext } from "@/contexts/DynamicThemeProvider";
 import { useEffect } from "react";
 import CompanyDetails from "@/features/companies/pages/CompanyDetails";
 import EmployeeDocumentsPage from "@/features/employees/pages/EmployeeDocumentsPage";
+import ProfilePage from "@/features/profile/pages/ProfilePage";
+import CompanyEmployeesPage from "@/features/companies/pages/CompanyEmployeesPage";
 
 export default function Routers() {
     const companyId = useSelector(selectCompany);
@@ -76,10 +78,7 @@ export default function Routers() {
                         path="dashboard"
                         element={<DashboardEmployeePage />}
                     />
-                    <Route
-                        path="profile"
-                        element={<div>Employee - Profile</div>}
-                    />
+                    <Route path="profile" element={<ProfilePage />} />
                     <Route
                         path="leave-request-post"
                         element={<CreateLeaveRequest />}
@@ -93,12 +92,8 @@ export default function Routers() {
                         element={<CompanyDetails />}
                     />
                     <Route
-                        path="employees-details"
-                        element={<div>Employee - Employees details</div>}
-                    />
-                    <Route
-                        path="documents"
-                        element={<div>Employee - Documents</div>}
+                        path="company/employees"
+                        element={<CompanyEmployeesPage />}
                     />
 
                     <Route
@@ -132,11 +127,6 @@ export default function Routers() {
                                 element={<CompanyCustomization />}
                             />
                         </Route>
-
-                        <Route
-                            path="edit-company"
-                            element={<div>HR - Edit company info</div>}
-                        />
 
                         {/* Departments CRUD - HR */}
                         <Route path="departments" element={<Departments />} />
@@ -178,7 +168,6 @@ export default function Routers() {
                             path="employees/documents/:employeeId"
                             element={<EmployeeDocumentsPage />}
                         />
-
 
                         {/* Leave Types CRUD - HR */}
                         <Route

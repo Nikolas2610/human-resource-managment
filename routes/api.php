@@ -56,6 +56,8 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
         Route::get('/', [CompanyController::class, 'show'])->name('companies.show');
         Route::post('/updateCustomization', [CompanyController::class, 'updateCustomization']);
 
+        Route::get('/get-company-employees', [CompanyController::class, 'getActiveEmployeesGroupedByDepartment']);
+
         Route::get('/dashboard/employee', [DashboardController::class, 'getEmployeeDashboardData']);
 
         // Departments

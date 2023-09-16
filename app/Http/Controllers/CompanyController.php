@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\Position;
 use App\Http\Resources\Company\CompanyCollection;
+use App\Http\Resources\Company\CompanyDepartmentResource;
 use App\Http\Resources\Company\FullDetailsCompanyResource;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
@@ -32,6 +33,28 @@ class CompanyController extends Controller
     public function getCompanyFullDetails(Company $company)
     {
         return new FullDetailsCompanyResource($company);
+    }
+
+    public function getActiveEmployeesGroupedByDepartment(Company $company)
+    {
+        // Fetch departments and their active employees
+        $departments = $company->departments()->with(['employees' => function ($query) {
+            $query->where('active', 1);
+        }])->get();
+
+        // Initialize result array
+        $result = [];
+
+        // Populate result array
+        foreach ($departments as $department) {
+            $result[] = [
+                'department_id' => $department->id,
+                'department_name' => $department->name,
+                'employees' => $department->employees,
+            ];
+        }
+
+        return CompanyDepartmentResource::collection($departments);
     }
 
     public function store(StoreCompanyRequest $request)
