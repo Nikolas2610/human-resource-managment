@@ -11,10 +11,13 @@ use App\Http\Controllers\CompanyEmployeeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\PositionController;
+use App\Mail\DefaultEmailTemplate;
+use App\Mail\TestEmail;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 // TODO: Delete the register user - Only for test
 Route::post('/register', [AuthController::class, 'register']);
@@ -28,6 +31,8 @@ Route::post('/employee/login', [EmployeeAuthController::class, 'login']);
 Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
 // TODO: Add another header for protection
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/employee/forgot-password', [EmployeeAuthController::class, 'forgotPassword']);
+Route::post('/employee/reset-password', [EmployeeAuthController::class, 'resetPassword']);
 
 // Admin Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -153,4 +158,8 @@ Route::middleware('auth:sanctum')->get('/test2', function (Request $request) {
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/test-mail', function () {
+    Mail::to('npsillou@gmail.com')->send(new DefaultEmailTemplate("My first Email", "Hello Nikolas"));
 });

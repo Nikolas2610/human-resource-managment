@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 import RouteList from "@/routes/RouteList";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import {
-    useDeleteEmployeeMutation,
-    useResetPasswordMutation,
+    useDeleteEmployeeMutation, useResetPasswordByRequestMutation,
+
 } from "../employeesEndpoints";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCompany } from "@/features/auth/authSlice";
@@ -30,14 +30,14 @@ export default function EmployeeTableActions({
 
     // RTK Query
     const [
-        resetPassword,
+        resetPasswordByRequest,
         {
             isLoading: isResetPasswordLoading,
             isSuccess: isResetPasswordSuccess,
             isError: isResetPasswordError,
             error: resetPasswordError,
         },
-    ] = useResetPasswordMutation();
+    ] = useResetPasswordByRequestMutation();
 
     const [
         deleteEmployee,
@@ -60,7 +60,7 @@ export default function EmployeeTableActions({
 
     const handleResetPassword = () => {
         const id = parseInt(params.id.toString(), 10);
-        resetPassword({ companyId, employeeId: id });
+        resetPasswordByRequest({ companyId, employeeId: id });
     };
 
     const handleDeleteEmployee = () => {

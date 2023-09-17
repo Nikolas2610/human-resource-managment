@@ -4,6 +4,8 @@ const makeViewRoute = (base: string) => (id: number) => `${base}/view/${id}`;
 interface RouteListProps {
     register: string;
     profile: string;
+    forgotPassword: string;
+    resetPassword: string;
     dashboard: string;
     departments: string;
     createDepartment: string;
@@ -30,6 +32,8 @@ interface RouteListProps {
 }
 
 const RouteList: RouteListProps = {
+    forgotPassword: "/auth/forgot-password",
+    resetPassword: "/auth/reset-password",
     register: "/auth/register",
     profile: "/profile",
     dashboard: "/dashboard",

@@ -1,4 +1,4 @@
-export type CRUDOperation = 'store' | 'update' | 'delete';
+export type CRUDOperation = 'store' | 'update' | 'delete' | 'forgotPassword' | "resetPassword";
 
 /**
  * Helper function to generate success and error messages for CRUD operations
@@ -19,6 +19,12 @@ function generateResponseMessage(modelName: string, operation: CRUDOperation, is
             break;
         case 'delete':
             baseMessage = isError ? `Failed to delete ${modelName}.` : `${modelName} deleted successfully.`;
+            break;
+        case 'forgotPassword':
+            baseMessage = isError ? `Failed to send password reset email.` : `Password reset email sent successfully.`;
+            break;
+        case 'resetPassword':
+            baseMessage = isError ? `Failed to reset password.` : `Password reset successfully.`;
             break;
         default:
             throw new Error('Invalid CRUD operation provided.');

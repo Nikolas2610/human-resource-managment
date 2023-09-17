@@ -4,8 +4,8 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import HistoryIcon from "@mui/icons-material/History";
 import BusinessIcon from "@mui/icons-material/Business";
 import GroupIcon from "@mui/icons-material/Group";
-import DescriptionIcon from "@mui/icons-material/Description";
 import { MenuItem } from "../../types/MenuItem.type";
+import RouteList from "@/routes/RouteList";
 
 export const employeeMenuItems: EmployeeMenuItems = {
     dashboard: { link: "/dashboard", title: "Dashboard", icon: DashboardIcon },
@@ -26,14 +26,9 @@ export const employeeMenuItems: EmployeeMenuItems = {
         icon: BusinessIcon,
     },
     employeesDetails: {
-        link: "/employees-details",
+        link: RouteList.companyEmployees,
         title: "Employee Details",
         icon: GroupIcon,
-    },
-    documents: {
-        link: "/documents",
-        title: "Documents",
-        icon: DescriptionIcon,
     },
 };
 
@@ -44,5 +39,4 @@ interface EmployeeMenuItems {
     leaveRequestPost: MenuItem;
     companyDetails: MenuItem;
     employeesDetails: MenuItem;
-    documents: MenuItem;
 }

@@ -3,6 +3,7 @@ import { LoginArgs, LoginResult } from "../../types/api/auth/login/Login.type";
 import { UserEmployee } from "../../types/employee/UserEmployee.type";
 import { CompanyRegister } from "@/types/api/auth/register/CompanyRegister.type";
 import { Company } from "@/types/companies/Company.type";
+import { ResetPasswordRequest } from "@/types/auth/ResetPasswordRequest.type";
 
 export const apiService = createApi({
     reducerPath: "apiService",
@@ -14,7 +15,7 @@ export const apiService = createApi({
         "LeaveRequest",
         "LeaveRequestEmployee",
         "Company",
-        "EmployeeDocuments"
+        "EmployeeDocuments",
     ],
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8000/api",
@@ -49,10 +50,28 @@ export const apiService = createApi({
             query: () => "user",
         }),
         logout: builder.mutation<void, void>({
-            // <-- Add this section
             query: () => ({
                 url: "employee/logout",
                 method: "POST",
+            }),
+        }),
+        forgotPassword: builder.mutation<void, string>({
+            query: (email) => ({
+                url: "employee/forgot-password",
+                method: "POST",
+                body: {
+                    email,
+                },
+            }),
+        }),
+        resetPassword: builder.mutation<
+            { message: string; status: string },
+            ResetPasswordRequest
+        >({
+            query: (data) => ({
+                url: "employee/reset-password",
+                method: "POST",
+                body: data,
             }),
         }),
     }),
@@ -63,4 +82,6 @@ export const {
     useRegisterCompanyMutation,
     useGetUserQuery,
     useLogoutMutation,
+    useForgotPasswordMutation,
+    useResetPasswordMutation,
 } = apiService;

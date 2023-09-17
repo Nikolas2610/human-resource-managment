@@ -7,14 +7,17 @@ use App\Http\Requests\Employee\StoreEmployeeRequest;
 use App\Http\Resources\Document\DocumentResource;
 use App\Http\Resources\Employee\EmployeeAnniversaryResource;
 use App\Http\Resources\Employee\EmployeeResource;
+use App\Mail\DefaultEmailTemplate;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\LeaveType;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class CompanyEmployeeController extends Controller
 {
@@ -182,17 +185,25 @@ class CompanyEmployeeController extends Controller
             return response()->json(['error' => 'Employee does not belong to this company'], 404);
         }
 
-        // Generate new password base employee credentials
-        $newPassword = $employee->first_name . $employee->last_name . "|$employee->id";
-        // Delete spaces
-        $newPassword = str_replace(' ', '', $newPassword);
+        // Delete any existing tokens for this email
+        DB::table('password_resets')->where('email', $employee->email)->delete();
 
-        $employee->password = Hash::make($newPassword);
-        $employee->save();
+        // Generate a token for the user
+        $token = Str::random(60);
+        $hashedToken = Hash::make($token);
+
+        $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+
+        Mail::to($employee->email)->send(new DefaultEmailTemplate("Password Reset", "Hello {$employee->first_name},<br><br>You are receiving this email because we received a password reset request for your account.<br><br>Click the button below to reset your password:<br><br><a href='$frontendUrl/auth/reset-password?token={$token}'>Reset Password</a><br><br>If you did not request a password reset, no further action is required.<br><br>Regards,<br>Your App Team"));
+        // Insert token into the password_resets table
+        DB::table('password_resets')->insert([
+            'email' => $employee->email,
+            'token' => $hashedToken,
+            'created_at' => Carbon::now()
+        ]);
 
         return response()->json([
-            'message' => 'Employee reset password successfully',
-            "pass" => $newPassword
+            'message' => 'Employee reset password successfully'
         ]);
     }
 

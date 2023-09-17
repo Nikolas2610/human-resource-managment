@@ -5,13 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Employee\EmployeeRegisterRequest;
 use App\Http\Requests\Employee\LoginEmployeeRequest;
 use App\Http\Resources\Employee\LoginEmployeeResource;
+use App\Mail\DefaultEmailTemplate;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeAuthController extends Controller
 {
@@ -94,5 +100,71 @@ class EmployeeAuthController extends Controller
         }
 
         return response()->json(['error' => 'No authenticated user found'], 404);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $employee = Employee::where('email', $request->email)->first();
+
+        if (!$employee) {
+            return response()->json(['message' => 'We can\'t find a user with that email address.'], 404);
+        }
+
+        // Delete any existing tokens for this email
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        // Generate a token for the user
+        $token = Str::random(60);
+        $hashedToken = Hash::make($token);
+
+        // Insert token into the password_resets table
+        DB::table('password_resets')->insert([
+            'email' => $employee->email,
+            'token' => $hashedToken,
+            'created_at' => Carbon::now()
+        ]);
+
+        $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+
+        Mail::to($employee->email)->send(new DefaultEmailTemplate("Password Reset", "Hello {$employee->first_name},<br><br>You are receiving this email because we received a password reset request for your account.<br><br>Click the button below to reset your password:<br><br><a href='$frontendUrl/auth/reset-password?token={$token}'>Reset Password</a><br><br>If you did not request a password reset, no further action is required.<br><br>Regards,<br>Your App Team"));
+
+        return response()->json(['message' => 'Password reset email sent.'], 200);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+            'token' => 'required|string'
+        ]);
+
+        // Get the latest reset token for the email
+        $reset = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$reset || !Hash::check($request->token, $reset->token)) {
+            // Token invalid or not found
+            return response()->json([
+                'message' => 'Invalid token', 
+                'status' => 'fail'
+            ], 400);
+        }
+
+        // Update the employee's password and delete the reset token
+        $employee = Employee::where('email', $request->email)->first();
+        $employee->password = Hash::make($request->password);
+        $employee->save();
+
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        return response()->json([
+            'message' => 'Password reset successfully', 
+            'status' => 'success'
+        ]);
     }
 }

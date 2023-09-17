@@ -97,7 +97,7 @@ export const employeesEndpoints = apiService.injectEndpoints({
                 { type: "Position" },
             ],
         }),
-        resetPassword: builder.mutation<
+        resetPasswordByRequest: builder.mutation<
             void,
             { companyId: number; employeeId: number }
         >({
@@ -117,7 +117,7 @@ export const {
     useStoreDocumentMutation,
     useCreateEmployeeMutation,
     useUpdateEmployeeMutation,
-    useResetPasswordMutation,
+    useResetPasswordByRequestMutation,
     useDeleteEmployeeMutation,
     useDeleteDocumentMutation,
 } = employeesEndpoints;

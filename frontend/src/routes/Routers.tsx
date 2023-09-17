@@ -35,6 +35,8 @@ import CompanyDetails from "@/features/companies/pages/CompanyDetails";
 import EmployeeDocumentsPage from "@/features/employees/pages/EmployeeDocumentsPage";
 import ProfilePage from "@/features/profile/pages/ProfilePage";
 import CompanyEmployeesPage from "@/features/companies/pages/CompanyEmployeesPage";
+import ForgotPasswordPage from "@/features/auth/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/features/auth/pages/ResetPasswordPage";
 
 export default function Routers() {
     const companyId = useSelector(selectCompany);
@@ -54,12 +56,9 @@ export default function Routers() {
                 <Route path="register" element={<RegisterPage />} />
                 <Route
                     path="forgot-password"
-                    element={<div>Forgot password</div>}
+                    element={<ForgotPasswordPage />}
                 />
-                <Route
-                    path="reset-password"
-                    element={<div>Reset password</div>}
-                />
+                <Route path="reset-password" element={<ResetPasswordPage />} />
             </Route>
 
             <Route
