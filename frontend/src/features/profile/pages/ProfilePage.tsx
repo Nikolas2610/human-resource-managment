@@ -21,6 +21,7 @@ import ProfileData from "../components/ProfileData";
 import EmployeeDocuments from "../components/EmployeeDocuments";
 import EmployeeLeaveTypes from "../components/EmployeeLeaveTypes";
 import BoxDetailsWrapper from "../components/BoxDetailsWrapper";
+import usePageTitle from "@/hooks/usePageTitle";
 
 export default function ProfilePage() {
     const theme = useTheme();
@@ -29,6 +30,7 @@ export default function ProfilePage() {
     const [activeItem, setActiveItem] = useState<
         "profile" | "documents" | "leaves"
     >("profile");
+    usePageTitle("Profile");
     const {
         data: employee = null,
         isLoading,

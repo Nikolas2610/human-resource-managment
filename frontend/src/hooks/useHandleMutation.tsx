@@ -31,5 +31,5 @@ interface HandleMutationProps {
     error: any; 
     entityType: string;
     actionType: CRUDOperation;
-    redirectTo: string;
+    redirectTo: string | null;
 }

@@ -4,19 +4,19 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\EmployeeAuthController;
-use App\Http\Controllers\LeaveAmountController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\CompanyEmployeeController;
+use App\Http\Controllers\CompanySubscriptionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\PaymentTokenController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\StripeController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Mail\DefaultEmailTemplate;
-use App\Mail\TestEmail;
-use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 // TODO: Delete the register user - Only for test
@@ -36,6 +36,8 @@ Route::post('/employee/reset-password', [EmployeeAuthController::class, 'resetPa
 
 // Admin Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    // Get Current Employee
+    Route::get('/user', [EmployeeAuthController::class, 'getUser']);
     // Company
     // TODO: Must move for the admin
     Route::prefix('companies')->group(function () {
@@ -50,12 +52,23 @@ Route::middleware(['custom.sanctum.auth'])->group(function () {
     Route::post('employee/logout', [EmployeeAuthController::class, 'logout'])->name('logout');
 });
 
+// Test Stripe Payments
+
+Route::post('/create-payment-session', function (Request $request) {
+    $response = StripeController::createSubscriptionSession($request->plan_id, $request->company_id);
+    return response()->json(['response' => $response]);
+});
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+Route::post('/stripe/cancel-subscription', [StripeController::class, 'cancelSubscription']);
+Route::post('/stripe/upgrade-subscription', [StripeController::class, 'changeSubscription']);
+Route::post('/stripe/update-subscription-payment', [StripeController::class, 'updateSubscriptionPayment']);
+Route::post('/stripe/renew-subscription', [StripeController::class, 'renewSubscription']);
+
+
 // TODO: Separate employee-admin with employee routes
 // Employee Routes
 Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
-
-
-
     Route::prefix('companies/{company}')->group(function () {
         // Get company settings
         Route::get('/', [CompanyController::class, 'show'])->name('companies.show');
@@ -141,24 +154,34 @@ Route::middleware(['custom.sanctum.auth', 'company'])->group(function () {
             Route::post('/{document}', [DocumentsController::class, 'update']);
             Route::delete('/{document}', [DocumentsController::class, 'destroy']);
         });
+
+        Route::prefix('subscriptions')->group(function () {
+            Route::get('/', [CompanySubscriptionController::class, 'getCompanySubscription']);
+            Route::get('/invoices', [CompanySubscriptionController::class, 'getCompanyInvoices']);
+            Route::post('/renew-previous-subscription', [CompanySubscriptionController::class, 'renewPreviousSubscription']);
+            Route::post('/cancel-subscription', [StripeController::class, 'cancelSubscription']);
+            Route::post('/change-subscription', [StripeController::class, 'changeSubscription']);
+            Route::post('/update-subscription-payment-method', [StripeController::class, 'generateUpdatePaymentLink']);
+            // Renew subscription if the subscription is still active and not expired
+            Route::post('/renew-subscription', [StripeController::class, 'renewSubscription']);
+            Route::get('get-invoices', [StripeController::class, 'getInvoices']);
+        });
+
+        // Payments Tokens
+        Route::post('/payment-token/success-payment', [PaymentTokenController::class, 'handleSuccess']);
+        Route::post('/payment-token/fail-payment', [PaymentTokenController::class, 'handleFailure']);
+        Route::post('/payment-token/success-update', [PaymentTokenController::class, 'handlePaymentUpdateStatusSuccess']);
+        Route::post('/payment-token/fail-update', [PaymentTokenController::class, 'handleUpdatePaymentStatusFailure']);
     });
 });
 
+// Route::middleware('auth:sanctum')->get('/test2', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::get('/user', function (Request $request) {
-    $user = Auth::guard('employee')->user();
-    return response()->json([
-        'employee' => $user
-    ]);;
-})->middleware(['auth:sanctum']);
-
-Route::middleware('auth:sanctum')->get('/test2', function (Request $request) {
-    return $request->user();
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::get('/test-mail', function () {
     Mail::to('npsillou@gmail.com')->send(new DefaultEmailTemplate("My first Email", "Hello Nikolas"));

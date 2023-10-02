@@ -23,7 +23,8 @@ class LoginEmployeeResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'image' => $this->image,
-            'role' => $this->role
+            'role' => $this->role,
+            'subscription_access_level' => $this->subscription_access_level
         ];
     }
 }

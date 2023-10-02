@@ -4,6 +4,7 @@ import { UserEmployee } from "../../types/employee/UserEmployee.type";
 import { CompanyRegister } from "@/types/api/auth/register/CompanyRegister.type";
 import { Company } from "@/types/companies/Company.type";
 import { ResetPasswordRequest } from "@/types/auth/ResetPasswordRequest.type";
+import { RegisterResponse } from "@/types/api/auth/login/RegisterResponse.type";
 
 export const apiService = createApi({
     reducerPath: "apiService",
@@ -16,6 +17,8 @@ export const apiService = createApi({
         "LeaveRequestEmployee",
         "Company",
         "EmployeeDocuments",
+        "CompanySubscription",
+        "Invoices"
     ],
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8000/api",
@@ -29,7 +32,7 @@ export const apiService = createApi({
         },
     }),
     endpoints: (builder) => ({
-        registerCompany: builder.mutation<Company, CompanyRegister>({
+        registerCompany: builder.mutation<RegisterResponse, CompanyRegister>({
             query: (body) => ({
                 url: "companies",
                 method: "POST",

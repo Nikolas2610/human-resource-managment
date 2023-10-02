@@ -23,6 +23,9 @@ export default function SettingsPage() {
                 <RowSettingsWrapper to={RouteList.companyCustomization}>
                     Customization
                 </RowSettingsWrapper>
+                <RowSettingsWrapper to={RouteList.subscription}>
+                    Subscription
+                </RowSettingsWrapper>
             </Stack>
         </>
     );

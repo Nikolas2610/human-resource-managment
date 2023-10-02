@@ -12,17 +12,30 @@ import {
     Alert,
     useTheme,
     Grid,
+    ToggleButton,
+    ToggleButtonGroup,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { generateRequiredErrorMessage } from "@/utils/functions";
 import { TogglePasswordField } from "@/components/ui/form/TogglePasswordField";
 import { toMysqlFormat } from "@/utils/helpers/functions";
 import { useHandleMutation } from "@/hooks/useHandleMutation";
+import FlexBetween from "@/components/ui/wrappers/FlexBetween";
+import SwitchTwoValues from "@/components/ui/SwitchTwoValues";
+import {
+    getSubscriptionPlanId,
+    subscriptionPlans,
+} from "@/features/website/data/subscriptionPlans";
+import { SubscriptionPlanName } from "@/types/subscriptions/SubscriptionPlanName.enum";
+import { SubscriptionPlanDuration } from "@/types/subscriptions/SubscriptionPlanDuration.enum";
+import { setToken, setUser } from "../authSlice";
+import { useDispatch } from "react-redux";
+import useStripePaymentRedirect from "@/hooks/useStripePaymentRedirect";
 
 interface FetchBaseQueryError {
     data: {
@@ -56,13 +69,36 @@ export default function RegisterPage() {
         control,
         formState: { errors },
     } = useForm<CompanyRegister>();
-    const [registerCompany, { isError, isSuccess, error, isLoading }] =
+    const [registerCompany, { isError, isSuccess, error, isLoading, data }] =
         useRegisterCompanyMutation();
     const passwordRef = useRef({});
+    const [subscriptionPlan, setSubscriptionPlan] =
+        useState<SubscriptionPlanName>(SubscriptionPlanName.PRO);
+    const [isYearly, setIsYearly] = useState(false);
+    const [searchParams] = useSearchParams();
+    const dispatch = useDispatch();
 
-    const onSubmit = (data: CompanyRegister) => {
+    useEffect(() => {
+        const packageParam = searchParams.get("package");
+        const durationParam = searchParams.get("duration");
+
+        if (packageParam) {
+            setSubscriptionPlan(packageParam as SubscriptionPlanName);
+        }
+
+        if (durationParam) {
+            setIsYearly(durationParam === "yearly");
+        }
+    }, [searchParams]);
+
+    const onSubmit = async (data: CompanyRegister) => {
         const { work_start_date } = data;
-        console.log(typeof work_start_date);
+        const subscriptionPlanId = getSubscriptionPlanId(
+            subscriptionPlan,
+            isYearly
+                ? SubscriptionPlanDuration.YEARLY
+                : SubscriptionPlanDuration.MONTHLY
+        );
 
         if (work_start_date) {
             const mysqlStartDate = toMysqlFormat(work_start_date.toISOString());
@@ -70,11 +106,25 @@ export default function RegisterPage() {
             const formattedData = {
                 ...data,
                 work_start_date: mysqlStartDate,
+                subscription_plan_id: subscriptionPlanId,
             } as unknown as CompanyRegister;
 
             registerCompany(formattedData);
         }
     };
+
+    useStripePaymentRedirect(data, isSuccess);
+
+    useEffect(() => {
+        if (
+            data &&
+            data?.message === "Subscription session created successfully." &&
+            data?.session_id
+        ) {
+            dispatch(setUser(data?.employee));
+            dispatch(setToken(data?.token));
+        }
+    }, [data]);
 
     useHandleMutation({
         isError,
@@ -83,12 +133,21 @@ export default function RegisterPage() {
         error,
         entityType: "Company",
         actionType: "store",
-        redirectTo: RouteList.login,
+        redirectTo: null,
     });
 
     function isFetchBaseQueryError(error: any): error is FetchBaseQueryError {
         return error && "data" in error;
     }
+
+    const handleSubscriptionPlanChange = (
+        _event: any,
+        value: SubscriptionPlanName | null
+    ) => {
+        if (value) {
+            setSubscriptionPlan(value);
+        }
+    };
 
     return (
         <FlexCenter height={"100%"} border={1}>
@@ -111,21 +170,47 @@ export default function RegisterPage() {
                 </Typography>
 
                 <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
-                    <Box mb={3}>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            label="Company name"
-                            type="text"
-                            {...register("name", {
-                                required: generateRequiredErrorMessage("Name"),
-                            })}
-                            error={Boolean(errors.name)}
-                            helperText={errors.name?.message}
-                            disabled={isLoading}
-                        />
-                    </Box>
+                    <Typography variant="h3" mb={3}>
+                        Company Details
+                    </Typography>
+                    <Grid container spacing={2} mb={3}>
+                        <Grid item xs={12} md={6} mb={{ xs: 1, md: 0 }}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="Company name"
+                                type="text"
+                                {...register("name", {
+                                    required:
+                                        generateRequiredErrorMessage("Name"),
+                                })}
+                                error={Boolean(errors.name)}
+                                helperText={errors.name?.message}
+                                disabled={isLoading}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="Company Email"
+                                type="text"
+                                {...register("email_company", {
+                                    required:
+                                        generateRequiredErrorMessage(
+                                            "Username"
+                                        ),
+                                })}
+                                error={Boolean(errors.email_company)}
+                                helperText={errors.email_company?.message}
+                                disabled={isLoading}
+                            />
+                        </Grid>
+                    </Grid>
 
+                    <Typography variant="h3" mb={3}>
+                        User Details
+                    </Typography>
                     <Grid container spacing={2} mb={3}>
                         <Grid item xs={12} md={6} mb={{ xs: 1, md: 0 }}>
                             <TextField
@@ -335,6 +420,55 @@ export default function RegisterPage() {
                             />
                         </Grid>
                     </Grid>
+
+                    <Typography variant="h3" mb={3}>
+                        Subscription Plan
+                    </Typography>
+                    <FlexBetween>
+                        <Box>
+                            <ToggleButtonGroup
+                                value={subscriptionPlan}
+                                exclusive
+                                onChange={handleSubscriptionPlanChange}
+                                aria-label="subscription plan"
+                                sx={{
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <ToggleButton value="basic" aria-label="basic">
+                                    Basic
+                                </ToggleButton>
+                                <ToggleButton value="pro" aria-label="pro">
+                                    Pro
+                                </ToggleButton>
+                                <ToggleButton
+                                    value="enterprise"
+                                    aria-label="enterprise"
+                                >
+                                    Enterprise
+                                </ToggleButton>
+                            </ToggleButtonGroup>
+                        </Box>
+                        <Box>
+                            <SwitchTwoValues
+                                value={isYearly}
+                                onChange={() => setIsYearly((prev) => !prev)}
+                                leftText={"Monthly"}
+                                rightText={"Yearly"}
+                            />
+                        </Box>
+                    </FlexBetween>
+                    <Typography mt={2}>
+                        Price:{" "}
+                        {
+                            subscriptionPlans.find(
+                                (plan) =>
+                                    plan.title.toLocaleLowerCase() ===
+                                    subscriptionPlan
+                            )?.price[isYearly ? "yearly" : "monthly"]
+                        }
+                        €{isYearly ? " yearly" : " monthly"}
+                    </Typography>
 
                     <Box textAlign={"center"} mt={6}>
                         <Button

@@ -6,6 +6,7 @@ import { selectCompany } from "@/features/auth/authSlice";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { CompanyContactInformationForm } from "@/types/companies/CompanyContactInformationForm.type";
+import usePageTitle from "@/hooks/usePageTitle";
 
 export default function EditCompanyContactInformation() {
     const companyId = useSelector(selectCompany);
@@ -16,6 +17,7 @@ export default function EditCompanyContactInformation() {
     } = useGetCompanyFullDetailsQuery(companyId);
     const [initialData, setInitialData] =
         useState<CompanyContactInformationForm | null>(null);
+    usePageTitle("Edit Contact Information");
 
     useEffect(() => {
         if (company) {
@@ -48,7 +50,7 @@ export default function EditCompanyContactInformation() {
     return (
         <>
             <HeaderPageBackFeature
-                headerTitle="Contact Information"
+                headerTitle="Edit Contact Information"
                 to={RouteList.settings}
                 buttonTitle="Back to Settings"
             />

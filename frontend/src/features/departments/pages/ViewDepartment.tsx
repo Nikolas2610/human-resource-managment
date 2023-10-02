@@ -2,14 +2,12 @@ import { selectCompany } from "@/features/auth/authSlice";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetDepartmentEmployeesQuery } from "../departmentEndpoints";
-import { Alert, Box, Grid, Stack, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Stack, Tooltip, Typography } from "@mui/material";
 import RouteList from "@/routes/RouteList";
 import usePageTitle from "@/hooks/usePageTitle";
 import FlexBetween from "@/components/ui/wrappers/FlexBetween";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import PeopleIcon from "@mui/icons-material/People";
-import UserAvatar from "@/components/ui/UserAvatar";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import CollapsibleTable from "../components/CollapsibleTable";
 
 export default function ViewDepartment() {
@@ -33,26 +31,6 @@ export default function ViewDepartment() {
     if (isError || !department) {
         navigate(RouteList.departments);
     }
-
-    const columns: GridColDef[] = [
-        { field: "id", headerName: "ID", width: 80 },
-        {
-            field: "image",
-            headerName: "Image",
-            width: 80,
-            renderCell: (params) => (
-                <UserAvatar name={params.row.name} image={params.row.image} />
-            ),
-        },
-        { field: "name", headerName: "Name", width: 130 },
-        { field: "position", headerName: "Position", width: 130 },
-        { field: "role", headerName: "Role", width: 130 },
-        { field: "email", headerName: "Email", width: 130 },
-        { field: "phone", headerName: "Phone", width: 130 },
-        { field: "address", headerName: "Address", width: 130 },
-        { field: "salary", headerName: "Salary", width: 130 },
-        { field: "reports_to", headerName: "Reports To", width: 130 },
-    ];
 
     return (
         <Stack>
@@ -97,15 +75,6 @@ export default function ViewDepartment() {
                     <Box mt={4}>
                         {department.employees.length > 0 ? (
                             <Box sx={{ width: "100%", marginTop: 4 }}>
-                                {/* <DataGrid
-                                    autoHeight
-                                    rows={department.employees}
-                                    columns={columns}
-                                    pageSizeOptions={[10, 15, 20, 25]}
-                                    slots={{
-                                        toolbar: GridToolbar,
-                                    }}
-                                /> */}
                                 <CollapsibleTable employees={department.employees} />
                             </Box>
                         ) : (

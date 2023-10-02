@@ -25,6 +25,7 @@ import generateResponseMessage from "@/utils/helpers/generateResponseMessage";
 import { SnackBarSeverity } from "@/features/snackbars/enums/SnackBarSeverity.enum";
 import { useNavigate } from "react-router-dom";
 import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
+import usePageTitle from "@/hooks/usePageTitle";
 
 export default function LeaveTypesPage() {
     const companyId = useSelector(selectCompany);
@@ -34,7 +35,7 @@ export default function LeaveTypesPage() {
     const { showModal } = useModalContext();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    usePageTitle("Leave Types");
     const [
         deleteLeaveType,
         { isSuccess, isError: isDeleteError, isLoading: isDeleteLoading },

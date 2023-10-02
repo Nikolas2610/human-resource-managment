@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 
 export default function CompanyForm({ company }: CompanyFormProps) {
     const formData: CompanyContactInformationForm = { ...company };
-    console.log(formData);
 
     const {
         register,
@@ -32,7 +31,6 @@ export default function CompanyForm({ company }: CompanyFormProps) {
     });
 
     const onSubmit = (data: CompanyContactInformationForm) => {
-        console.log(data);
         updateCompany(data);
     };
 

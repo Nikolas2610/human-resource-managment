@@ -1,6 +1,5 @@
 import { Logout, PersonAdd } from "@mui/icons-material";
 import Settings from "@mui/icons-material/Settings";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -14,14 +13,14 @@ import { apiService, useLogoutMutation } from "@/features/api/apiService";
 import useToggleDashboardLoading from "@/hooks/useToggleDashboardLoading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store";
-import { getAvatarName } from "@/utils/helpers/functions";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import RouteList from "@/routes/RouteList";
 import PersonIcon from "@mui/icons-material/Person";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { useGetEmployeeQuery } from "@/features/employees/employeesEndpoints";
-import { selectCompany } from "@/features/auth/authSlice";
+import { logoutUser, selectCompany } from "@/features/auth/authSlice";
 import { UserRole } from "@/features/auth/enums/UserRole";
+import useSuccessSnackbar from "@/hooks/useSuccessSnackbar";
 
 function ProfileMenuItem() {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -42,19 +41,19 @@ function ProfileMenuItem() {
     const [logout, { isLoading, isSuccess, isError }] = useLogoutMutation();
     const dispatch = useDispatch();
     useToggleDashboardLoading(isLoading);
-    const navigate = useNavigate();
+
     // !FIX ME: The snackbar stay on the DOM
-    // useSuccessSnackbar({
-    //     isSuccess,
-    //     message: "Has been logout successfully",
-    //     to: RouteList.login,
-    // });
+    useSuccessSnackbar({
+        isSuccess,
+        message: "Has been logout successfully",
+        to: RouteList.login,
+    });
 
     useEffect(() => {
         if (isSuccess || isError) {
             // reset the API state here
             dispatch(apiService.util.resetApiState());
-            navigate(RouteList.login);
+            dispatch(logoutUser());
         }
     }, [isSuccess, isError, dispatch]);
 
@@ -87,16 +86,10 @@ function ProfileMenuItem() {
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
                     >
-                        {/* <Avatar sx={{ width: 32, height: 32 }}>
-                            {getAvatarName(
-                                user?.first_name ?? "U",
-                                user?.last_name ?? ""
-                            )}
-                        </Avatar> */}
                         {employee && (
                             <UserAvatar
                                 image={employee.image}
-                                name={employee.first_name}
+                                name={employee.first_name.toUpperCase()}
                             />
                         )}
                     </IconButton>
@@ -138,12 +131,16 @@ function ProfileMenuItem() {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-                <MenuItem onClick={handleClose}>
+                <Typography px={2} pt={1} pb={2}>
                     {user?.first_name + " " + user?.last_name}
-                </MenuItem>
+                </Typography>
+
                 <Divider />
                 <Link to={RouteList.profile} style={linkStyle}>
-                    <MenuItem onClick={handleClose} sx={{ width: "100%" }}>
+                    <MenuItem
+                        onClick={handleClose}
+                        sx={{ width: "100%", paddingTop: 2 }}
+                    >
                         <ListItemIcon
                             sx={{ color: theme.palette.common.white }}
                         >

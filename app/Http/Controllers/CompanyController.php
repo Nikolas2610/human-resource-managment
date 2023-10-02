@@ -65,6 +65,7 @@ class CompanyController extends Controller
             'name' => $validatedData['name'],
             'require_manager_approval' => $validatedData['require_manager_approval'] ?? true,
             'require_hr_approval' => $validatedData['require_hr_approval'] ?? true,
+            'email_company' => $validatedData['email_company'],
         ]);
 
         // Create the management department
@@ -91,10 +92,19 @@ class CompanyController extends Controller
             'company_id' => $company->id,
             'department_id' => $department->id,
             'position_id' => $position->id,
-            'role' => 'hr'
+            'role' => 'admin'
         ]);
 
-        return new CompanyResource($company);
+        $response = StripeController::createSubscriptionSession($validatedData['subscription_plan_id'], $company->id);
+
+        $stripeData = json_decode($response->getContent(), true);
+
+        $token = $employee->createToken('token-name')->plainTextToken;
+        $stripeData['employee'] = $employee;
+        $stripeData['token'] = $token;
+
+
+        return response()->json($stripeData);
     }
 
     public function update(UpdateCompanyRequest $request, $id)

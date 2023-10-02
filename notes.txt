@@ -17,19 +17,19 @@ UPDATE / DELETE employee
 
 TODO: 
 Dashboard : 
--Add birthdays (Add new fields)
--get employees on leave and anniversaries current month 
--add buttons to view all for the current year
+-Add birthdays (Add new fields) - Done
+-get employees on leave and anniversaries - Done
+-add buttons to view all for the current year - NONE
 
 Register Company - Done
 Leave Request History: Filter by status - Done
 ProfileMenuBar: Add a name and links - Done
 Fix Snackbars (Multiple message and on logout)
-Fix Cache Data
+Fix Cache Data 
 
 Profile User: Create (Add new fields) - Done
-Company Details: Create (Add new fields) 
-All Employee Details: Create (Add new fields) 
+Company Details: Create (Add new fields) - Done
+All Employee Details: Create (Add new fields) - Done
 Add Documents to the employee: Create (Add new fields) - Done
 View Documents: Create (Add new fields) - Done
 Integrations: Create (Add new fields) - Done
@@ -41,6 +41,17 @@ Add JOBS:
 
 Create middleware for roles
 Create middleware for api_key
+Create subscriptions
+FIX UI
+Add colors to company table
+
+Testing card fail
+4000000000000341
+
+Success card
+4242424242424242
+
+Create payment tokens table
 
 
 

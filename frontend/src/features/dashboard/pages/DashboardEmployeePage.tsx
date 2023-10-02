@@ -10,10 +10,12 @@ import DashboardEmployeeOnLeaveBox from "../components/DashboardEmployeeOnLeaveB
 import ScrollBoxWrapper from "../components/ScrollBoxWrapper";
 import { useGetEmployeeDashboardDataQuery } from "../dashboardEndpoints";
 import DashboardEmployeeCelebrateDateBox from "../components/DashboardEmployeeCelebrateDateBox";
+import usePageTitle from "@/hooks/usePageTitle";
 
 export default function DashboardEmployeePage() {
     const theme = useTheme();
     const companyId = useSelector(selectCompany);
+    usePageTitle("Dashboard");
     // Queries
     const { data: employeeLeaves = [], isLoading: isDataLoading } =
         useGetEmployeeLeavesQuery(companyId);

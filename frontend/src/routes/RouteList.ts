@@ -3,6 +3,7 @@ const makeViewRoute = (base: string) => (id: number) => `${base}/view/${id}`;
 
 interface RouteListProps {
     register: string;
+    registerWithParams: (packageName: string, duration: string) => string;
     profile: string;
     forgotPassword: string;
     resetPassword: string;
@@ -27,14 +28,19 @@ interface RouteListProps {
     integrations: string;
     editCompanyContactInformation: string;
     companyCustomization: string;
-    employeeDocuments :(employeeId: number) => string;
+    employeeDocuments: (employeeId: number) => string;
     companyEmployees: string;
+    subscription: string;
+    changeSubscriptionPlan: string;
+    invoices: string;
 }
 
 const RouteList: RouteListProps = {
     forgotPassword: "/auth/forgot-password",
     resetPassword: "/auth/reset-password",
     register: "/auth/register",
+    registerWithParams: (packageName, duration) =>
+        `/auth/register?package=${packageName}&duration=${duration}`,
     profile: "/profile",
     dashboard: "/dashboard",
     departments: "/departments",
@@ -58,7 +64,10 @@ const RouteList: RouteListProps = {
     integrations: "/settings/integrations",
     editCompanyContactInformation: "/settings/contact-information",
     companyCustomization: "/settings/customization",
-    employeeDocuments: (employeeId) => `/employees/documents/${employeeId}`
+    employeeDocuments: (employeeId) => `/employees/documents/${employeeId}`,
+    subscription: "/settings/subscription",
+    changeSubscriptionPlan: "/settings/subscription/change-subscription-plan",
+    invoices: "/settings/subscription/invoices",
 };
 
 export default RouteList;

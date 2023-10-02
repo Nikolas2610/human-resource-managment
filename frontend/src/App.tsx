@@ -1,5 +1,5 @@
 // React
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // Redux
@@ -26,20 +26,21 @@ import { ModalProvider } from "./contexts/ModalContext";
 import ConfirmModal from "./components/modal/ConfirmModal";
 import SnackbarAlert from "./features/snackbars/components/SnackBarAlert";
 import { DynamicThemeProvider } from "./contexts/DynamicThemeProvider";
+import { RootState } from "./app/store";
 
 function App() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
-    const { themeMode, isAppLoading } = useAppSelector(
+    const { themeMode } = useAppSelector(
         (state) => state.dashboard
     );
+    const { isUserLoading } = useAppSelector((state: RootState) => state.auth);
 
-    const { data, isLoading, error } = useGetUserQuery();
+    const { data, isLoading, error, isSuccess, isError } = useGetUserQuery();
     // const theme = createTheme(themeSettings(themeMode));
     const baseTheme = createTheme(themeSettings(themeMode));
-    const [prevIsLoading, setPrevIsLoading] = useState(isLoading);
 
     // If a token is stored in localStorage, dispatch it
     useEffect(() => {
@@ -55,23 +56,21 @@ function App() {
 
     // Track the loading state and navigate based on data or error
     useEffect(() => {
-        if (prevIsLoading && !isLoading) {
+        if (isSuccess || isError) {
             if (data) {
                 dispatch(setUser(data));
                 dispatch(toggleAppLoading(false));
                 navigate(pathname ?? "/dashboard");
             } else if (error || !data) {
+                dispatch(setUser(null));
                 dispatch(toggleAppLoading(false));
-                // navigate("/auth/login");
             }
         }
-
-        setPrevIsLoading(isLoading);
-    }, [isLoading, data, dispatch, navigate]);
+    }, [isSuccess, isError]);
 
     return (
         <DynamicThemeProvider baseTheme={baseTheme}>
-            {!isAppLoading ? (
+            {!isUserLoading ? (
                 <ModalProvider>
                     <ConfirmModal />
                     <Routers />
@@ -83,7 +82,7 @@ function App() {
                     bgcolor={baseTheme.palette.background.default}
                 ></Box>
             )}
-            <BackdropLoading isLoading={isAppLoading} />
+            <BackdropLoading isLoading={isLoading} />
         </DynamicThemeProvider>
     );
 }

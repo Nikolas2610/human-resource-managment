@@ -16,6 +16,7 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->string('stripe_customer_id')->nullable();
             $table->string('name');
             $table->boolean('require_manager_approval')->default(true);
             $table->boolean('require_hr_approval')->default(true);
@@ -44,12 +45,12 @@ return new class extends Migration
             $table->string('hr_mail')->nullable();
 
             // Subscription Information Fields
-            $table->unsignedBigInteger('subscription_plan_id')->nullable();
-            $table->foreign('subscription_plan_id')->references('id')->on('subscription_plans');
-            $table->enum('subscription_status', ['active', 'expired', 'canceled', 'pending', 'trial'])->default('trial');
-            $table->date('subscription_expiry_date')->nullable();
-            $table->timestamp('trial_started_at')->nullable();
-            $table->timestamp('trial_ends_at')->nullable();
+            // $table->unsignedBigInteger('subscription_plan_id')->nullable();
+            // $table->foreign('subscription_plan_id')->references('id')->on('subscription_plans');
+            // $table->enum('subscription_status', ['active', 'expired', 'canceled', 'pending', 'trial'])->default('trial');
+            // $table->date('subscription_expiry_date')->nullable();
+            // $table->timestamp('trial_started_at')->nullable();
+            // $table->timestamp('trial_ends_at')->nullable();
 
             $table->timestamps();
         });

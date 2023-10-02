@@ -27,7 +27,7 @@ import IntegrationsPage from "@/features/settings/pages/IntegrationsPage";
 import CompanyCustomization from "@/features/settings/pages/CompanyCustomization";
 import EditCompanyContactInformation from "@/features/settings/pages/EditCompanyContactInformation";
 import { useSelector } from "react-redux";
-import { selectCompany } from "@/features/auth/authSlice";
+import { selectCompany, selectUserRole } from "@/features/auth/authSlice";
 import { useGetCompanyQuery } from "@/features/companies/companiesEndpoints";
 import { useThemeContext } from "@/contexts/DynamicThemeProvider";
 import { useEffect } from "react";
@@ -37,9 +37,20 @@ import ProfilePage from "@/features/profile/pages/ProfilePage";
 import CompanyEmployeesPage from "@/features/companies/pages/CompanyEmployeesPage";
 import ForgotPasswordPage from "@/features/auth/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/features/auth/pages/ResetPasswordPage";
+import PaymentPage from "@/features/stripe/pages/PaymentPage";
+import SuccessPaymentPage from "@/features/stripe/pages/SuccessPaymentPage";
+import FailPaymentPage from "@/features/stripe/pages/FailPaymentPage";
+import PricingPage from "@/features/website/pages/PricingPage";
+import CompanySubscriptionPage from "@/features/settings/pages/CompanySubscriptionPage";
+import ChangeSubscriptionPlanPage from "@/features/settings/pages/ChangeSubscriptionPlanPage";
+import RouteList from "./RouteList";
+import SuccessUpdatePaymentMethodPage from "@/features/stripe/pages/SuccessUpdatePaymentMethodPage";
+import FailUpdatePaymentMethodPage from "@/features/stripe/pages/FailUpdatePaymentMethodPage";
+import InvoicesPage from "@/features/settings/pages/InvoicesPage";
 
 export default function Routers() {
     const companyId = useSelector(selectCompany);
+    const userRole = useSelector(selectUserRole);
     const { data: company = null } = useGetCompanyQuery(companyId);
     const { setPrimaryColor } = useThemeContext();
 
@@ -51,139 +62,211 @@ export default function Routers() {
 
     return (
         <Routes>
-            <Route path="/auth" element={<AuthLayout />}>
-                <Route path="login" element={<LoginPage />} />
-                <Route path="register" element={<RegisterPage />} />
-                <Route
-                    path="forgot-password"
-                    element={<ForgotPasswordPage />}
-                />
-                <Route path="reset-password" element={<ResetPasswordPage />} />
-            </Route>
-
-            <Route
-                element={
-                    <PrivateRoute
-                        roles={[
-                            UserRole.EMPLOYEE,
-                            UserRole.HR,
-                            UserRole.MANAGER,
-                        ]}
-                    />
-                }
-            >
-                <Route path="/" element={<DashboardLayout />}>
-                    <Route
-                        path="dashboard"
-                        element={<DashboardEmployeePage />}
-                    />
-                    <Route path="profile" element={<ProfilePage />} />
-                    <Route
-                        path="leave-request-post"
-                        element={<CreateLeaveRequest />}
-                    />
-                    <Route
-                        path="leave-request-history"
-                        element={<LeaveRequestsPage />}
-                    />
-                    <Route
-                        path="company-details"
-                        element={<CompanyDetails />}
-                    />
-                    <Route
-                        path="company/employees"
-                        element={<CompanyEmployeesPage />}
-                    />
-
-                    <Route
-                        element={
-                            <PrivateRoute
-                                roles={[UserRole.HR, UserRole.MANAGER]}
-                            />
-                        }
-                    >
+            {userRole === UserRole.GUEST ? (
+                <>
+                    <Route path="/auth" element={<AuthLayout />}>
+                        <Route path="login" element={<LoginPage />} />
+                        <Route path="register" element={<RegisterPage />} />
                         <Route
-                            path="approve-leave"
-                            element={<LeaveRequestsApproved />}
+                            path="forgot-password"
+                            element={<ForgotPasswordPage />}
+                        />
+                        <Route
+                            path="reset-password"
+                            element={<ResetPasswordPage />}
                         />
                     </Route>
+                    <Route path="pricing" element={<PricingPage />} />
 
-                    {/* HR routes */}
-                    <Route element={<PrivateRoute roles={[UserRole.HR]} />}>
-                        {/* Settings */}
-                        <Route path="settings">
-                            <Route path="" element={<SettingsPage />} />
+                    {/* <Route
+                        path="success-payment"
+                        element={<SuccessPaymentPage />}
+                    />
+                    <Route
+                        path="failed-payment"
+                        element={<FailPaymentPage />}
+                    /> */}
+                </>
+            ) : (
+                <Route
+                    element={
+                        <PrivateRoute
+                            roles={[
+                                UserRole.EMPLOYEE,
+                                UserRole.ADMIN,
+                                UserRole.HR,
+                                UserRole.MANAGER,
+                            ]}
+                        />
+                    }
+                >
+                    <Route path="/" element={<DashboardLayout />}>
+                        <Route path="payment" element={<PaymentPage />} />
+                        <Route
+                            path="success-payment"
+                            element={<SuccessPaymentPage />}
+                        />
+                        <Route
+                            path="failed-payment"
+                            element={<FailPaymentPage />}
+                        />
+                        <Route
+                            path="success-update-payment-method"
+                            element={<SuccessUpdatePaymentMethodPage />}
+                        />
+                        <Route
+                            path="failed-update-payment-method"
+                            element={<FailUpdatePaymentMethodPage />}
+                        />
+                        <Route
+                            path="dashboard"
+                            element={<DashboardEmployeePage />}
+                        />
+                        <Route path="profile" element={<ProfilePage />} />
+                        <Route
+                            path="leave-request-post"
+                            element={<CreateLeaveRequest />}
+                        />
+                        <Route
+                            path="leave-request-history"
+                            element={<LeaveRequestsPage />}
+                        />
+                        <Route
+                            path="company-details"
+                            element={<CompanyDetails />}
+                        />
+                        <Route
+                            path="company/employees"
+                            element={<CompanyEmployeesPage />}
+                        />
+
+                        <Route
+                            element={
+                                <PrivateRoute
+                                    roles={[UserRole.HR, UserRole.MANAGER]}
+                                />
+                            }
+                        >
                             <Route
-                                path="integrations"
-                                element={<IntegrationsPage />}
-                            />
-                            <Route
-                                path="contact-information"
-                                element={<EditCompanyContactInformation />}
-                            />
-                            <Route
-                                path="customization"
-                                element={<CompanyCustomization />}
+                                path="approve-leave"
+                                element={<LeaveRequestsApproved />}
                             />
                         </Route>
 
-                        {/* Departments CRUD - HR */}
-                        <Route path="departments" element={<Departments />} />
+                        {/* HR routes */}
                         <Route
-                            path="departments/create"
-                            element={<CreateDepartment />}
-                        />
-                        <Route
-                            path="departments/edit/:departmentId"
-                            element={<EditDepartment />}
-                        />
-                        <Route
-                            path="departments/view/:departmentId"
-                            element={<ViewDepartment />}
-                        />
+                            element={
+                                <PrivateRoute
+                                    roles={[UserRole.HR, UserRole.ADMIN]}
+                                />
+                            }
+                        >
+                            {/* Settings */}
+                            <Route path="settings">
+                                <Route path="" element={<SettingsPage />} />
+                                <Route
+                                    path="integrations"
+                                    element={<IntegrationsPage />}
+                                />
+                                <Route
+                                    path="contact-information"
+                                    element={<EditCompanyContactInformation />}
+                                />
+                                <Route
+                                    path="customization"
+                                    element={<CompanyCustomization />}
+                                />
+                                <Route
+                                    path="subscription"
+                                    element={<CompanySubscriptionPage />}
+                                />
+                                <Route
+                                    path="subscription/change-subscription-plan"
+                                    element={<ChangeSubscriptionPlanPage />}
+                                />
+                                <Route
+                                    path="subscription/invoices"
+                                    element={<InvoicesPage />}
+                                />
+                            </Route>
 
-                        {/* Positions CRUD - HR */}
-                        <Route path="positions" element={<PositionsPage />} />
-                        <Route
-                            path="positions/create"
-                            element={<CreatePositionPage />}
-                        />
-                        <Route
-                            path="positions/edit/:positionId"
-                            element={<EditPositionPage />}
-                        />
+                            {/* Departments CRUD - HR */}
+                            <Route
+                                path="departments"
+                                element={<Departments />}
+                            />
+                            <Route
+                                path="departments/create"
+                                element={<CreateDepartment />}
+                            />
+                            <Route
+                                path="departments/edit/:departmentId"
+                                element={<EditDepartment />}
+                            />
+                            <Route
+                                path="departments/view/:departmentId"
+                                element={<ViewDepartment />}
+                            />
 
-                        {/* Employees CRUD - HR */}
-                        <Route path="employees" element={<EmployeesPage />} />
-                        <Route
-                            path="employees/create"
-                            element={<CreateEmployee />}
-                        />
-                        <Route
-                            path="employees/edit/:employeeId"
-                            element={<EditEmployee />}
-                        />
-                        <Route
-                            path="employees/documents/:employeeId"
-                            element={<EmployeeDocumentsPage />}
-                        />
+                            {/* Positions CRUD - HR */}
+                            <Route
+                                path="positions"
+                                element={<PositionsPage />}
+                            />
+                            <Route
+                                path="positions/create"
+                                element={<CreatePositionPage />}
+                            />
+                            <Route
+                                path="positions/edit/:positionId"
+                                element={<EditPositionPage />}
+                            />
 
-                        {/* Leave Types CRUD - HR */}
-                        <Route
-                            path="leave-types"
-                            element={<LeaveTypesPage />}
-                        />
-                        <Route
-                            path="leave-types/create"
-                            element={<CreateLeaveType />}
-                        />
-                        <Route
-                            path="leave-types/edit/:leaveTypeId"
-                            element={<EditLeaveType />}
-                        />
+                            {/* Employees CRUD - HR */}
+                            <Route
+                                path="employees"
+                                element={<EmployeesPage />}
+                            />
+                            <Route
+                                path="employees/create"
+                                element={<CreateEmployee />}
+                            />
+                            <Route
+                                path="employees/edit/:employeeId"
+                                element={<EditEmployee />}
+                            />
+                            <Route
+                                path="employees/documents/:employeeId"
+                                element={<EmployeeDocumentsPage />}
+                            />
+
+                            {/* Leave Types CRUD - HR */}
+                            <Route
+                                path="leave-types"
+                                element={<LeaveTypesPage />}
+                            />
+                            <Route
+                                path="leave-types/create"
+                                element={<CreateLeaveType />}
+                            />
+                            <Route
+                                path="leave-types/edit/:leaveTypeId"
+                                element={<EditLeaveType />}
+                            />
+                        </Route>
                     </Route>
                 </Route>
-            </Route>
+            )}
+            <Route
+                path="*"
+                element={
+                    userRole === UserRole.GUEST ? (
+                        <Navigate to={RouteList.login} replace />
+                    ) : (
+                        <Navigate to={RouteList.dashboard} replace />
+                    )
+                }
+            />
 
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

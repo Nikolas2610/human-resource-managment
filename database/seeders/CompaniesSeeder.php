@@ -52,11 +52,11 @@ class CompaniesSeeder extends Seeder
                 'hr_mail' => $faker->email,
 
                 // Subscription Information Fields
-                'subscription_plan_id' => optional($randomSubscriptionPlan)->id,
-                'subscription_status' => $faker->randomElement(['active', 'expired', 'canceled', 'pending', 'trial']),
-                'subscription_expiry_date' => $faker->dateTimeBetween('+1 month', '+1 year')->format('Y-m-d'),
-                'trial_started_at' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
-                'trial_ends_at' => $faker->dateTimeBetween('+1 week', '+2 weeks')->format('Y-m-d H:i:s'),
+                // 'subscription_plan_id' => optional($randomSubscriptionPlan)->id,
+                // 'subscription_status' => $faker->randomElement(['active', 'expired', 'canceled', 'pending', 'trial']),
+                // 'subscription_expiry_date' => $faker->dateTimeBetween('+1 month', '+1 year')->format('Y-m-d'),
+                // 'trial_started_at' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s'),
+                // 'trial_ends_at' => $faker->dateTimeBetween('+1 week', '+2 weeks')->format('Y-m-d H:i:s'),
 
                 'created_at' => now(),
                 'updated_at' => now(),

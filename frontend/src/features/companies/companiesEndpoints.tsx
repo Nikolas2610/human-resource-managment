@@ -5,6 +5,7 @@ import { CompanyFullDetails } from "@/types/companies/CompanyFullDetails.type";
 import { CompanyContactInformationForm } from "@/types/companies/CompanyContactInformationForm.type";
 import { CompanyIntegrationSettingsRequest } from "@/types/companies/CompanyIntegrationsSettingsRequest.type";
 import { CompanyDepartment } from "@/types/companies/CompanyDepartment.type";
+import { CompanySubscription } from "@/types/companies/CompanySubscription.type";
 
 export const companyEndpoints = apiService.injectEndpoints({
     endpoints: (builder) => ({
@@ -24,6 +25,11 @@ export const companyEndpoints = apiService.injectEndpoints({
                 `companies/${companyId}/get-company-employees`,
             providesTags: (result, _error, _arg) =>
                 result ? ["Company", "Employee"] : [],
+        }),
+        getCompanySubscription: builder.query<CompanySubscription, number>({
+            query: (companyId: number) =>
+                `companies/${companyId}/subscriptions`,
+            providesTags: (result, _error, _arg) => (result ? ["CompanySubscription"] : []),
         }),
         updateCompanyCustomization: builder.mutation<
             void,
@@ -61,6 +67,7 @@ export const companyEndpoints = apiService.injectEndpoints({
 export const {
     useGetCompanyQuery,
     useGetEmployeesCompanyByDepartmentQuery,
+    useGetCompanySubscriptionQuery,
     useUpdateCompanyCustomizationMutation,
     useGetCompanyFullDetailsQuery,
     useUpdateCompanyMutation,

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Employee\EmployeeRegisterRequest;
 use App\Http\Requests\Employee\LoginEmployeeRequest;
+use App\Http\Resources\Employee\EmployeeAuthResource;
 use App\Http\Resources\Employee\LoginEmployeeResource;
 use App\Mail\DefaultEmailTemplate;
+use App\Models\CompanySubscriptions;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -74,6 +76,19 @@ class EmployeeAuthController extends Controller
                     'message' => 'Your account is inactive. Please contact the administrator.'
                 ], 403);
             }
+
+            $subscription = CompanySubscriptions::where('company_id', $employee->company_id)
+                ->whereIn('status', ['active', 'active_to_cancel', 'past_due'])
+                ->first();
+
+            if (!$subscription && $employee->role !== 'admin') {
+                return response()->json([
+                    'error' => 'company_inactive',
+                    'message' => 'Your company subscription has expired. Please contact with the administrator.'
+                ], 404);
+            }
+
+            $employee['subscription_access_level'] = $subscription->subscriptionPlan->access_level ?? "expired";
 
             // If credentials are correct, issue the token
             $token = $employee->createToken('token-name')->plainTextToken;
@@ -150,7 +165,7 @@ class EmployeeAuthController extends Controller
         if (!$reset || !Hash::check($request->token, $reset->token)) {
             // Token invalid or not found
             return response()->json([
-                'message' => 'Invalid token', 
+                'message' => 'Invalid token',
                 'status' => 'fail'
             ], 400);
         }
@@ -163,8 +178,35 @@ class EmployeeAuthController extends Controller
         DB::table('password_resets')->where('email', $request->email)->delete();
 
         return response()->json([
-            'message' => 'Password reset successfully', 
+            'message' => 'Password reset successfully',
             'status' => 'success'
         ]);
+    }
+
+    public function getUser(Request $request)
+    {
+        $user = Auth::guard('employee')->user();
+
+        if (!$user->active) {
+            return response()->json([
+                'error' => 'account_inactive',
+                'message' => 'Your account is inactive. Please contact the administrator'
+            ], 403);
+        }
+
+        $subscription = CompanySubscriptions::where('company_id', $user->company_id)
+            ->whereIn('status', ['active', 'active_to_cancel', 'past_due'])
+            ->first();
+
+        if (!$subscription && $user->role !== 'admin') {
+            return response()->json([
+                'error' => 'company_inactive',
+                'message' => 'Your company subscription has expired. Please contact with the administrator.'
+            ], 404);
+        }
+
+        $user['subscription_access_level'] = $subscription->subscriptionPlan->access_level;
+
+        return new LoginEmployeeResource($user);
     }
 }

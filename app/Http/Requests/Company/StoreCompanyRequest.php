@@ -35,7 +35,9 @@ class StoreCompanyRequest extends Request
             'phone' => 'required|string',
             'address' => 'required|string',
             'work_start_date' => 'required',
-            'department_title' => 'required|string|max:255'
+            'department_title' => 'required|string|max:255',
+            'email_company' => 'required|string|email|max:255|unique:companies', 
+            'subscription_plan_id' => 'required|exists:subscription_plans,id',
         ];
     }
 }

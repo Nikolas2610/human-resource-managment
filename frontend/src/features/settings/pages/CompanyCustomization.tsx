@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useThemeContext } from "@/contexts/DynamicThemeProvider";
 import { DARK_COLORS } from "@/themes/Colors";
 import FlexBetween from "@/components/ui/wrappers/FlexBetween";
+import usePageTitle from "@/hooks/usePageTitle";
 
 interface IFormInput {
     logo: string;
@@ -42,6 +43,7 @@ export default function CompanyCustomization() {
         { isLoading, isSuccess, isError, error },
     ] = useUpdateCompanyCustomizationMutation();
     const { setPrimaryColor } = useThemeContext();
+    usePageTitle("Customization");
 
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
         const { primary_color, secondary_color } = data;

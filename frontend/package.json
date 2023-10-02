@@ -19,6 +19,7 @@
     "@mui/x-data-grid": "^6.11.0",
     "@mui/x-date-pickers": "^6.11.2",
     "@reduxjs/toolkit": "^1.9.5",
+    "@stripe/stripe-js": "^2.1.5",
     "dayjs": "^1.11.9",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",

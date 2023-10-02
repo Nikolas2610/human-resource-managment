@@ -37,13 +37,15 @@ export default function CompanyDetails() {
         <Card style={{ margin: "16px", padding: "16px" }}>
             <CardContent>
                 <Grid container spacing={3} alignItems={"center"}>
-                    <Grid item xs={12} lg={3}>
-                        <img
-                            src={company.logo}
-                            alt="Company Logo"
-                            style={{ width: "200px" }}
-                        />
-                    </Grid>
+                    {company.logo && (
+                        <Grid item xs={12} lg={3}>
+                            <img
+                                src={company.logo}
+                                alt="Company Logo"
+                                style={{ width: "200px" }}
+                            />
+                        </Grid>
+                    )}
                     <Grid item xs={12} lg={9}>
                         <Typography variant="h2" fontWeight={700} mb={3}>
                             {company.name}
@@ -91,11 +93,11 @@ export default function CompanyDetails() {
                         xs={12}
                         alignItems={"center"}
                         display={"flex"}
-                        sx={{ 
+                        sx={{
                             justifyContent: {
-                                lg: 'end'
-                            }
-                         }}
+                                lg: "end",
+                            },
+                        }}
                     >
                         <SocialMediaIcon
                             link={company.facebook}
@@ -132,7 +134,7 @@ const Row = ({
     children: React.ReactNode;
 }) => {
     return (
-        <Grid container spacing={2} alignItems={"center"} py={.5}>
+        <Grid container spacing={2} alignItems={"center"} py={0.5}>
             <Grid item xs={6} lg={3}>
                 <FlexBetween>
                     <Typography variant="h4" fontWeight={500}>

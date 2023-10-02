@@ -74,8 +74,38 @@ class Company extends Model
         return $this->hasMany(LeaveAmount::class);
     }
 
-    public function subscriptionPlan()
+    public function subscriptions()
     {
-        return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id', 'id');
+        return $this->hasMany('App\Models\CompanySubscriptions', 'company_id', 'id');
     }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne('App\Models\CompanySubscriptions', 'company_id', 'id')
+            ->where('status', 'active');
+    }
+
+    public function latestSubscription()
+    {
+        return $this->hasOne('App\Models\CompanySubscriptions', 'company_id', 'id')
+            ->where('expiry_date', '>', now()) // make sure the subscription hasn't expired
+            ->orderBy('created_at', 'desc'); // order by created_at in descending order to get the latest
+    }
+
+    // public function subscriptionPlan()
+    // {
+    //     return $this->belongsTo('App\Models\SubscriptionPlan', 'subscription_plan_id', 'id');
+    // }
+
+    // public function invoices()
+    // {
+    //     return $this->hasManyThrough(
+    //         'App\Models\Invoice',
+    //         'App\Models\CompanySubscriptions',
+    //         'company_id',
+    //         'subscription_id',
+    //         'id',
+    //         'stripe_subscription_id'
+    //     );
+    // }
 }

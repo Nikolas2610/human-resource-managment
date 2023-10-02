@@ -10,4 +10,5 @@ export interface CompanyRegister {
     phone: string;
     address: string;
     work_start_date: Date | null;
+    email_company: string;
 }

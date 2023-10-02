@@ -1,4 +1,4 @@
-export type CRUDOperation = 'store' | 'update' | 'delete' | 'forgotPassword' | "resetPassword";
+export type CRUDOperation = 'store' | 'update' | 'delete' | 'forgotPassword' | "resetPassword" | "cancelSubscription" | "renewSubscription";
 
 /**
  * Helper function to generate success and error messages for CRUD operations
@@ -25,6 +25,12 @@ function generateResponseMessage(modelName: string, operation: CRUDOperation, is
             break;
         case 'resetPassword':
             baseMessage = isError ? `Failed to reset password.` : `Password reset successfully.`;
+            break;
+        case 'cancelSubscription':
+            baseMessage = isError ? `Failed to cancel subscription.` : `Subscription cancelled successfully.`;
+            break;
+        case 'renewSubscription':
+            baseMessage = isError ? `Failed to renew subscription.` : `Subscription renewed successfully.`;
             break;
         default:
             throw new Error('Invalid CRUD operation provided.');

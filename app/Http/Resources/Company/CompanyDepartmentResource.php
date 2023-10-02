@@ -41,7 +41,7 @@ class CompanyDepartmentResource extends JsonResource
                     'email' => $employee->email,
                     'phone' => $employee->phone,
                     'work_duration' => $workDuration,
-                    'reports_to' => optional($employee->reportsTo)->first_name . ' ' . optional($employee->reportsTo)->last_name,
+                    'reports_to' => $employee->reports_to ? optional($employee->reportsTo)->first_name . ' ' . optional($employee->reportsTo)->last_name : null,
                     'reports_to_image' => asset('storage/' . optional($employee->reportsTo)->image),
                     'work_start_date' => $employee->work_start_date,
                     'image' => asset('storage/' . $employee->image)

@@ -9,7 +9,18 @@ class SubscriptionPlan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'price', 'duration', 'features'];
+    protected $fillable = [
+        'name',
+        'price',
+        'duration',
+        'features',
+        'stripe_price_id',
+        'is_active',
+        'access_level',
+        'min_users',
+        'max_users',
+        'has_trial',
+    ];
 
     public function companies()
     {

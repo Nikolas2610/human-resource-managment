@@ -172,31 +172,36 @@ export default function CompanyEmployeesPage() {
                                                         Work to company:{" "}
                                                         {employee.work_duration}
                                                     </Typography>
-                                                    <Box
-                                                        display={"flex"}
-                                                        gap={1}
-                                                        alignItems={"center"}
-                                                    >
-                                                        <Typography>
-                                                            Reports To:
-                                                        </Typography>
-                                                        {employee.reports_to && (
-                                                            <UserAvatar
-                                                                image={
-                                                                    employee.reports_to_image
-                                                                }
-                                                                name={
+                                                    {}
+                                                    {employee.reports_to && (
+                                                        <Box
+                                                            display={"flex"}
+                                                            gap={1}
+                                                            alignItems={
+                                                                "center"
+                                                            }
+                                                        >
+                                                            <Typography>
+                                                                Reports To:
+                                                            </Typography>
+                                                            {employee.reports_to && (
+                                                                <UserAvatar
+                                                                    image={
+                                                                        employee.reports_to_image
+                                                                    }
+                                                                    name={
+                                                                        employee.reports_to
+                                                                    }
+                                                                />
+                                                            )}
+
+                                                            <Typography>
+                                                                {
                                                                     employee.reports_to
                                                                 }
-                                                            />
-                                                        )}
-
-                                                        <Typography>
-                                                            {
-                                                                employee.reports_to
-                                                            }
-                                                        </Typography>
-                                                    </Box>
+                                                            </Typography>
+                                                        </Box>
+                                                    )}
                                                 </FlexBetween>
                                             </Stack>
                                         </Box>

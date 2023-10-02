@@ -6,6 +6,7 @@ import {
     InputAdornment,
     IconButton,
     FormHelperText,
+    Tooltip,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -65,10 +66,14 @@ export const TogglePasswordField: React.FC<TogglePasswordFieldProps> = ({
                                     }
                                     edge="end"
                                 >
-                                    {showPassword ? (
-                                        <VisibilityOff />
+                                    {!showPassword ? (
+                                        <Tooltip title="Show Password">
+                                            <VisibilityOff />
+                                        </Tooltip>
                                     ) : (
-                                        <Visibility />
+                                        <Tooltip title="Hide Password">
+                                            <Visibility />
+                                        </Tooltip>
                                     )}
                                 </IconButton>
                             </InputAdornment>
