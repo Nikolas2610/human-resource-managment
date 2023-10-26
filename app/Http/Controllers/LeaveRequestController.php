@@ -119,12 +119,12 @@ class LeaveRequestController extends Controller
             $validatedData['employee_id'] = $employee->id;
 
             // When no manager to a department
-            if ($employee->department->manager_id === null || $employee->department->manager_id === $employee->id) {
+            if ($employee->department->manager_id === null || $employee->department->manager_id === $employee->id || $company->require_manager_approval === false) {
                 $validatedData['manager_approved'] = "approved";
             }
 
             // When HR request a leave
-            if ($employee->role === "hr") {
+            if ($employee->role === "hr" || !$company->require_hr_approval) {
                 $validatedData['hr_approved'] = "approved";
             }
 

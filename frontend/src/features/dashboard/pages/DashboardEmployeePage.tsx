@@ -65,18 +65,32 @@ export default function DashboardEmployeePage() {
                                         >
                                             {leave.type}
                                         </Typography>
-                                        <Typography variant="h4">
-                                            Default leaves:{" "}
-                                            {leave.allocated_leaves}
-                                        </Typography>
+                                        {leave.limit && (
+                                            <Typography variant="h4">
+                                                Default leaves:{" "}
+                                                {leave.allocated_leaves}
+                                            </Typography>
+                                        )}
+
                                         <Typography variant="h4">
                                             Used leaves: {leave.used_leaves}
                                         </Typography>
-                                        <Typography variant="h4">
-                                            Available leaves:{" "}
-                                            {leave.allocated_leaves -
-                                                leave.used_leaves}
-                                        </Typography>
+                                        {leave.limit && (
+                                            <Typography variant="h4">
+                                                Available leaves:{" "}
+                                                <span
+                                                    style={{
+                                                        color:
+                                                            leave.remaining_leaves <
+                                                            0
+                                                                ? "red"
+                                                                : "white",
+                                                    }}
+                                                >
+                                                    {leave.remaining_leaves}
+                                                </span>
+                                            </Typography>
+                                        )}
                                     </Stack>
                                 </Grid>
                             ))}

@@ -27,6 +27,8 @@ import ConfirmModal from "./components/modal/ConfirmModal";
 import SnackbarAlert from "./features/snackbars/components/SnackBarAlert";
 import { DynamicThemeProvider } from "./contexts/DynamicThemeProvider";
 import { RootState } from "./app/store";
+import { SubscriptionAccessLevel } from "./types/subscriptions/SubscriptionAccessLevel.enum";
+import RouteList from "./routes/RouteList";
 
 function App() {
     const dispatch = useDispatch();
@@ -60,8 +62,15 @@ function App() {
             if (data) {
                 dispatch(setUser(data));
                 dispatch(toggleAppLoading(false));
-                navigate(pathname ?? "/dashboard");
+                console.log("Redirect");
+                
+                if (data.subscription_access_level === SubscriptionAccessLevel.EXPIRED) {
+                    navigate(RouteList.subscription)
+                } else {
+                    navigate(pathname ?? RouteList.dashboard);
+                }
             } else if (error || !data) {
+                localStorage.removeItem("token");
                 dispatch(setUser(null));
                 dispatch(toggleAppLoading(false));
             }

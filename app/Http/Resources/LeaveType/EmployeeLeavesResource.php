@@ -17,7 +17,7 @@ class EmployeeLeavesResource extends JsonResource
         return [
             'id' => $this->id,
             'type' => $this->type,
-            'limit' => $this->limit,
+            'limit' => (bool) $this->limit,
             'leave_amount' => $this->leave_amount,
             'visible_to_employees' => (bool) $this->visible_to_employees,
             'allocated_leaves' => optional($this->pivot)->allocated_leaves,

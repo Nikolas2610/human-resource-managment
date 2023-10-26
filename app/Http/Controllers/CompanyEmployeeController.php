@@ -88,6 +88,8 @@ class CompanyEmployeeController extends Controller
             $requestData['leave_types'] = Validator::make($leaveTypes, $rules);
         }
 
+        // TODO: hash the password
+        $requestData['password'] = Hash::make($requestData['password']);
         $employee = new Employee($requestData); // Initialize the Employee with validated data
         $employee->company_id = $company->id;  // Set the company_id here
 

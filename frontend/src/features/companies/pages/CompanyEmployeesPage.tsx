@@ -166,6 +166,7 @@ export default function CompanyEmployeesPage() {
                                                             xs: "block",
                                                             lg: "flex",
                                                         },
+                                                        minHeight: 40,
                                                     }}
                                                 >
                                                     <Typography>

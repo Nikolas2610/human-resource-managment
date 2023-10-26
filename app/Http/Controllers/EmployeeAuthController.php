@@ -205,7 +205,7 @@ class EmployeeAuthController extends Controller
             ], 404);
         }
 
-        $user['subscription_access_level'] = $subscription->subscriptionPlan->access_level;
+        $user['subscription_access_level'] = $subscription->subscriptionPlan->access_level ?? "expired";
 
         return new LoginEmployeeResource($user);
     }

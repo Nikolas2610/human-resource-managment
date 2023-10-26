@@ -1,4 +1,5 @@
 import { UserRole } from "../../features/auth/enums/UserRole";
+import { SubscriptionAccessLevel } from "../subscriptions/SubscriptionAccessLevel.enum";
 
 export interface UserEmployee {
     id: number;
@@ -10,4 +11,5 @@ export interface UserEmployee {
     email: string;
     image: string | null;
     role: UserRole;
+    subscription_access_level: SubscriptionAccessLevel;
 }

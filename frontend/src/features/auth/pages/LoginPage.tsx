@@ -21,6 +21,7 @@ import { LoginSchema } from "../../../utils/validation/auth/LoginSchema";
 import { loginUser } from "../authSlice";
 import RouteList from "@/routes/RouteList";
 import FlexBetween from "@/components/ui/wrappers/FlexBetween";
+import { SubscriptionAccessLevel } from "@/types/subscriptions/SubscriptionAccessLevel.enum";
 
 interface FetchBaseQueryError {
     data: {
@@ -54,8 +55,20 @@ function LoginPage() {
     const onSubmit = async (data: FormData) => {
         try {
             const response = await login(data).unwrap();
+
+            console.log(response.employee.subscription_access_level);
+
+            if (
+                response.employee.subscription_access_level ===
+                SubscriptionAccessLevel.EXPIRED
+            ) {
+                console.log("\x1b[31m%s\x1b[0m", "To subscription page");
+                await navigate(RouteList.subscription);
+            } else {
+                console.log("\x1b[31m%s\x1b[0m", "To dashboard page");
+                await navigate(RouteList.dashboard);
+            }
             dispatch(loginUser(response));
-            navigate("/dashboard");
         } catch (err) {
             console.error(err);
         }

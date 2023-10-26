@@ -3,6 +3,7 @@ import { RootState } from "../../app/store";
 import { UserEmployee } from "../../types/employee/UserEmployee.type";
 import { LoginArgs } from "../../types/api/auth/login/Login.type";
 import { UserRole } from "./enums/UserRole";
+import { SubscriptionAccessLevel } from "@/types/subscriptions/SubscriptionAccessLevel.enum";
 
 interface AuthState {
     user: UserEmployee | null;
@@ -10,6 +11,7 @@ interface AuthState {
     form: LoginArgs;
     role: UserRole;
     isUserLoading: boolean;
+    subscriptionAccessLevel: SubscriptionAccessLevel;
 }
 
 const initialState: AuthState = {
@@ -20,7 +22,8 @@ const initialState: AuthState = {
         password: "Password-0",
     },
     role: UserRole.GUEST,
-    isUserLoading: true
+    isUserLoading: true,
+    subscriptionAccessLevel: SubscriptionAccessLevel.NONE,
 };
 
 export const authSlice = createSlice({
@@ -41,11 +44,13 @@ export const authSlice = createSlice({
             state.user = employee;
             state.token = token;
             state.role = employee.role;
+            state.subscriptionAccessLevel = employee.subscription_access_level;
             localStorage.setItem("token", token);
         },
         logoutUser: (state) => {
             localStorage.removeItem("token");
             state.user = null;
+            state.subscriptionAccessLevel = SubscriptionAccessLevel.NONE;
             state.role = UserRole.GUEST;
         },
         setToken: (state, action: PayloadAction<string>) => {
@@ -54,6 +59,10 @@ export const authSlice = createSlice({
         setUser: (state, action: PayloadAction<UserEmployee | null>) => {
             state.user = action.payload;
             state.role = action.payload?.role ?? UserRole.GUEST;
+            if (action.payload?.subscription_access_level) {
+                state.subscriptionAccessLevel =
+                    action.payload?.subscription_access_level;
+            }
             state.isUserLoading = false;
         },
     },
@@ -65,6 +74,8 @@ export const selectUserRole = (state: RootState) =>
 export const selectUserID = (state: RootState) => state.auth.user?.id ?? 0;
 export const selectCompany = (state: RootState): number =>
     state.auth.user?.company_id ?? 0;
+export const selectSubscriptionAccessLevel = (state: RootState) =>
+    state.auth.subscriptionAccessLevel;
 
 // Export actions
 export const { logoutUser, loginUser, onChangeLoginField, setToken, setUser } =

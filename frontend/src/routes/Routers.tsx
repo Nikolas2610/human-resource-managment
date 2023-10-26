@@ -47,6 +47,7 @@ import RouteList from "./RouteList";
 import SuccessUpdatePaymentMethodPage from "@/features/stripe/pages/SuccessUpdatePaymentMethodPage";
 import FailUpdatePaymentMethodPage from "@/features/stripe/pages/FailUpdatePaymentMethodPage";
 import InvoicesPage from "@/features/settings/pages/InvoicesPage";
+import { SubscriptionAccessLevel } from "@/types/subscriptions/SubscriptionAccessLevel.enum";
 
 export default function Routers() {
     const companyId = useSelector(selectCompany);
@@ -59,6 +60,10 @@ export default function Routers() {
             setPrimaryColor(company.primary_color);
         }
     }, [company]);
+
+    useEffect(() => {
+        console.log(userRole);
+    }, [userRole]);
 
     return (
         <Routes>
@@ -77,20 +82,17 @@ export default function Routers() {
                         />
                     </Route>
                     <Route path="pricing" element={<PricingPage />} />
-
-                    {/* <Route
-                        path="success-payment"
-                        element={<SuccessPaymentPage />}
-                    />
-                    <Route
-                        path="failed-payment"
-                        element={<FailPaymentPage />}
-                    /> */}
                 </>
             ) : (
                 <Route
                     element={
                         <PrivateRoute
+                            accessLevels={[
+                                SubscriptionAccessLevel.EXPIRED,
+                                SubscriptionAccessLevel.LEVEL_ONE,
+                                SubscriptionAccessLevel.LEVEL_TWO,
+                                SubscriptionAccessLevel.LEVEL_THREE,
+                            ]}
                             roles={[
                                 UserRole.EMPLOYEE,
                                 UserRole.ADMIN,
@@ -101,48 +103,84 @@ export default function Routers() {
                     }
                 >
                     <Route path="/" element={<DashboardLayout />}>
+                        {/* Access by all and expired admin */}
+                        <Route
+                            element={
+                                <PrivateRoute
+                                    accessLevels={[
+                                        SubscriptionAccessLevel.EXPIRED,
+                                        SubscriptionAccessLevel.LEVEL_ONE,
+                                        SubscriptionAccessLevel.LEVEL_TWO,
+                                        SubscriptionAccessLevel.LEVEL_THREE,
+                                    ]}
+                                    roles={[UserRole.ADMIN, UserRole.HR]}
+                                />
+                            }
+                        >
+                            <Route
+                                path="success-payment"
+                                element={<SuccessPaymentPage />}
+                            />
+                            <Route
+                                path="failed-payment"
+                                element={<FailPaymentPage />}
+                            />
+                            <Route
+                                path="success-update-payment-method"
+                                element={<SuccessUpdatePaymentMethodPage />}
+                            />
+                            <Route
+                                path="failed-update-payment-method"
+                                element={<FailUpdatePaymentMethodPage />}
+                            />
+                        </Route>
+
+                        {/* Testing */}
                         <Route path="payment" element={<PaymentPage />} />
-                        <Route
-                            path="success-payment"
-                            element={<SuccessPaymentPage />}
-                        />
-                        <Route
-                            path="failed-payment"
-                            element={<FailPaymentPage />}
-                        />
-                        <Route
-                            path="success-update-payment-method"
-                            element={<SuccessUpdatePaymentMethodPage />}
-                        />
-                        <Route
-                            path="failed-update-payment-method"
-                            element={<FailUpdatePaymentMethodPage />}
-                        />
-                        <Route
-                            path="dashboard"
-                            element={<DashboardEmployeePage />}
-                        />
-                        <Route path="profile" element={<ProfilePage />} />
-                        <Route
-                            path="leave-request-post"
-                            element={<CreateLeaveRequest />}
-                        />
-                        <Route
-                            path="leave-request-history"
-                            element={<LeaveRequestsPage />}
-                        />
-                        <Route
-                            path="company-details"
-                            element={<CompanyDetails />}
-                        />
-                        <Route
-                            path="company/employees"
-                            element={<CompanyEmployeesPage />}
-                        />
 
                         <Route
                             element={
                                 <PrivateRoute
+                                    accessLevels={[
+                                        SubscriptionAccessLevel.LEVEL_ONE,
+                                        SubscriptionAccessLevel.LEVEL_TWO,
+                                        SubscriptionAccessLevel.LEVEL_THREE,
+                                    ]}
+                                    roles={[UserRole.ADMIN, UserRole.HR, UserRole.MANAGER, UserRole.EMPLOYEE]}
+                                />
+                            }
+                        >
+                            <Route
+                                path="dashboard"
+                                element={<DashboardEmployeePage />}
+                            />
+                            <Route path="profile" element={<ProfilePage />} />
+                            <Route
+                                path="leave-request-post"
+                                element={<CreateLeaveRequest />}
+                            />
+                            <Route
+                                path="leave-request-history"
+                                element={<LeaveRequestsPage />}
+                            />
+                            <Route
+                                path="company-details"
+                                element={<CompanyDetails />}
+                            />
+                            <Route
+                                path="company/employees"
+                                element={<CompanyEmployeesPage />}
+                            />
+                        </Route>
+
+                        <Route
+                            element={
+                                <PrivateRoute
+                                    accessLevels={[
+                                        SubscriptionAccessLevel.LEVEL_ONE,
+                                        SubscriptionAccessLevel.LEVEL_TWO,
+                                        SubscriptionAccessLevel.LEVEL_THREE,
+                                    ]}
                                     roles={[UserRole.HR, UserRole.MANAGER]}
                                 />
                             }
@@ -153,17 +191,33 @@ export default function Routers() {
                             />
                         </Route>
 
-                        {/* HR routes */}
+                        {/* Settings */}
                         <Route
+                            path="settings"
                             element={
                                 <PrivateRoute
-                                    roles={[UserRole.HR, UserRole.ADMIN]}
+                                    accessLevels={[
+                                        SubscriptionAccessLevel.EXPIRED,
+                                        SubscriptionAccessLevel.LEVEL_ONE,
+                                        SubscriptionAccessLevel.LEVEL_TWO,
+                                        SubscriptionAccessLevel.LEVEL_THREE,
+                                    ]}
+                                    roles={[UserRole.ADMIN, UserRole.HR]}
                                 />
                             }
                         >
-                            {/* Settings */}
-                            <Route path="settings">
-                                <Route path="" element={<SettingsPage />} />
+                            <Route
+                                element={
+                                    <PrivateRoute
+                                        accessLevels={[
+                                            SubscriptionAccessLevel.LEVEL_ONE,
+                                            SubscriptionAccessLevel.LEVEL_TWO,
+                                            SubscriptionAccessLevel.LEVEL_THREE,
+                                        ]}
+                                        roles={[UserRole.ADMIN, UserRole.HR]}
+                                    />
+                                }
+                            >
                                 <Route
                                     path="integrations"
                                     element={<IntegrationsPage />}
@@ -176,20 +230,36 @@ export default function Routers() {
                                     path="customization"
                                     element={<CompanyCustomization />}
                                 />
-                                <Route
-                                    path="subscription"
-                                    element={<CompanySubscriptionPage />}
-                                />
-                                <Route
-                                    path="subscription/change-subscription-plan"
-                                    element={<ChangeSubscriptionPlanPage />}
-                                />
-                                <Route
-                                    path="subscription/invoices"
-                                    element={<InvoicesPage />}
-                                />
                             </Route>
 
+                            <Route path="" element={<SettingsPage />} />
+                            <Route
+                                path="subscription"
+                                element={<CompanySubscriptionPage />}
+                            />
+                            <Route
+                                path="subscription/change-subscription-plan"
+                                element={<ChangeSubscriptionPlanPage />}
+                            />
+                            <Route
+                                path="subscription/invoices"
+                                element={<InvoicesPage />}
+                            />
+                        </Route>
+
+                        {/* HR & Admin routes */}
+                        <Route
+                            element={
+                                <PrivateRoute
+                                    accessLevels={[
+                                        SubscriptionAccessLevel.LEVEL_ONE,
+                                        SubscriptionAccessLevel.LEVEL_TWO,
+                                        SubscriptionAccessLevel.LEVEL_THREE,
+                                    ]}
+                                    roles={[UserRole.HR, UserRole.ADMIN]}
+                                />
+                            }
+                        >
                             {/* Departments CRUD - HR */}
                             <Route
                                 path="departments"
